@@ -1,0 +1,39 @@
+.wrapper{
+    padding: 12px;
+    background-color: #f5fbff;
+    border-radius: 4px;
+
+    &:hover{
+        background-color: #fef0f8;
+    }
+    +.wrapper{
+        margin-top: 1rem;
+    }
+}
+
+.index{
+    font-weight: 500;
+    font-size: 1.15rem;
+    padding-bottom: 12px;
+}
+
+.group{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    +.group{
+        margin-top: 10px;
+    }
+}
+
+.label{
+    font-weight: 500;
+    color: var(--primary-1);
+    min-width: 100px;
+}
+
+.value{
+    flex: 1;
+}

@@ -1,0 +1,74 @@
+.wrapper {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--white);
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    transition: 200ms ease-in-out;
+    cursor: pointer;
+
+    &.add {
+        color: #2ec9aa;
+
+        &:hover {
+            background-color: #2ec9aa;
+            color: var(--white);
+            border-color: #2ec9aa;
+        }
+    }
+
+    &.edit {
+        color: coral;
+
+        &:hover {
+            background-color: coral;
+            color: var(--white);
+            border-color: coral;
+        }
+    }
+
+    &.delete {
+        color: rgb(216, 49, 59);
+
+        &:hover {
+            background-color: rgb(216, 49, 59);
+            color: var(--white);
+            border-color: rgb(216, 49, 59);
+        }
+    }
+
+    &.approve {
+        color: var(--primary-1);
+
+        &:hover {
+            background-color: var(--primary-1);
+            color: var(--white);
+            border-color: var(--primary-1);
+        }
+    }
+
+    &.reject {
+        color: var(--text);
+
+        &:hover {
+            background-color: var(--text);
+            color: var(--white);
+            border-color: var(--text);
+        }
+    }
+
+    &.disabled {
+        pointer-events: none;
+        background-color: #cdcdcd;
+        color: #8e8e8e;
+        cursor: not-allowed;
+    }
+
+    .icon {
+        font-size: 1.15rem;
+    }
+
+}
