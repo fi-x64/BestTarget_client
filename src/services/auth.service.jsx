@@ -7,9 +7,9 @@ export const register = async (email, password) => {
 };
 
 export const login = async (email, password) => {
-  const res = await request.post('/auth/login', { email, password })
-  if (res.data.success) {
-    if (res.data.accessToken) {
+  const res = await request.post('/users/login', { email, matKhau: password })
+  if (res.data.status === 'success') {
+    if (res.data.token) {
       localStorage.setItem("user", JSON.stringify(res.data));
       return res.data;
     }
@@ -19,8 +19,4 @@ export const login = async (email, password) => {
 
 export const logout = () => {
   localStorage.removeItem("user");
-};
-
-export const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
 };

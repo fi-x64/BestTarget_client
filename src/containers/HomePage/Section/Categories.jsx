@@ -44,20 +44,20 @@ function Categories() {
     return (
         <div className='wrapper-categories bg-[#fff]'>
             <Slider {...settings} className="categories p-4 [&>*]:text-[14px] [&>*]:text-center">
-                <a class="categories-item" href='#'><img className='categories-img' src={goiPro} alt="" />Gói Pro</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={dongTot} alt="" />Nạp Đồng Tốt</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={goiPro} alt="" />Gói Pro</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={dongTot} alt="" />Nạp Đồng Tốt</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
-                <a class="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={goiPro} alt="" />Gói Pro</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={dongTot} alt="" />Nạp Đồng Tốt</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={goiPro} alt="" />Gói Pro</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={dongTot} alt="" />Nạp Đồng Tốt</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</a>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
             </Slider>
         </div >
     )

@@ -28,7 +28,7 @@ function Banner() {
     };
 
     return (
-        <div className='wrapper-banner my-3 pb-3 bg-[#fff]'>
+        <div className='wrapper-banner bg-[#fff]'>
             <div className="banner p-4">
                 <Slider className="[&>div]:h-[234px] max-h-[500px]" {...settings}>
                     <div>

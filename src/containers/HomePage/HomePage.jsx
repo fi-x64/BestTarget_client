@@ -9,16 +9,12 @@ import Keywords from './Section/Keywords'
 
 function HomePage() {
     return (
-        <div className='bg-[#f4f4f4]'>
-            <HomeHeader />
-            <div className='max-w-[936px] mx-auto'>
-                <Banner />
-                <Categories />
-                <Interest />
-                <Description />
-                <Keywords />
-                <HomeFooter />
-            </div>
+        <div>
+            <Banner />
+            <Categories />
+            <Interest />
+            <Description />
+            <Keywords />
         </div>
     )
 }
