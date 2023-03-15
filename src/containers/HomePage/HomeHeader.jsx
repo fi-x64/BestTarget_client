@@ -30,7 +30,7 @@ function HomeHeader() {
         {
             key: '2',
             label: (
-                <Link to="/user/profile">
+                <Link to="/users/profile">
                     Trang cá nhân
                 </Link>
             ),
@@ -88,7 +88,7 @@ function HomeHeader() {
                             <span className="sr-only">Search</span>
                         </button>
                     </div>
-                    <Button className='bg-[#FF8800] ml-2 flex-4'><i className="fa-solid fa-pen-to-square"></i> Đăng tin</Button>
+                    <Button className='bg-[#FF8800] ml-2 flex-4'><Link to="/newPost"><i className="fa-solid fa-pen-to-square"></i> Đăng tin</Link></Button>
                 </div>
 
             </div>

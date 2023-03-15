@@ -1,5 +1,6 @@
 import Profile from "../containers/User/Profile";
 import EditProfile from "../containers/User/EditProfile";
+import EditPassword from "../containers/User/EditPassword";
 
 const nguoiDungRoutes = [
     {
@@ -10,6 +11,11 @@ const nguoiDungRoutes = [
     {
         path: "/users/editProfile",
         component: EditProfile,
+        layout: null
+    },
+    {
+        path: "/users/editPassword",
+        component: EditPassword,
         layout: null
     },
 ];

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import HomeHeader from '../HomePage/HomeHeader';
-// import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Button, Form, Input, Select } from 'antd';
 import { Link, useHref } from 'react-router-dom';
@@ -26,11 +24,9 @@ function EditProfile() {
 
     const [quanHuyen, setQuanHuyen] = useState([]);
     const [phuongXa, setPhuongXa] = useState([]);
-    const [showPassForm, setShowPassForm] = useState(false);
-    const [avatarFile, setAvatarFile] = useState();
     const tinhThanh = useQuery(['tinhThanh'], getAllTinhThanh);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchData() {
@@ -47,12 +43,6 @@ function EditProfile() {
     const onChangeQuanHuyen = async (value) => {
         setPhuongXa(await getPhuongXa(value));
     };
-
-    const handleShowPassForm = () => {
-        if (showPassForm === false)
-            setShowPassForm(true);
-        else setShowPassForm(false);
-    }
 
     const sampleAddress = {
         kinhDo: null,
@@ -89,10 +79,6 @@ function EditProfile() {
                     'Vui lòng chọn Phường/Xã!'
                 )
             }),
-        // currentPassword: Yup.string().required('Vui lòng nhập mật khẩu hiện tại!'),
-        // newPassword: Yup.string().required('Vui lòng nhập mật khẩu mới!'),
-        // confirmPassword: Yup.string()
-        //     .oneOf([Yup.ref('newPassword'), null], 'Mật khẩu mới không khớp!')
     })
 
     const handleChangeImage = async (file) => {
@@ -109,7 +95,7 @@ function EditProfile() {
 
         const data = new FormData();
         data.append('file', file[0]);
-        data.append('upload_preset', 'auwulfph');
+        data.append('upload_preset', 'avatar');
 
         const uploadRes = await axios.post(
             'https://api.cloudinary.com/v1_1/dcqllxxrk/image/upload',
@@ -169,9 +155,6 @@ function EditProfile() {
                                 diaChi: sampleAddress,
                                 email: '',
                                 sdt: '',
-                                // currentPassword: '',
-                                // newPassword: '',
-                                // confirmPassword: ''
                             }
                         }
                         onSubmit={(values, { setFieldError }) => {
@@ -504,9 +487,9 @@ function EditProfile() {
                                     <Input type='current-password'
                                         value={"******"}
                                         disabled suffix={
-                                            <Button onClick={handleShowPassForm}>
-                                                <Link to="/users/editPassword"><EditOutlined /></Link>
-                                            </Button>
+
+                                            <Link to="/users/editPassword"><EditOutlined className='text-[18px]' /></Link>
+
                                         } />
                                     {/* {showPassForm ?
                                         <>
