@@ -20,7 +20,6 @@ export const login = async (email, password) => {
 
 export const updatePassword = async (values) => {
   const res = await request.patch('/users/updateMyPassword', values, { headers: authHeader() })
-  console.log("Check res: ", res);
   if (res.data.status === 'success') {
     if (res.data.token) {
       localStorage.setItem("user", JSON.stringify(res.data));

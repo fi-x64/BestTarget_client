@@ -3,13 +3,13 @@ import Login from '../containers/Auth/Login'
 
 import HomePage from '../containers/HomePage/HomePage'
 import nguoiDungRoutes from './nguoiDungRoutes'
-import danhMucRoutes from './danhMucRoutes'
+import tinDangRoutes from './tinDangRoutes'
 
 const routes = [
     { path: '/login', component: Login, layout: null },
     { path: '/', component: HomePage, layout: null },
     ...nguoiDungRoutes,
-    ...danhMucRoutes
+    ...tinDangRoutes
 ]
 
 export default routes

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Modal } from 'antd';
+import { Modal, Select } from 'antd';
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
@@ -14,7 +14,8 @@ function NewPost() {
     const [isSubModalOpen, setIsSubModalOpen] = useState(false);
     const [danhMucPhuData, setDanhMucPhuData] = useState([]);
     const danhMucData = useQuery(['getAllDanhMuc'], getAllDanhMuc);
-    const [danhMucId, setDanhMucId] = useState();
+    const [danhMucName, setDanhMucName] = useState();
+    const [danhMucPhuName, setDanhMucPhuName] = useState();
     const [danhMucPhuId, setDanhMucPhuId] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -34,11 +35,13 @@ function NewPost() {
         setIsModalOpen(false);
     };
 
-    const handleItemModalClick = async (danhMucId) => {
-        const res = await getAllDanhMucPhu(danhMucId);
+    const handleItemModalClick = async (values) => {
+        const res = await getAllDanhMucPhu(values.danhMucId);
+
         if (res) {
             setDanhMucPhuData(res);
             setIsSubModalOpen(true);
+            setDanhMucName(values.ten);
         }
     }
 
@@ -50,13 +53,15 @@ function NewPost() {
         setIsSubModalOpen(false);
     };
 
-    const handleItemSubModalClick = (danhMucPhuId) => {
+    const handleItemSubModalClick = (values) => {
         setIsModalOpen(false);
         setIsSubModalOpen(false);
-        setDanhMucPhuId(danhMucPhuId);
+        setDanhMucPhuId(values.danhMucPhuId);
+        setDanhMucPhuName(values.ten);
+
         return navigate({
             pathname: `/newPost`,
-            search: `?danhMucPhuId=${danhMucPhuId}`,
+            search: `?danhMucPhuId=${values.danhMucPhuId}`,
         })
     }
 
@@ -72,18 +77,18 @@ function NewPost() {
                 <div className="col-span-2">
                     <div className='p-4'>
                         <h1 className='font-semibold text-lg mb-2'>Chọn danh mục tin đăng <RequiredIcon /></h1>
-                        <select
-                            style={{ width: '90%', height: '30px', border: '1px solid grey', borderRadius: '10px' }}
-                            className=""
+                        <button
+                            className='flex justify-between'
+                            style={{ width: '90%', height: '30px', border: '1px solid grey', borderRadius: '5px', paddingLeft: '8px', paddingTop: '2px' }}
                             onClick={showModal}>
-                            <option disabled hidden>Danh mục tin đăng</option>
-                        </select>
+                            {danhMucName && danhMucPhuName ? danhMucName + " - " + danhMucPhuName : 'Chọn danh mục tin đăng'} <i className="fa-solid fa-chevron-down p-1"></i>
+                        </button>
                         <Modal title="Đăng tin" open={isModalOpen} onCancel={handleCancel} footer={null}>
                             <div className='menu-category p-4 hover:bg-[#f5f5f5]'>
                                 <ul>
                                     {danhMucData.data && danhMucData.data.map((values, index) => {
                                         return (
-                                            <li key={values.danhMucId} onClick={() => handleItemModalClick(values.danhMucId)} className=" text-base p-1"><i className="fa-solid fa-laptop"></i> {values.ten} <i className="float-right text-lg fa-solid fa-chevron-right"></i></li>
+                                            <li key={values.danhMucId} onClick={() => handleItemModalClick(values)} className=" text-base p-1"><i className="fa-solid fa-laptop"></i> {values.ten} <i className="float-right text-lg fa-solid fa-chevron-right"></i></li>
                                         )
                                     })}
                                 </ul>
@@ -95,7 +100,7 @@ function NewPost() {
                                     <ul>
                                         {danhMucPhuData && danhMucPhuData.map((values, index) => {
                                             return (
-                                                <li key={values.danhMucPhuId} onClick={() => handleItemSubModalClick(values.danhMucPhuId)} className="hover:bg-[#f5f5f5] text-base p-1">{values.ten}<i className="float-right fa-solid fa-chevron-right"></i></li>
+                                                <li key={values.danhMucPhuId} onClick={() => handleItemSubModalClick(values)} className="hover:bg-[#f5f5f5] text-base p-1">{values.ten}<i className="float-right fa-solid fa-chevron-right"></i></li>
                                             )
                                         })}
                                     </ul>

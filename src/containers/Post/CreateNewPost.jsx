@@ -2,18 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import avatar from '../../assets/img/avatar.svg'
 import { Button, Form, Input, message, Select, Upload } from 'antd';
-import { Link, useHref } from 'react-router-dom';
-import { CameraOutlined, EditOutlined, LoadingOutlined, PlusOutlined, VideoCameraOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CameraOutlined, VideoCameraOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query'
 import { getAllTinhThanh, getPhuongXa, getQuanHuyen } from '../../services/diaChi';
-import { ErrorMessage, FastField, Field, FieldArray, Formik } from 'formik'
+import { ErrorMessage, FastField, Field, Formik } from 'formik'
 import * as Yup from 'yup'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
 import "./CreateNewPost.scss";
-import { editUser } from '../../services/nguoiDung';
-import { getCurrentUser } from '../../services/nguoiDung';
-import { toast } from 'react-toastify';
-import { updateUser } from '../../actions/auth';
 import axios from 'axios';
 import Dragger from 'antd/es/upload/Dragger'
 import TextArea from 'antd/es/input/TextArea';

@@ -20,7 +20,6 @@ export const getPhuongXa = async (quanHuyenCode) => {
 
 export const getOneTinhTP = async (tinhTPCode) => {
     const res = await request.get(`/getOneTinhTP?tinhTPCode=${tinhTPCode}`);
-    console.log("Check resTinhTP: ", res.data);
     if (res.data.status === 'success') return res.data.data
     return []
 }

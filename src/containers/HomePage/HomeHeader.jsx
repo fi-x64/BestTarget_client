@@ -56,12 +56,12 @@ function HomeHeader() {
         <header className='bg-[#ffba00] relative pb-3'>
             <div className="max-w-[936px] mx-auto">
                 <div className='flex justify-between'>
-                    <a href="/" className='logo'>
+                    <Link to="/" className='logo'>
                         <img src={logo} alt="" className='h-14' />
-                    </a>
+                    </Link>
                     <li className='button flex [&>*]:mr-8 mt-5'>
                         <ul><a href=""><i className="fa-solid fa-house"></i> Trang chủ</a></ul>
-                        <ul><a href=""><i className="fa-solid fa-list-check"></i> Quản lý tin</a></ul>
+                        <ul><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></ul>
                         <ul><a href=""><i className="fa-solid fa-box"></i> Đơn hàng</a></ul>
                         <ul><a href=""><i className="fa-solid fa-comments"></i> Chat</a></ul>
                         <ul><a href=""><i className="fa-solid fa-bell"></i> Thông báo</a></ul>

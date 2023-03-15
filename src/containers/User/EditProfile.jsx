@@ -141,7 +141,7 @@ function EditProfile() {
                 <h1 className='p-4 font-semibold text-lg'>Thông tin cá nhân</h1>
                 <hr />
                 <div className='flex'>
-                    <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
+                    <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="user's avatar" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
                     <div className='image-upload absolute mt-[100px] ml-[100px] avatar-uploader'>
                         <label htmlFor="files" className="btn"><CameraOutlined className='bg-gray-300 cursor-pointer p-2 text-[30px] rounded-[50%]' /></label>
                         <input id="files" style={{ "visibility": "hidden" }} type="file" onChange={(e) => handleChangeImage(e.target.files)} />
