@@ -19,14 +19,14 @@ function HomeHeader() {
     }
 
     const items = [
-        {
+        user.data.quyen.ten === 'admin' ? {
             key: '1',
             label: (
-                <Link to="/">
-                    {user ? user.data.hoTen : null}
+                <Link to="/managerPage">
+                    Chuyển đến trang quản lý
                 </Link>
             ),
-        },
+        } : null,
         {
             key: '2',
             label: (
@@ -38,9 +38,9 @@ function HomeHeader() {
         {
             key: '3',
             label: (
-                <a href="/users/editProfile">
+                <Link to='/users/editProfile'>
                     Cài đặt tài khoản
-                </a>
+                </Link>
             ),
         },
         {
@@ -60,7 +60,7 @@ function HomeHeader() {
                         <img src={logo} alt="" className='h-14' />
                     </Link>
                     <li className='button flex [&>*]:mr-8 mt-5'>
-                        <ul><a href=""><i className="fa-solid fa-house"></i> Trang chủ</a></ul>
+                        <ul><Link to='/'><i className="fa-solid fa-house"></i> Trang chủ</Link></ul>
                         <ul><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></ul>
                         <ul><a href=""><i className="fa-solid fa-box"></i> Đơn hàng</a></ul>
                         <ul><a href=""><i className="fa-solid fa-comments"></i> Chat</a></ul>

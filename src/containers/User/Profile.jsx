@@ -13,7 +13,7 @@ function Profile() {
     <div className="container bg-[#f4f4f4]">
       <div className="grid grid-cols-2 p-[15px] bg-white mb-[15px]">
         <div className='flex'>
-          <img src={avatar} alt="" className='avatar w-[80px] h-[80px]' />
+          <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="" className='avatar w-[80px] h-[80px]' />
           <div className="grid grid-rows-3 ml-4">
             <div className="...">{user.data.hoTen}</div>
             <div className='text-[13px] grid grid-cols-2'>

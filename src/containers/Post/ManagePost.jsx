@@ -3,19 +3,26 @@ import { useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Button, Tabs } from 'antd';
+import { Avatar, Button, List, Popover, Tabs } from 'antd';
 import { Link } from 'react-router-dom';
 import { countTrangThaiTin, getTinDang } from '../../services/tinDang';
 
 function ManagePost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
-
+    console.log("Check user: ", user);
     const [countTTTin, setCountTTTin] = useState();
     const [tinDangData, setTinDangData] = useState();
 
     useEffect(() => {
         async function fetchData() {
             setCountTTTin(await countTrangThaiTin());
+        }
+        fetchData();
+    }, [])
+
+    useEffect(() => {
+        async function fetchData() {
+            setTinDangData(await getTinDang(1));
         }
         fetchData();
     }, [])
@@ -38,41 +45,63 @@ function ManagePost() {
         return 0
     }
 
+    const content = (id) => {
+        return (
+            <div>
+                <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin</Link>
+                <p>Đã bán/Ẩn tin</p>
+            </div>
+        )
+    };
+
+    const getListItem = (tinDangData, status) => {
+        return (<List
+            dataSource={tinDangData}
+            renderItem={(item) => (
+                <List.Item key={item._id}>
+                    <List.Item.Meta
+                        avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
+                        title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
+                        description={<p className='text-sm text-red-600'>{item.gia} đ</p>}
+                    />
+                    {status === 'Đang hiển thị' ?
+                        <Popover placement="bottomRight" content={content(item._id)} trigger="click">
+                            <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
+                        </Popover>
+                        : <Popover placement="bottomRight" trigger="click">
+                            <Button disabled>Đang đợi duyệt</Button>
+                        </Popover>}
+                </List.Item >
+            )
+            }
+        />)
+    }
+
     const items = [
         {
             key: '1',
             label: 'Đang hiển thị (' + handleGetSoLuong(countTTTin, "Đang hiển thị") + ')',
-            children:
-                tinDangData ? tinDangData.map((value, index) => {
-                    return (
-                        <div key={value._id} className='flex'>
-                            <img className='w-[120px] h-[70px]' src={value.hinhAnh[0].url} alt="" />
-                            <div className='block pl-[10px]'>
-                                <a href="">{value.tieuDe}</a>
-                                <p className='text-red-700'>{value.gia}</p>
-                            </div>
-                        </div>)
-                }) : <p>Bạn chưa có tin nào trong mục này</p>,
+            children: getListItem(tinDangData, "Đang hiển thị")
         },
         {
             key: '2',
             label: 'Hết hạn (' + handleGetSoLuong(countTTTin, "Hết hạn") + ')',
-            children: `Content of Tab Pane 2`,
+            children: getListItem(tinDangData, "Hết hạn"),
         },
         {
             key: '3',
             label: 'Bị từ chối (' + handleGetSoLuong(countTTTin, "Bị từ chối") + ')',
-            children: `Content of Tab Pane 3`,
+            children: getListItem(tinDangData, "Bị từ chối"),
         },
         {
             key: '4',
             label: 'Đang đợi duyệt (' + handleGetSoLuong(countTTTin, "Đang đợi duyệt") + ')',
-            children: `Content of Tab Pane 4`,
+            children: getListItem(tinDangData, "Đang đợi duyệt"),
         },
         {
             key: '5',
             label: 'Tin đã ẩn (' + handleGetSoLuong(countTTTin, "Tin đã ẩn") + ')',
-            children: `Content of Tab Pane 5`,
+            children: getListItem(tinDangData, "Tin đã ẩn"),
         },
     ];
 

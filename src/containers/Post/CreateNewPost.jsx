@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import avatar from '../../assets/img/avatar.svg'
 import { Button, Form, Input, message, Select, Upload } from 'antd';
 import { CameraOutlined, VideoCameraOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query'
@@ -14,10 +13,12 @@ import Dragger from 'antd/es/upload/Dragger'
 import TextArea from 'antd/es/input/TextArea';
 import ActionButton from '../../components/atom/ActionButton'
 import { createPost, getGoiY } from '../../services/tinDang';
+import { useNavigate } from 'react-router-dom';
 
 function CreateNewPost({ danhMucPhuId }) {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
+    const navigate = useNavigate();
     const [quanHuyen, setQuanHuyen] = useState([]);
     const [phuongXa, setPhuongXa] = useState([]);
     const tinhThanh = useQuery(['tinhThanh'], getAllTinhThanh);
@@ -122,7 +123,7 @@ function CreateNewPost({ danhMucPhuId }) {
         setLoading(true)
         const key = 'uploadable'
         message.loading({
-            content: 'Đang đăng ảnh. Vui lòng không đóng tab hay tắt trình duyệt',
+            content: 'Đang đăng ảnh và video. Vui lòng không đóng tab hay tắt trình duyệt',
             key,
         })
         console.log("Check values: ", values);
@@ -168,6 +169,7 @@ function CreateNewPost({ danhMucPhuId }) {
                 key,
                 duration: 1,
             })
+            navigate('/managePost');
         }
     }
 
@@ -210,6 +212,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                 accept="image/*"
                                 multiple={true}
                                 fileList={values.hinhAnh}
+                                showUploadList={false}
                                 beforeUpload={async (file, fileList) => {
                                     const isLt5M = file.size / 1024 / 1024 < 5;
                                     if (!isLt5M) {
@@ -258,7 +261,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                 name={`hinhAnh`}
                             ></ErrorMessage>
                             <div className='image-list'>
-                                {values.hinhAnh.map((x) => (
+                                {values.hinhAnh.length > 0 ? values.hinhAnh.map((x) => (
                                     <div key={x?._id || x.uid} className="image">
                                         <img
                                             className='img'
@@ -278,7 +281,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                             type="delete"
                                         ></ActionButton>
                                     </div>
-                                ))}
+                                )) : null}
                             </div>
                         </div>
                         <div>
@@ -288,6 +291,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                 name="video"
                                 multiple={true}
                                 fileList={values.video}
+                                showUploadList={false}
                                 beforeUpload={async (file, fileList) => {
                                     const isLt50M = file.size / 1024 / 1024 < 50;
                                     if (!isLt50M) {
@@ -325,7 +329,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                 </p>
                             </Dragger>
                             <div className='image-list'>
-                                {values.video.map((x) => (
+                                {values.video.length > 0 ? values.video.map((x) => (
                                     <div key={x?._id || x.uid} className="image">
                                         <video
                                             className='img'
@@ -345,7 +349,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                             type="delete"
                                         ></ActionButton>
                                     </div>
-                                ))}
+                                )) : null}
                             </div>
                         </div>
                     </div>
@@ -383,6 +387,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.hangSX}
                                         ></Select>
                                         <ErrorMessage
@@ -421,6 +426,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.mauSac}
                                         ></Select>
                                         <ErrorMessage
@@ -459,6 +465,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.dungLuong}
                                         ></Select>
                                         <ErrorMessage
@@ -497,6 +504,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.suDungSim}
                                         ></Select>
                                         <ErrorMessage
@@ -535,6 +543,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.boViXuLy}
                                         ></Select>
                                         <ErrorMessage
@@ -573,6 +582,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.ram}
                                         ></Select>
                                         <ErrorMessage
@@ -611,6 +621,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.kichCoManHinh}
                                         ></Select>
                                         <ErrorMessage
@@ -649,6 +660,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.oCung}
                                         ></Select>
                                         <ErrorMessage
@@ -687,6 +699,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.loaiOCung}
                                         ></Select>
                                         <ErrorMessage
@@ -725,6 +738,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.cardManHinh}
                                         ></Select>
                                         <ErrorMessage
@@ -734,7 +748,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                         ></ErrorMessage>
                                     </div>
                                     : null}
-                                {danhMucPhuId == 5 || danhMucPhuId == 6 || danhMucPhuId == 7 || danhMucPhuId == 5 || danhMucPhuId == 6 || danhMucPhuId == 7 ?
+                                {danhMucPhuId == 5 || danhMucPhuId == 6 || danhMucPhuId == 7 ?
                                     <div>
                                         <label htmlFor="thietBi">
                                             Loại thiết bị: <RequiredIcon />
@@ -763,6 +777,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.thietBi}
                                         ></Select>
                                         <ErrorMessage
@@ -801,6 +816,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.phuKien}
                                         ></Select>
                                         <ErrorMessage
@@ -839,6 +855,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.linhKien}
                                         ></Select>
                                         <ErrorMessage

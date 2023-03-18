@@ -21,3 +21,12 @@ export const editUser = async (values) => {
     if (res.data.status === 'success') return res.data.data
     return []
 }
+
+export const getAllNguoiDung = async () => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get('/users', { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};

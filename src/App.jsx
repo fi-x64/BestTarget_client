@@ -23,13 +23,22 @@ function App() {
               let Content = (
                 // <ProtectedRoute role={r?.role}>
                 <Layout>
-                  <HomeHeader />
-                  <div className='bg-[#f4f4f4]'>
-                    <div className='max-w-[936px] mx-auto'>
-                      <Component></Component>
-                    </div>
-                  </div>
-                  <HomeFooter />
+                  {r.permission ?
+                    <div className='bg-[#f4f4f4]'>
+                      <div className='mx-auto'>
+                        <Component></Component>
+                      </div>
+                    </div> :
+                    <>
+                      <HomeHeader />
+                      <div className='bg-[#f4f4f4]'>
+                        <div className='max-w-[936px] mx-auto'>
+                          <Component></Component>
+                        </div>
+                      </div>
+                      <HomeFooter />
+                    </>
+                  }
                   <ToastContainer
                     position="top-right"
                     autoClose={5000}
