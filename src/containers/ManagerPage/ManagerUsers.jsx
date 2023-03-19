@@ -1,46 +1,248 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
-import { getAllNguoiDung } from '../../services/nguoiDung';
+import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, Badge, Button, Layout, List, Menu, message, Modal, Table, theme } from 'antd';
+import { getAllNguoiDung, getUser, searchUser } from '../../services/nguoiDung';
 import { Input, Space } from 'antd';
-import avatar from '../../assets/img/avatar.svg'
+import avatar from '../../assets/img/avatar.svg';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
+import { getOnePhuongXa } from '../../services/diaChi';
+import ModalEditUser from './ModalEditUser';
+
 const { Search } = Input;
 
 function ManagerUsers() {
     const [listUser, setListUser] = useState();
+    const [data, setData] = useState();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState();
+
+    const showEditModal = async (id) => {
+        const res = await getUser(id);
+        if (res) {
+            setSelectedUser(res);
+            setIsEditModalOpen(true);
+        } else message.error("Không thể truy xuất đến người dùng này");
+    };
+
+    const handleOk = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const handleRefetchData = async (res) => {
+        const refetchData = [];
+        for (var i = 0; i < res.length; i++) {
+            if (res[i].trangThai === true)
+                res[i].trangThai = 'Đang hoạt động'
+            else if (res[i].trangThai === false) res[i].trangThai = 'Đã khoá'
+            const phuongXaData = await getOnePhuongXa(res[i].diaChi.phuongXaCode)
+
+            if (phuongXaData) {
+                res[i].fullDiaChi = res[i].diaChi.soNha + ' ' + phuongXaData.path_with_type;
+            }
+            res[i].tenQuyen = res[i].quyen.ten;
+            refetchData.push(res[i]);
+        }
+
+        setListUser(res);
+        setData(refetchData);
+    }
 
     useEffect(() => {
         async function fetchData() {
             const res = await getAllNguoiDung();
-            console.log("Check res: ", res);
+
             if (res) {
-                setListUser(res);
+                handleRefetchData(res)
             }
         }
         fetchData()
     }, [])
 
-    const onSearch = (value) => console.log(value);
+    const onSearch = async (e) => {
+        const res = await searchUser(e.target.value);
+
+        if (res) {
+            handleRefetchData(res);
+        }
+    };
+
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+
+    const handleSearch = (
+        selectedKeys,
+        confirm,
+        dataIndex,
+    ) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ marginBottom: 8, display: 'block' }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{ width: 90 }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({ closeDropdown: false });
+                            setSearchText((selectedKeys)[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes((value).toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
+    const columns = [
+        {
+            title: 'id',
+            dataIndex: '_id',
+            key: '_id',
+            width: '0%',
+        },
+        {
+            title: 'Họ tên',
+            dataIndex: 'hoTen',
+            key: 'hoTen',
+            width: '15%',
+            ...getColumnSearchProps('hoTen'),
+            sorter: (a, b) => a.hoTen.length - b.hoTen.length,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'fullDiaChi',
+            key: 'fullDiaChi',
+            width: '40%',
+            ...getColumnSearchProps('fullDiaChi'),
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'trangThai',
+            key: 'trangThai',
+            width: '15%',
+            ...getColumnSearchProps('trangThai'),
+            render: (_, { trangThai }) => (
+                <>
+                    {trangThai == 'Đang hoạt động' ? <div className='flex'>  <i className="fa-solid fa-circle text-green-600 mt-1 mr-2"></i> <h1>Đang hoạt động</h1></div>
+                        : trangThai == 'Đã khoá' ? <div className='flex'>  <i className="fa-solid fa-circle mt-1 mr-2"></i>  <h1>Đã khoá</h1></div> : null
+                    }
+                </>
+            ),
+            sorter: (a, b) => a.trangThai.length - b.trangThai.length,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Quyền truy cập',
+            dataIndex: 'tenQuyen',
+            key: 'tenQuyen',
+            width: '15%',
+            ...getColumnSearchProps('tenQuyen'),
+            render: (_, { quyen }) => (
+                <>
+                    {quyen.ten}
+                </>
+            ),
+            sorter: (a, b) => a.tenQuyen.length - b.tenQuyen.length,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Thao tác',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Button className='bg-yellow-400' onClick={() => showEditModal(record._id)}>Chỉnh sửa</Button>
+                    <Button className='bg-red-500'>Khoá tài khoản</Button>
+                </Space>
+            ),
+        },
+    ].filter(item => item.title != 'id');
 
     return (
         <>
-            <Search placeholder="input search text" onSearch={onSearch} style={{ width: '500px' }} />
-            <div className='p-4'>
-                <List
-                    pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
-                    dataSource={listUser}
-                    renderItem={(item, index) => (
-                        <List.Item
-                            actions={[<Button className='bg-[#539165]'>Chỉnh sửa</Button>, <Button className='bg-[#F7C04A]'>Xem trang</Button>, <Button className='bg-red-500'>Xoá</Button>]}
-                        >
-                            <List.Item.Meta
-                                avatar={<Avatar src={item.anhDaiDien.url ? item.anhDaiDien.url : avatar} />}
-                                title={<a href="https://ant.design">{item.hoTen}</a>}
-                                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                            />
-                        </List.Item>
-                    )}
-                />
-            </div>
+            <Search placeholder="Tìm kiếm theo họ tên người dùng, email, sđt" onChange={(e) => onSearch(e)} style={{ width: '500px' }} />
+            <Table columns={columns} dataSource={data} rowKey="" className='mt-5' />
+            <Modal title="Thông tin cá nhân" open={isEditModalOpen} onCancel={handleCancel} width={790} footer={[
+                <Button key="back" onClick={handleCancel} className='bg-red-500'>
+                    Thoát
+                </Button>
+            ]}>
+                {selectedUser ? <ModalEditUser user={selectedUser} /> : null}
+            </Modal>
         </>
     );
 };

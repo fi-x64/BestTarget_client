@@ -1,7 +1,8 @@
-import { Button, Dropdown, Space } from 'antd'
+import { Avatar, Button, Dropdown, Space } from 'antd'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../assets/img/logo.png';
+import avatar from '../../assets/img/avatar.svg'
 import { logout } from '../../actions/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -19,7 +20,7 @@ function HomeHeader() {
     }
 
     const items = [
-        user.data.quyen.ten === 'admin' ? {
+        isLoggedIn && user.data.quyen.ten === 'Admin' ? {
             key: '1',
             label: (
                 <Link to="/managerPage">
@@ -69,7 +70,7 @@ function HomeHeader() {
                             <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer" placement='bottomRight'>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space>
-                                        <i className="fa-solid fa-circle-user"></i>
+                                        <Avatar src={user.data.anhDaiDien ? user.data.anhDaiDien.url : avatar} />
                                         {user.data.hoTen}<i className="fa-solid fa-chevron-down"></i>
                                     </Space>
                                 </a>

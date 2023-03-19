@@ -10,6 +10,15 @@ export const getCurrentUser = async () => {
     return [];
 };
 
+export const getUser = async (id) => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/${id}`, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};
+
 export const handleSearchAPI = async (values) => {
     const res = await request.post('/search', values);
     if (res.data.status === 'success') return res.data.data
@@ -25,6 +34,15 @@ export const editUser = async (values) => {
 export const getAllNguoiDung = async () => {
     // return JSON.parse(localStorage.getItem("user"));
     const res = await request.get('/users', { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};
+
+export const searchUser = async (values) => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/search?keyWord=${values}`, { headers: authHeader() });
     if (res.data.status === 'success') {
         return res.data.data;
     }

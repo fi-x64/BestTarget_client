@@ -24,7 +24,7 @@ function App() {
                 // <ProtectedRoute role={r?.role}>
                 <Layout>
                   {r.permission ?
-                    <div className='bg-[#f4f4f4]'>
+                    <div>
                       <div className='mx-auto'>
                         <Component></Component>
                       </div>

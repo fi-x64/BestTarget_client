@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './Login.module.scss'
 import classNames from 'classnames/bind'
@@ -23,16 +23,23 @@ function Login() {
   const { message } = useSelector((state) => state.message)
 
   let navigate = useNavigate()
+  const ref = useRef();
 
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    console.log(values)
 
     dispatch(login(values.email, values.password)).then(() => {
       navigate('/')
       window.location.reload()
     })
+  }
+
+  function handleKeyUp(event, values) {
+    // Enter
+    if (event.keyCode === 13) {
+      handleSubmit(values);
+    }
   }
 
   if (isLoggedIn) {
@@ -63,7 +70,7 @@ function Login() {
         }) => (
           <div className={cl('container')} id="container">
             <div className={cl('form-container')}>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit} onKeyUp={(event) => handleKeyUp(event, values)}>
                 <h1 className={cl('form-title')}>Đăng nhập vào hệ thống</h1>
                 <div className={cl('group')}>
                   <div className={cl('row-group')}>

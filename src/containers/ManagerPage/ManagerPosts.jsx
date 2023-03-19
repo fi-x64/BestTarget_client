@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
 import { getAllNguoiDung } from '../../services/nguoiDung';
 import { Input, Space } from 'antd';
-import avatar from '../../assets/img/avatar.svg'
 import { getAllPost } from '../../services/tinDang';
 const { Search } = Input;
 
