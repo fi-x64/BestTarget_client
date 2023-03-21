@@ -18,6 +18,7 @@ function ManagerUsers() {
     const [selectedUser, setSelectedUser] = useState();
 
     const showEditModal = async (id) => {
+        console.log("Check id: ", id);
         const res = await getUser(id);
         if (res) {
             setSelectedUser(res);
@@ -29,20 +30,19 @@ function ManagerUsers() {
         setIsEditModalOpen(false);
     };
 
-    const handleCancel = () => {
-        setIsEditModalOpen(false);
-    };
-
     const handleRefetchData = async (res) => {
         const refetchData = [];
         for (var i = 0; i < res.length; i++) {
             if (res[i].trangThai === true)
                 res[i].trangThai = 'Đang hoạt động'
             else if (res[i].trangThai === false) res[i].trangThai = 'Đã khoá'
-            const phuongXaData = await getOnePhuongXa(res[i].diaChi.phuongXaCode)
 
-            if (phuongXaData) {
-                res[i].fullDiaChi = res[i].diaChi.soNha + ' ' + phuongXaData.path_with_type;
+            if (res[i].diaChi) {
+                const phuongXaData = await getOnePhuongXa(res[i].diaChi.phuongXaCode)
+
+                if (phuongXaData) {
+                    res[i].fullDiaChi = res[i].diaChi.soNha + ' ' + phuongXaData.path_with_type;
+                }
             }
             res[i].tenQuyen = res[i].quyen.ten;
             refetchData.push(res[i]);
@@ -51,6 +51,15 @@ function ManagerUsers() {
         setListUser(res);
         setData(refetchData);
     }
+
+    const handleCancel = async () => {
+        setIsEditModalOpen(false);
+        const res = await getAllNguoiDung();
+
+        if (res) {
+            handleRefetchData(res)
+        }
+    };
 
     useEffect(() => {
         async function fetchData() {
@@ -226,7 +235,6 @@ function ManagerUsers() {
             render: (_, record) => (
                 <Space size="middle">
                     <Button className='bg-yellow-400' onClick={() => showEditModal(record._id)}>Chỉnh sửa</Button>
-                    <Button className='bg-red-500'>Khoá tài khoản</Button>
                 </Space>
             ),
         },
@@ -235,7 +243,9 @@ function ManagerUsers() {
     return (
         <>
             <Search placeholder="Tìm kiếm theo họ tên người dùng, email, sđt" onChange={(e) => onSearch(e)} style={{ width: '500px' }} />
-            <Table columns={columns} dataSource={data} rowKey="" className='mt-5' />
+            <Table columns={columns} dataSource={data} className='mt-5' rowKey='_id'
+                pagination={{ position: 'bottom', pageSize: 4 }}
+            />
             <Modal title="Thông tin cá nhân" open={isEditModalOpen} onCancel={handleCancel} width={790} footer={[
                 <Button key="back" onClick={handleCancel} className='bg-red-500'>
                     Thoát

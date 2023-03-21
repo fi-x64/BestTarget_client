@@ -12,9 +12,16 @@ export const protect = async () => {
   }
 }
 
-export const register = async (email, password) => {
-  const res = await request.post('/auth/signup', { email, password })
-  if (res.data.success) return res.data.data;
+export const register = async (values) => {
+  const res = await request.post('/users/signup', values)
+  if (res.data.status === 'success') return res.data;
+  if (res.data.status === 'fail') return res.data;
+  return [];
+};
+
+export const activeAccount = async (email, otp) => {
+  const res = await request.post('/activeAccount', { email, otp })
+  if (res.data.status === 'success') return res.data;
   return [];
 };
 
@@ -37,7 +44,7 @@ export const updatePassword = async (values) => {
       return res.data;
     }
   }
-  return [];
+  return res.data;
 };
 
 export const logout = () => {

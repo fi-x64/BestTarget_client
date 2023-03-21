@@ -10,14 +10,18 @@ import { Avatar, Button, Dropdown, Layout, Menu, Space, theme } from 'antd';
 import logo from '../../assets/img/logo.png';
 import ManagerUsers from './ManagerUsers';
 import ManagerPosts from './ManagerPosts';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import avatar from '../../assets/img/avatar.svg'
+import { logout } from '../../actions/auth';
 
 const { Header, Sider, Content } = Layout;
 
 function ManagerHomePage() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [collapsed, setCollapsed] = useState(false);
     const {
@@ -28,6 +32,12 @@ function ManagerHomePage() {
 
     const handleOnClickSider = (e) => {
         setKey(e.key)
+    }
+
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/login');
+        window.location.reload();
     }
 
     const items = [

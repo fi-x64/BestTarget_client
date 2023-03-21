@@ -10,10 +10,9 @@ import { ErrorMessage, FastField, Field, FieldArray, Formik } from 'formik'
 import * as Yup from 'yup'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
 import "./ModalEditUser.scss";
-import { editUser } from '../../services/nguoiDung';
+import { changeAvatar, editUser, updateUser } from '../../services/nguoiDung';
 import { getCurrentUser } from '../../services/nguoiDung';
 import { toast } from 'react-toastify';
-import { updateUser } from '../../actions/auth';
 import axios from 'axios';
 
 function ModalEditUser({ user }) {
@@ -28,9 +27,13 @@ function ModalEditUser({ user }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        setImageUrl(user.data?.anhDaiDien?.url)
+    }, [user])
+
+    useEffect(() => {
         async function fetchData() {
-            setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
-            setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+            setQuanHuyen(await getQuanHuyen(user.data?.diaChi?.tinhTPCode));
+            setPhuongXa(await getPhuongXa(user.data?.diaChi?.quanHuyenCode))
         }
         fetchData();
     }, []);
@@ -53,30 +56,17 @@ function ModalEditUser({ user }) {
     }
 
     const ProfileSchema = Yup.object().shape({
-        hoTen: Yup.string().min(4).max(100).required('Vui lòng nhập họ tên!'),
-        gioiTinh: Yup.string().required('Vui lòng chọn giới tính!'),
+        hoTen: Yup.string().min(5, "Tên ít nhất 5 ký tự").required('Vui lòng nhập họ tên'),
+        email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+        sdt: Yup.string().required('Vui lòng nhập số điện thoại').matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, "Số điện thoại không hợp lệ"),
         diaChi:
             Yup.object().shape({
                 kinhDo: Yup.number()
-                    .min(-180)
-                    .max(180)
-                    .required('Kinh độ phải từ -180 đến 180!'),
+                    .min(-180, "Kinh độ trong khoảng -180 đến 180")
+                    .max(180, "Kinh độ trong khoảng -180 đến 180"),
                 viDo: Yup.number()
-                    .min(-90)
-                    .max(90)
-                    .required('Vĩ độ phải từ -90 đến 90!'),
-                soNha: Yup.string().required(
-                    'Vui lòng nhập số nhà, đường!'
-                ),
-                tinhTPCode: Yup.string().required(
-                    'Vui lòng chọn Tỉnh/Thành phố!'
-                ),
-                quanHuyenCode: Yup.string().required(
-                    'Vui lòng chọn Quận/Huyện!'
-                ),
-                phuongXaCode: Yup.string().required(
-                    'Vui lòng chọn Phường/Xã!'
-                )
+                    .min(-90, 'Vĩ độ phải từ -90 đến 90!')
+                    .max(90, 'Vĩ độ phải từ -90 đến 90!'),
             }),
     })
 
@@ -105,10 +95,9 @@ function ModalEditUser({ user }) {
             toast.success('Cập nhật ảnh đại diện thành công, vui lòng đợi trong ít phút để hệ thống xử lý!');
             const { url, public_id } = uploadRes.data;
             const values = {
-                _id: user.data._id,
                 anhDaiDien: { url, public_id }
             };
-            const res = handleSubmit(values);
+            const res = await changeAvatar(user.data._id, values);
             if (res) {
                 setImageUrl(url);
             }
@@ -116,14 +105,10 @@ function ModalEditUser({ user }) {
     };
 
     const handleSubmit = async (values, setFieldError) => {
-        const res = await editUser(values);
+        const res = await updateUser(user.data._id, values);
 
         if (res) {
             toast.success("Cập nhật thông tin thành công");
-            const newUserData = await getCurrentUser();
-            var newUserInfo = { ...newUserData, status: 'success', token: user.token }
-            localStorage.setItem("user", JSON.stringify(newUserInfo));
-            dispatch(updateUser(newUserInfo))
         }
     }
 
@@ -140,7 +125,7 @@ function ModalEditUser({ user }) {
                 <hr />
                 <div className='block'>
                     <div className='flex justify-center'>
-                        <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="user's avatar" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
+                        <img src={imageUrl ? imageUrl : avatar} alt="user's avatar" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
                         <div className='image-upload absolute mt-[100px] ml-[380px] avatar-uploader'>
                             <label htmlFor="files" className="btn"><CameraOutlined className='bg-gray-300 cursor-pointer p-2 text-[30px] rounded-[50%]' /></label>
                             <input id="files" style={{ "visibility": "hidden" }} type="file" onChange={(e) => handleChangeImage(e.target.files)} />
@@ -155,6 +140,7 @@ function ModalEditUser({ user }) {
                                 diaChi: sampleAddress,
                                 email: '',
                                 sdt: '',
+                                trangThai: true,
                             }
                         }
                         onSubmit={(values, { setFieldError }) => {
@@ -195,7 +181,7 @@ function ModalEditUser({ user }) {
                                 </div>
                                 <div>
                                     <label htmlFor="sdt">
-                                        Số điện thoại:
+                                        Số điện thoại: <RequiredIcon />
                                     </label>
                                     <FastField
                                         name="sdt"
@@ -209,26 +195,70 @@ function ModalEditUser({ user }) {
                                     <ErrorMessage
                                         className="field-error"
                                         component="div"
-                                        name="hoTen"
+                                        name="sdt"
                                     ></ErrorMessage>
                                 </div>
                                 <div>
                                     <label htmlFor="email">
-                                        Email:
+                                        Email: <RequiredIcon />
                                     </label>
                                     <FastField
                                         name="email"
                                         id="email"
                                         component={Input}
                                         status={errors?.email && touched?.email ? 'error' : ''}
-                                        value={values.hoTen}
+                                        value={values.email}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     ></FastField>
                                     <ErrorMessage
                                         className="field-error"
                                         component="div"
-                                        name="hoTen"
+                                        name="email"
+                                    ></ErrorMessage>
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor={`diaChi.tinhTPCode`}
+                                    >
+                                        Trạng thái: <RequiredIcon />
+                                    </label>
+                                    <Select
+                                        style={{ width: '100%' }}
+                                        name={`trangThai`}
+                                        id={`trangThai`}
+                                        value={values.trangThai == true ? 'Đang hoạt động' : 'Đã khoá'}
+                                        status={
+                                            errors?.trangThai &&
+                                                touched?.trangThai
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        onChange={
+                                            (value) => {
+                                                setFieldValue(
+                                                    `trangThai`,
+                                                    value
+                                                )
+                                            }
+                                        }
+                                        onBlur={handleBlur}
+                                        placeholder="Chọn Tỉnh/Thành phố"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        options={[
+                                            { label: "Đang hoạt động", value: true },
+                                            { label: "Đã khoá", value: false },
+                                        ]}
+                                    ></Select>
+                                    <ErrorMessage
+                                        className="field-error"
+                                        component="div"
+                                        name={`trangThai`}
                                     ></ErrorMessage>
                                 </div>
                                 <div>
@@ -240,13 +270,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.kinhDo`}
                                             >
-                                                Kinh độ: <RequiredIcon />
+                                                Kinh độ:
                                             </label>
                                             <Field
                                                 name={`diaChi.kinhDo`}
                                                 id={`diaChi.kinhDo`}
                                                 component={Input}
-                                                value={values.diaChi.kinhDo}
+                                                value={values?.diaChi?.kinhDo}
                                                 status={
                                                     errors?.diaChi?.kinhDo &&
                                                         touched?.diaChi?.kinhDo
@@ -266,13 +296,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.viDo`}
                                             >
-                                                Vĩ độ: <RequiredIcon />
+                                                Vĩ độ:
                                             </label>
                                             <Field
                                                 name={`diaChi.viDo`}
                                                 id={`diaChi.viDo`}
                                                 component={Input}
-                                                value={values.diaChi.viDo}
+                                                value={values?.diaChi?.viDo}
                                                 status={
                                                     errors?.diaChi?.viDo &&
                                                         touched?.diaChi?.viDo
@@ -292,13 +322,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.soNha`}
                                             >
-                                                Số nhà, đường: <RequiredIcon />
+                                                Số nhà, đường:
                                             </label>
                                             <Field
                                                 name={`diaChi.soNha`}
                                                 id={`diaChi.soNha`}
                                                 component={Input}
-                                                value={values.diaChi.soNha}
+                                                value={values?.diaChi?.soNha}
                                                 status={
                                                     errors?.diaChi?.soNha &&
                                                         touched?.diaChi?.soNha
@@ -318,13 +348,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.tinhTPCode`}
                                             >
-                                                Tỉnh/Thành phố: <RequiredIcon />
+                                                Tỉnh/Thành phố:
                                             </label>
                                             <Select
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.tinhTPCode`}
                                                 id={`diaChi.tinhTPCode`}
-                                                value={values.diaChi.tinhTPCode}
+                                                value={values?.diaChi?.tinhTPCode}
                                                 status={
                                                     errors?.diaChi?.tinhTPCode &&
                                                         touched?.diaChi?.tinhTPCode
@@ -361,13 +391,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.quanHuyenCode`}
                                             >
-                                                Quận/Huyện: <RequiredIcon />
+                                                Quận/Huyện:
                                             </label>
                                             <Select
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.quanHuyenCode`}
                                                 id={`diaChi.quanHuyenCode`}
-                                                value={values.diaChi.quanHuyenCode}
+                                                value={values?.diaChi?.quanHuyenCode}
                                                 status={
                                                     errors?.diaChi?.quanHuyenCode &&
                                                         touched?.diaChi?.quanHuyenCode
@@ -403,13 +433,13 @@ function ModalEditUser({ user }) {
                                             <label
                                                 htmlFor={`diaChi.phuongXaCode`}
                                             >
-                                                Phường/Xã: <RequiredIcon />
+                                                Phường/Xã:
                                             </label>
                                             <Select
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.phuongXaCode`}
                                                 id={`diaChi.phuongXaCode`}
-                                                value={values.diaChi.phuongXaCode}
+                                                value={values?.diaChi?.phuongXaCode}
                                                 status={
                                                     errors?.diaChi?.phuongXaCode &&
                                                         touched?.diaChi?.phuongXaCode
@@ -479,95 +509,6 @@ function ModalEditUser({ user }) {
                                             { ten: "Other", code: "Other" }
                                         ]}
                                     ></Select>
-                                </div>
-                                <div>
-                                    <label htmlFor="">
-                                        Mật khẩu:
-                                    </label>
-                                    <Input type='current-password'
-                                        value={"******"}
-                                        disabled suffix={
-
-                                            <Link to="/users/editPassword"><EditOutlined className='text-[18px]' /></Link>
-
-                                        } />
-                                    {/* {showPassForm ?
-                                        <>
-                                            <div>
-                                                <label>
-                                                    Mật khẩu hiện tại: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`currentPassword`}
-                                                    id={`currentPassword`}
-                                                    component={Input}
-                                                    value={values.currentPassword}
-                                                    status={
-                                                        errors?.currentPassword &&
-                                                            touched?.currentPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`currentPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    Mật khẩu mới: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`newPassword`}
-                                                    id={`newPassword`}
-                                                    component={Input}
-                                                    value={values.newPassword}
-                                                    status={
-                                                        errors?.newPassword &&
-                                                            touched?.newPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`newPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    Xác nhận mật khẩu mới: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`confirmPassword`}
-                                                    id={`confirmPassword`}
-                                                    component={Input}
-                                                    value={values.confirmPassword}
-                                                    status={
-                                                        errors?.confirmPassword &&
-                                                            touched?.confirmPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`confirmPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                        </>
-                                        : null
-                                    } */}
                                 </div>
                                 <div className='flex justify-center'>
                                     <Button

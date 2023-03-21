@@ -10,7 +10,7 @@ import { ErrorMessage, FastField, Field, FieldArray, Formik } from 'formik'
 import * as Yup from 'yup'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
 import "./EditProfile.scss";
-import { editUser } from '../../services/nguoiDung';
+import { changeAvatar, editUser } from '../../services/nguoiDung';
 import { getCurrentUser } from '../../services/nguoiDung';
 import { toast } from 'react-toastify';
 import { updateUser } from '../../actions/auth';
@@ -20,7 +20,7 @@ function EditProfile() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
     const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState();
+    // const [imageUrl, setImageUrl] = useState();
 
     const [quanHuyen, setQuanHuyen] = useState([]);
     const [phuongXa, setPhuongXa] = useState([]);
@@ -54,8 +54,9 @@ function EditProfile() {
     }
 
     const ProfileSchema = Yup.object().shape({
-        hoTen: Yup.string().min(4).max(100).required('Vui lòng nhập họ tên!'),
-        gioiTinh: Yup.string().required('Vui lòng chọn giới tính!'),
+        hoTen: Yup.string().min(5, "Tên ít nhất 5 ký tự").required('Vui lòng nhập họ tên'),
+        email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+        sdt: Yup.string().required('Vui lòng nhập số điện thoại').matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, "Số điện thoại không hợp lệ"),
         diaChi:
             Yup.object().shape({
                 kinhDo: Yup.number()
@@ -106,12 +107,15 @@ function EditProfile() {
             toast.success('Cập nhật ảnh đại diện thành công, vui lòng đợi trong ít phút để hệ thống xử lý!');
             const { url, public_id } = uploadRes.data;
             const values = {
-                _id: user.data._id,
                 anhDaiDien: { url, public_id }
             };
-            const res = handleSubmit(values);
+            const res = await changeAvatar(user.data._id, values);
             if (res) {
-                setImageUrl(url);
+                // setImageUrl(url);
+                const newUserData = await getCurrentUser();
+                var newUserInfo = { ...newUserData, status: 'success', token: user.token }
+                localStorage.setItem("user", JSON.stringify(newUserInfo));
+                dispatch(updateUser(newUserInfo))
             }
         }
     };
@@ -141,7 +145,7 @@ function EditProfile() {
                 <h1 className='p-4 font-semibold text-lg'>Thông tin cá nhân</h1>
                 <hr />
                 <div className='flex'>
-                    <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="user's avatar" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
+                    <img src={user.data?.anhDaiDien?.url ? user.data?.anhDaiDien?.url : avatar} alt="user's avatar" className='avatar w-[110px] h-[110px] m-5 rounded-[50%]' />
                     <div className='image-upload absolute mt-[100px] ml-[100px] avatar-uploader'>
                         <label htmlFor="files" className="btn"><CameraOutlined className='bg-gray-300 cursor-pointer p-2 text-[30px] rounded-[50%]' /></label>
                         <input id="files" style={{ "visibility": "hidden" }} type="file" onChange={(e) => handleChangeImage(e.target.files)} />

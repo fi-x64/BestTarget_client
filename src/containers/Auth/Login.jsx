@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styles from './Login.module.scss'
 import classNames from 'classnames/bind'
 import { login } from '../../actions/auth'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import { Button, Form, Input } from 'antd'
 import { ErrorMessage, FastField, Formik } from 'formik'
@@ -144,6 +144,7 @@ function Login() {
                         <li><img src="https://static.chotot.com/storage/assets/LOGIN/google.svg" id="google-login-btn" alt='google-logo' /></li>
                       </ul>
                     </div>
+                    <p>Chưa có tài khoản? <Link to='/register' className='text-blue-600'>Đăng ký ngay</Link></p>
                   </div>
                 </div>
               </Form>
