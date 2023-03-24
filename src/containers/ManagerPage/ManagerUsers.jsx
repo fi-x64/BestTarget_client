@@ -18,7 +18,6 @@ function ManagerUsers() {
     const [selectedUser, setSelectedUser] = useState();
 
     const showEditModal = async (id) => {
-        console.log("Check id: ", id);
         const res = await getUser(id);
         if (res) {
             setSelectedUser(res);

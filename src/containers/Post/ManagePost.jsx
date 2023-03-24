@@ -9,7 +9,7 @@ import { countTrangThaiTin, getTinDang } from '../../services/tinDang';
 
 function ManagePost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
-    console.log("Check user: ", user);
+
     const [countTTTin, setCountTTTin] = useState();
     const [tinDangData, setTinDangData] = useState();
 

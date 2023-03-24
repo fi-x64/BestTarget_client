@@ -43,6 +43,12 @@ export const getTinDangId = async (id) => {
     return []
 }
 
+export const getTinDangIdRestrict = async (id) => {
+    const res = await request.get(`/getTinDangIdRestrict?id=${id}`, { headers: authHeader() });
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
 export const deleteImage = async ({ postId, imagePublicId }) => {
     const res = await request.patch(`/deleteImage?postId=${postId}`, { imagePublicId });
     if (res.data.status === 'success') return res.data
@@ -53,5 +59,19 @@ export const deleteVideo = async ({ postId, videoPublicId }) => {
     console.log("Check postId, videoPulicId: ", postId, videoPublicId);
     const res = await request.patch(`/deleteVideo?postId=${postId}`, { videoPublicId });
     if (res.data.status === 'success') return res.data
+    return []
+}
+
+export const getStatisticsPostInWeek = async () => {
+    const res = await request.get(`/statisticsPostInWeek`, { headers: authHeader() });
+
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
+export const getStatisticsPostInProvince = async () => {
+    const res = await request.get(`/statisticsPostInProvince`, { headers: authHeader() });
+
+    if (res.data.status === 'success') return res.data.data
     return []
 }

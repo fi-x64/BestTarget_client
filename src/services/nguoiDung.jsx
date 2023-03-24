@@ -66,3 +66,13 @@ export const changeAvatar = async (id, values) => {
     }
     return [];
 };
+
+export const getStatisticsUserInWeek = async () => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/statisticsUserInWeek`, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+
+    return [];
+};

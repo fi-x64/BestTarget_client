@@ -105,6 +105,7 @@ function ModalEditUser({ user }) {
     };
 
     const handleSubmit = async (values, setFieldError) => {
+        console.log("Check values: ", values);
         const res = await updateUser(user.data._id, values);
 
         if (res) {
@@ -141,6 +142,7 @@ function ModalEditUser({ user }) {
                                 email: '',
                                 sdt: '',
                                 trangThai: true,
+                                quyen: '',
                             }
                         }
                         onSubmit={(values, { setFieldError }) => {
@@ -215,6 +217,50 @@ function ModalEditUser({ user }) {
                                         className="field-error"
                                         component="div"
                                         name="email"
+                                    ></ErrorMessage>
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor={`diaChi.tinhTPCode`}
+                                    >
+                                        Quyền: <RequiredIcon />
+                                    </label>
+                                    <Select
+                                        style={{ width: '100%' }}
+                                        name={`quyen`}
+                                        id={`quyen`}
+                                        value={values.quyen?._id ? values.quyen._id : values.quyen}
+                                        status={
+                                            errors?.quyen &&
+                                                touched?.quyen
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        onChange={
+                                            (value) => {
+                                                setFieldValue(
+                                                    `quyen`,
+                                                    value
+                                                )
+                                            }
+                                        }
+                                        onBlur={handleBlur}
+                                        placeholder="Chọn quyền"
+                                        optionFilterProp="children"
+                                        filterOption={(input, option) =>
+                                            (option?.label ?? '')
+                                                .toLowerCase()
+                                                .includes(input.toLowerCase())
+                                        }
+                                        options={[
+                                            { label: "Admin", value: '64074e397906c710710e01bf' },
+                                            { label: "Người dùng", value: '64074e397906c710710e01c1' },
+                                        ]}
+                                    ></Select>
+                                    <ErrorMessage
+                                        className="field-error"
+                                        component="div"
+                                        name={`quyen`}
                                     ></ErrorMessage>
                                 </div>
                                 <div>

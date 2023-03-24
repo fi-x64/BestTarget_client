@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import avatar from '../../assets/img/avatar.svg'
 import { logout } from '../../actions/auth';
+import ManagerStatistics from './ManagerStatistics';
 
 const { Header, Sider, Content } = Layout;
 
@@ -41,14 +42,14 @@ function ManagerHomePage() {
     }
 
     const items = [
-        user.data.quyen.ten === 'admin' ? {
+        {
             key: '1',
             label: (
                 <Link to="/">
                     Chuyển đến trang chủ
                 </Link>
             ),
-        } : null,
+        },
         {
             key: '2',
             label: (
@@ -128,6 +129,7 @@ function ManagerHomePage() {
                 >
                     {key == 1 ? <ManagerUsers /> : null}
                     {key == 2 ? <ManagerPosts /> : null}
+                    {key == 3 ? <ManagerStatistics /> : null}
                 </Content>
             </Layout>
         </Layout>
