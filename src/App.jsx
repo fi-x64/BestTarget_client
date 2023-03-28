@@ -6,6 +6,7 @@ import HomeHeader from './containers/HomePage/HomeHeader'
 import HomeFooter from './containers/HomePage/HomeFooter'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { ToastContainer } from 'react-toastify';
+import BackToTopButton from './components/atom/BackToTopButton/BackToTopButton'
 
 const queryClient = new QueryClient()
 
@@ -52,6 +53,7 @@ function App() {
                     theme="light"
                   />
                   <ToastContainer />
+                  <BackToTopButton />
                 </Layout>
                 // </ProtectedRoute>
               )

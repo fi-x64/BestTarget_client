@@ -26,6 +26,10 @@ function CreateNewPost({ danhMucPhuId }) {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+
+    }, [])
+
+    useEffect(() => {
         async function fetchData() {
             const res = await getGoiY(danhMucPhuId);
             setGoiY(res);
@@ -33,7 +37,6 @@ function CreateNewPost({ danhMucPhuId }) {
         fetchData()
     }, [danhMucPhuId])
 
-    console.log("Check goiY: ", goiY);
     useEffect(() => {
         async function fetchData() {
             setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));

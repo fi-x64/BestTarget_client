@@ -43,6 +43,12 @@ export const getTinDangId = async (id) => {
     return []
 }
 
+export const getTinDangByValue = async (values) => {
+    const res = await request.post(`/getTinDangByValue`, values);
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
 export const getTinDangIdRestrict = async (id) => {
     const res = await request.get(`/getTinDangIdRestrict?id=${id}`, { headers: authHeader() });
     if (res.data.status === 'success') return res.data.data

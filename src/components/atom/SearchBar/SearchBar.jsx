@@ -6,36 +6,51 @@ import { Input, List, Avatar } from 'antd';
 const { Search } = Input;
 
 import styles from './SearchBar.module.scss';
+import { handleTimKiem } from '../../../services/timKiem';
+import { Link, useNavigate } from 'react-router-dom';
 // import { handleSearchAPI } from '../../../services/user';
 const cl = classNames.bind(styles);
 
 function SearchBar() {
-    // const [showResult, setShowResult] = useState(false);
-    // const [data, setData] = useState([]);
+    const [showResult, setShowResult] = useState(false);
+    const [data, setData] = useState([]);
+    const [value, setValue] = useState();
+    const naviagte = useNavigate();
 
     const handleSearch = async (e) => {
-        console.log("Check search: ", e.target.value);
-        // let res = await handleSearchAPI({ data: e.target.value });
-        // if (res.length > 0) {
-        //     setShowResult(true);
-        //     setData(res);
-        // } else {
-        //     setShowResult(false)
-        //     setData([])
-        // };
+        setValue(e.target.value);
+        if (e.target.value != '') {
+            let res = await handleTimKiem(e.target.value);
+
+            if (res) {
+                setShowResult(true);
+                setData(res);
+            } else {
+                setShowResult(false)
+                setData([])
+            };
+        } else {
+            setShowResult(false)
+            setData([])
+        }
     }
 
-    // const handleClickResult = (item) => {
-    //     toggleAddPane(false);
-    //     togglePane(true);
-    //     setCurrentStation(item);
-    //     setNewTemporaryMarker([
-    //         item.latitude,
-    //         item.longitude
-    //     ])
-    //     showPopUp(item.longitude, item.latitude);
-    //     setShowResult(false);
-    // }
+    const handleClickResult = (text) => {
+        setShowResult(false);
+        setValue(text);
+    };
+
+    const handleKeyUp = (event) => {
+        if (event.keyCode === 13) {
+            naviagte(`/postList?&keyWord=${value}`)
+            setShowResult(false);
+        }
+    }
+
+    const handleClick = () => {
+        naviagte(`/postList?&keyWord=${value}`)
+        setShowResult(false);
+    }
 
     return (
         <div>
@@ -44,27 +59,53 @@ function SearchBar() {
                 onChange={handleSearch}
                 style={{ width: '' }}
                 allowClear={true}
-            // onClick={handleSearch}
+                // onClick={handleClick}
+                onSearch={handleClick}
+                value={value}
+                onKeyUp={(e) => handleKeyUp(e)}
             />
-            {/* {showResult ?
-                <List
-                    itemLayout="horizontal"
-                    dataSource={data}
-                    style={{ backgroundColor: '#fff' }}
-                renderItem={(item) => (
-                    <List.Item>
-                        <List.Item.Meta
-                            avatar={<Avatar src={item.images[0].url} />}
-                            title={<a style={{ color: "#3a8ece" }} onClick={() => {
-                                handleClickResult(item)
-                            }}>{item.name}</a>}
-                            description={<a style={{ color: "#000" }} onClick={() => {
-                                handleClickResult(item)
-                            }}>{item.address}</a>}
-                        />
-                    </List.Item>
-                )}
-                /> : null} */}
+            {showResult ?
+                <div className='absolute w-[807px] z-50'>
+                    {data.hangSX.length > 0 ?
+                        <>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={data.hangSX}
+                                style={{ backgroundColor: '#fff' }}
+                                header={<div className='ml-[8px] text-sm font-bold'>Danh mục</div>}
+                                renderItem={(item) => (
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            title={<Link to={{ pathname: '/postList', search: `?hangSX=${encodeURIComponent(item.hangSX.value)}&danhMucPhuId=${encodeURIComponent(item.danhMucPhu[0].danhMucPhuId)}` }} className='flex'
+                                                onClick={() => handleClickResult(item.hangSX.label)}
+                                            >{item.hangSX.label} <p className='ml-1' style={{ color: "#3a8ece" }}> trong {item.danhMucPhu[0].ten}</p></Link>}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </>
+                        : null}
+                    {data.tinDang.length > 0 ?
+                        <>
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={data.tinDang}
+                                style={{ backgroundColor: '#fff' }}
+                                header={<div className='ml-[8px] text-sm font-bold'>Tin đăng</div>}
+                                renderItem={(item) => (
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            title={<Link to={{ pathname: '/postList', search: `?keyWord=${encodeURIComponent(item.tieuDe)}&danhMucPhuId=${encodeURIComponent(item.danhMucPhu[0].danhMucPhuId)}` }} className='flex' onClick={() => {
+                                                handleClickResult(item.tieuDe)
+                                            }}>{item.tieuDe} <p className='ml-1' style={{ color: "#3a8ece" }}> trong {item.danhMucPhu[0].ten}</p></Link>}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </>
+                        : null}
+                </div>
+                : null}
 
         </div>
     )
