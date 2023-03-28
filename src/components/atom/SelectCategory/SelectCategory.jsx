@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getAllDanhMuc, getAllDanhMucPhu } from '../../../services/danhMuc';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CaretDownOutlined } from '@ant-design/icons';
+import queryString from 'query-string';
 
 function SelectCategory() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,19 +93,42 @@ function SelectCategory() {
         setIsModalOpen(false);
         setIsSubModalOpen(false);
 
+        const queryParams = queryString.parse(location.search);
+
+        var mergeParams;
+
         if (values.danhMucPhuId != 0) {
             setDanhMucPhuId(values.danhMucPhuId);
             setDanhMucPhuName(values.ten);
+            mergeParams = { ...queryParams, danhMucPhuId: values.danhMucPhuId };
 
-            return navigate({
-                pathname: `/postList`,
-                search: `?danhMucPhuId=${values.danhMucPhuId}`,
-            })
         } else {
+            delete queryParams.danhMucPhuId;
+            mergeParams = { ...queryParams };
             setDanhMucPhuId('');
             setDanhMucPhuName('');
-            return navigate('/postList')
         }
+        const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
+        console.log("Check queryStringify: ", queryStringify);
+
+        return navigate({
+            pathname: `/postList`,
+            search: `${queryStringify}`,
+        })
+
+        // if (values.danhMucPhuId != 0) {
+        //     setDanhMucPhuId(values.danhMucPhuId);
+        //     setDanhMucPhuName(values.ten);
+
+        //     return navigate({
+        //         pathname: `/postList`,
+        //         search: `?danhMucPhuId=${values.danhMucPhuId}`,
+        //     })
+        // } else {
+        //     setDanhMucPhuId('');
+        //     setDanhMucPhuName('');
+        //     return navigate('/postList')
+        // }
     }
 
     return (

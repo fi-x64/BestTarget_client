@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllDanhMuc, getAllDanhMucPhu } from '../../../services/danhMuc';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { CaretDownOutlined, EnvironmentOutlined } from '@ant-design/icons';
-import { getAllTinhThanh, getOneTinhTP, getQuanHuyen } from '../../../services/diaChi';
+import { getAllTinhThanh, getOneQuanHuyen, getOneTinhTP, getQuanHuyen } from '../../../services/diaChi';
+import queryString from 'query-string';
 
 function SelectAddress() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,6 +46,10 @@ function SelectAddress() {
         const allTinhThanh = await getAllTinhThanh();
 
         if (allTinhThanh) {
+            allTinhThanh.unshift({
+                _id: "00",
+                ten: "Tất cả"
+            })
             setTinhTPData(allTinhThanh);
         }
 
@@ -60,12 +65,29 @@ function SelectAddress() {
 
         if (res) {
             setQuanHuyenData(res);
-            setIsSubModalOpen(true);
+
+            if (values._id != "00")
+                setIsSubModalOpen(true);
+            else setIsModalOpen(false)
             setTinhTPName(values.ten);
+
+            const queryParams = queryString.parse(location.search);
+            delete queryParams.quanHuyenCode;
+
+            var mergeParams;
+
+            if (values._id != "00") {
+                mergeParams = { ...queryParams, tinhTPCode: values._id };
+            } else {
+                mergeParams = { ...queryParams };
+            }
+
+            const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
+            console.log("Check queryStringify: ", queryStringify);
 
             return navigate({
                 pathname: `/postList`,
-                search: `?tinhTPCode=${values._id}`,
+                search: `${queryStringify}`,
             })
         }
     }
@@ -84,9 +106,16 @@ function SelectAddress() {
         setTinhTPName('');
         setQuanHuyenName(values.ten);
 
+        const queryParams = queryString.parse(location.search);
+        delete queryParams.tinhTPCode;
+
+        const mergeParams = { ...queryParams, quanHuyenCode: values._id };
+
+        const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
+        console.log("Check queryStringify: ", queryStringify);
         return navigate({
             pathname: `/postList`,
-            search: `?phuongXaCode=${values._id}`,
+            search: `${queryStringify}`,
         })
     }
 
