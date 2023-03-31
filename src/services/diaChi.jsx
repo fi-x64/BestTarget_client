@@ -38,7 +38,6 @@ export const getOnePhuongXa = async (phuongXaCode) => {
 
 export const getOneDiaChi = async (tinhTPCode, quanHuyenCode, phuongXaCode) => {
     const res = await request.get(`/getOnePhuongXa?tinhTPCode=${tinhTPCode}&quanHuyenCode=${quanHuyenCode}&phuongXaCode=${phuongXaCode}`);
-    console.log("Check res getOneDiaChi: ", res.data);
     if (res.data.status === 'success') return res.data.data
     return []
 }

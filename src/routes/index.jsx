@@ -6,13 +6,15 @@ import nguoiDungRoutes from './nguoiDungRoutes'
 import tinDangRoutes from './tinDangRoutes'
 import trangQuanLyRoutes from './trangQuanLyRoutes'
 import authRoutes from './authRoutes'
+import thanhToanRoutes from './thanhToanRoutes'
 
 const routes = [
     { path: '/', component: HomePage, layout: null },
     ...authRoutes,
     ...nguoiDungRoutes,
     ...tinDangRoutes,
-    ...trangQuanLyRoutes
+    ...trangQuanLyRoutes,
+    ...thanhToanRoutes
 ]
 
 export default routes

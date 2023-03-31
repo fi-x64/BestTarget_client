@@ -40,13 +40,21 @@ function HomeHeader() {
         {
             key: '3',
             label: (
+                <Link to='/walletDashboard'>
+                    Quản lý số dư
+                </Link>
+            ),
+        },
+        {
+            key: '4',
+            label: (
                 <Link to='/users/editProfile'>
                     Cài đặt tài khoản
                 </Link>
             ),
         },
         {
-            key: '4',
+            key: '5',
             label: (
                 <a rel="noopener noreferrer" onClick={() => handleLogout()}>
                     Đăng xuất
