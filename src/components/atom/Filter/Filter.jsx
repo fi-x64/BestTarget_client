@@ -38,7 +38,6 @@ function Filter() {
                             label: "Tất cả",
                             value: -1
                         })
-                        console.log("Check goiYData: ", goiYData);
                         setGoiY(goiYData);
                     }
                 }
@@ -133,7 +132,6 @@ function Filter() {
         const queryParams = queryString.parse(location.search);
         const mergeParams = { ...queryParams, ...filter };
         const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
-        console.log("Check queryStringify: ", queryStringify);
 
         return navigate({
             pathname: `/postList`,
@@ -155,7 +153,6 @@ function Filter() {
         delete queryParams.hangSX;
 
         const queryStringify = '?' + new URLSearchParams(queryParams).toString();
-        console.log("Check queryStringify: ", queryStringify);
         return navigate({
             pathname: `/postList`,
             search: `${queryStringify}`,

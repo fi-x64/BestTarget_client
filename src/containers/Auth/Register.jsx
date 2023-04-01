@@ -32,7 +32,6 @@ function Register() {
     const dispatch = useDispatch()
 
     const handleSubmit = async (values) => {
-        console.log("Check values: ", values);
         const res = await register(values);
         if (res.status === 'success') {
             setMoveNextPage(true);

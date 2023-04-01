@@ -32,7 +32,7 @@ function HomeHeader() {
         {
             key: '2',
             label: (
-                <Link to="/users/profile">
+                <Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>
                     Trang cá nhân
                 </Link>
             ),

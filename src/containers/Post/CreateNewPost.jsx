@@ -129,7 +129,6 @@ function CreateNewPost({ danhMucPhuId }) {
             content: 'Đang đăng ảnh và video. Vui lòng không đóng tab hay tắt trình duyệt',
             key,
         })
-        console.log("Check values: ", values);
         const submitHinhAnh = [];
         const submitVideo = [];
         for (let image of values.hinhAnh) {

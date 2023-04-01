@@ -68,8 +68,10 @@ function ManagePost() {
                         <Popover placement="bottomRight" content={content(item._id)} trigger="click">
                             <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
                         </Popover>
-                        : <Popover placement="bottomRight" trigger="click">
+                        : status === 'Đang đợi duyệt' ? <Popover placement="bottomRight" trigger="click">
                             <Button disabled>Đang đợi duyệt</Button>
+                        </Popover> : <Popover placement="bottomRight" trigger="click">
+                            <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
                         </Popover>}
                 </List.Item >
             )
@@ -118,7 +120,7 @@ function ManagePost() {
                         <div className="grid grid-rows-3 ml-4">
                             <div className="...">{user.data.hoTen}</div>
                             <div className='text-[13px] grid grid-cols-2 border-blue-500 border-solid gap-2'>
-                                <Button><Link to="/users/profile">Trang cá nhân</Link></Button>
+                                <Button> <Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>Trang cá nhân</Link></Button>
                                 <Button>Liên kết ví bán hàng</Button>
                             </div>
                         </div>

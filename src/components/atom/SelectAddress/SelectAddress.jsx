@@ -83,7 +83,6 @@ function SelectAddress() {
             }
 
             const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
-            console.log("Check queryStringify: ", queryStringify);
 
             return navigate({
                 pathname: `/postList`,
@@ -112,7 +111,7 @@ function SelectAddress() {
         const mergeParams = { ...queryParams, quanHuyenCode: values._id };
 
         const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
-        console.log("Check queryStringify: ", queryStringify);
+
         return navigate({
             pathname: `/postList`,
             search: `${queryStringify}`,

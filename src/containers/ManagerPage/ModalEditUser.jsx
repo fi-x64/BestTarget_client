@@ -105,7 +105,6 @@ function ModalEditUser({ user }) {
     };
 
     const handleSubmit = async (values, setFieldError) => {
-        console.log("Check values: ", values);
         const res = await updateUser(user.data._id, values);
 
         if (res) {

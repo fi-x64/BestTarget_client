@@ -170,8 +170,6 @@ function ManagerStatistics() {
         <>
             <div className='grid grid-cols-2 m-4'>
                 {dataUserInWeek ?
-                    // console.log("Check dataUserInWeek: ", dataUserInWeek)
-                    // <BarChart chartData={dataUserInWeek} /> : null
                     <div className='w-[400px] h-[400px]'>
                         <Pie options={userInWeekOptions} data={dataUserInWeek} />
                     </div>

@@ -12,7 +12,7 @@ export const getCurrentUser = async () => {
 
 export const getUser = async (id) => {
     // return JSON.parse(localStorage.getItem("user"));
-    const res = await request.get(`/users/${id}`, { headers: authHeader() });
+    const res = await request.get(`/users/${id}`);
     if (res.data.status === 'success') {
         return res.data.data;
     }

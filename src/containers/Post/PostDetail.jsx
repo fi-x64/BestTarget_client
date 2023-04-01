@@ -33,7 +33,6 @@ function PostDetail() {
 
                 if (diaChiData) {
                     setFullDiaChiTin(diaChiData);
-                    console.log("Check diaChi: ", diaChiData);
                 }
 
                 setCurrentPostData(res);
@@ -150,7 +149,7 @@ function PostDetail() {
                                     <p>{user.data.hoTen}</p>
                                     <p>Đang hoạt động</p>
                                 </div>
-                                <Button className='ml-[20px] rounded-[25px]'>Xem trang</Button>
+                                <Button className='ml-[20px] rounded-[25px]' ><Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>Xem trang</Link></Button>
                             </Link>
                             <div className='flex text-[14px] text-center justify-center'>
                                 <div className='block'>

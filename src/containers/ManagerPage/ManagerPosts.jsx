@@ -20,7 +20,6 @@ function ManagerPosts() {
     const [postId, setPostId] = useState();
 
     const showDetailModal = (id) => {
-        // console.log("Check id: ", id);
         setIsDetailModalOpen(true);
         setPostId(id);
     };
@@ -287,7 +286,6 @@ function ManagerPosts() {
                 </Button>
             ]}>
                 {
-                    // console.log("Check postId: ", postId)
                     <ModalDetailPost postId={postId} />
                 }
             </Modal>

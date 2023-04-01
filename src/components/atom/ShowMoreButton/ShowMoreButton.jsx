@@ -4,7 +4,6 @@ function ShowMoreButton({ text, limit }) {
     var [isShowMore, setIsShowMore] = useState(false);
 
     let handleClick = () => {
-        console.log("Check isShowMore: ", isShowMore);
         setIsShowMore(!isShowMore);
     }
 

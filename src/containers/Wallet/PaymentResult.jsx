@@ -6,14 +6,16 @@ import { Button, Image, Radio, Space } from 'antd';
 import { Link, redirect, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import { getOneMenhGia } from '../../services/menhGia';
-import { saveMomoPayment, thanhToanMomo } from '../../services/thanhToan';
+import { saveMomoPayment, saveVNPayPayment, thanhToanMomo } from '../../services/thanhToan';
 import Moment from 'moment';
+import { toast } from 'react-toastify';
 
 function PaymentResult() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const location = useLocation();
     const [listTinDang, setListTinDang] = useState();
     const [allParams, setAllParams] = useState({});
+    const [isPaymentSuccess, setIsPaymentSuccess] = useState();
 
     useEffect(() => {
         async function fetchData() {
@@ -30,8 +32,24 @@ function PaymentResult() {
 
     useEffect(() => {
         async function fetchData() {
-            if (allParams.resultCode == 0) {
-                const res = await saveMomoPayment(user.data._id, allParams);
+            var res;
+            if (allParams?.resultCode == 0) {
+                if (allParams.partnerCode && allParams.partnerCode == 'MOMO') {
+                    res = await saveMomoPayment(user.data._id, allParams);
+                }
+
+            } else if (allParams?.vnp_ResponseCode == '00') {
+                res = await saveVNPayPayment(user.data._id, allParams);
+            }
+            if (res) {
+                if (res.status == 'success') {
+                    toast.success(res.message);
+                    setIsPaymentSuccess(true);
+                }
+                else {
+                    toast.error(res.message);
+                    setIsPaymentSuccess(false)
+                }
             }
         }
         fetchData();
@@ -39,7 +57,7 @@ function PaymentResult() {
 
     return (
         <div className="max-w-[480px] mx-auto py-5">
-            {allParams && allParams?.resultCode == 0 ?
+            {allParams && allParams?.resultCode == 0 && isPaymentSuccess ?
 
                 <div className="p-[15px] bg-white">
                     <div className='text-2xl text-center text-green-500 [&>*]:mb-3'>
@@ -66,7 +84,7 @@ function PaymentResult() {
                         <Link to='/walletDashboard'><Button className='bg-[#ffba22]'>Trở về trang quản lý số dư</Button></Link>
                     </div>
                 </div>
-                : allParams && allParams?.vnp_ResponseCode == 0 ?
+                : allParams && allParams?.vnp_ResponseCode == 0 && isPaymentSuccess ?
                     <div className="p-[15px] bg-white">
                         <div className='text-2xl text-center text-green-500 [&>*]:mb-3'>
                             <h1 className='font-semibsold'>Thanh toán thành công</h1>

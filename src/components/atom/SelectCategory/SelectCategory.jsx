@@ -109,7 +109,6 @@ function SelectCategory() {
             setDanhMucPhuName('');
         }
         const queryStringify = '?' + new URLSearchParams(mergeParams).toString();
-        console.log("Check queryStringify: ", queryStringify);
 
         return navigate({
             pathname: `/postList`,

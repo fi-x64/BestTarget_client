@@ -25,7 +25,6 @@ function ActiveAccount({ email }) {
     const dispatch = useDispatch()
 
     const handleSubmit = async ({ otp }) => {
-        console.log("Check values: ", otp);
         const res = await activeAccount(email, otp);
         if (res.status.status === 'success') {
             toast.success('Xác thực tài khoản thành công, vui lòng đăng nhập với tài khoản vừa tạo')

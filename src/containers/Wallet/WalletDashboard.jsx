@@ -7,12 +7,12 @@ import { NumericFormat } from 'react-number-format';
 import CheckOut from './Checkout';
 import { getAllMenhGia } from '../../services/menhGia';
 import { useNavigate } from 'react-router-dom';
+import { getViTien } from '../../services/thanhToan';
 
 function WalletDashboard() {
-    const [showCheckout, setShowCheckout] = useState(false);
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
     const [priceList, setPriceList] = useState();
-    const [price, setPrice] = useState();
-
+    const [viTien, setViTien] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,6 +21,12 @@ function WalletDashboard() {
 
             if (res) {
                 setPriceList(res);
+            }
+
+            const viTien = await getViTien(user.data._id);
+
+            if (viTien) {
+                setViTien(viTien);
             }
         }
         fetchData();
@@ -39,7 +45,7 @@ function WalletDashboard() {
                 <h1 className='text-xl font-semibold'><i className="fa-solid fa-wallet text-[#ffba00] mr-2"></i>Tổng số dư</h1>
                 <div className='flex justify-between px-8 py-4'>
                     <div className='text-2xl'>
-                        <NumericFormat className='text-green-600 py-2' value={0} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
+                        <NumericFormat className='text-green-600 py-2' value={viTien ? viTien.tongSoDu : 0} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
                         <i className="fa-solid fa-coins ml-2"></i>
                     </div>
                     <a className='float-right text-blue-500 cursor-pointer text-sm'>Xem lịch sử giao dịch <i className="fa-solid fa-chevron-right"></i></a>
