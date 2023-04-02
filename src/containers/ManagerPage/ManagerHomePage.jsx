@@ -101,6 +101,11 @@ function ManagerHomePage() {
                             icon: <LineChartOutlined />,
                             label: 'Thống kê',
                         },
+                        {
+                            key: '4',
+                            icon: <i className="fa-solid fa-tags"></i>,
+                            label: 'Tạo khuyến mãi',
+                        },
                     ]}
                 />
             </Sider>

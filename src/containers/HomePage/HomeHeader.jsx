@@ -21,7 +21,7 @@ function HomeHeader() {
     }
 
     const items = [
-        isLoggedIn && user.data.quyen.ten === 'Admin' ? {
+        isLoggedIn && user.data && user.data.quyen.ten === 'Admin' ? {
             key: '1',
             label: (
                 <Link to="/managerPage">
@@ -32,7 +32,7 @@ function HomeHeader() {
         {
             key: '2',
             label: (
-                <Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>
+                <Link to={{ pathname: '/users/profile', search: `?userId=${user?.data._id}` }}>
                     Trang cá nhân
                 </Link>
             ),
@@ -75,11 +75,11 @@ function HomeHeader() {
                         <ul><a href=""><i className="fa-solid fa-box"></i> Đơn hàng</a></ul>
                         <ul><a href=""><i className="fa-solid fa-comments"></i> Chat</a></ul>
                         <ul><a href=""><i className="fa-solid fa-bell"></i> Thông báo</a></ul>
-                        {isLoggedIn && user ?
+                        {isLoggedIn && user && user.data ?
                             <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer" placement='bottomRight'>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space>
-                                        <Avatar src={user.data.anhDaiDien ? user.data.anhDaiDien.url : avatar} />
+                                        <Avatar src={user?.data?.anhDaiDien ? user.data.anhDaiDien.url : avatar} />
                                         {user.data.hoTen}<i className="fa-solid fa-chevron-down"></i>
                                     </Space>
                                 </a>

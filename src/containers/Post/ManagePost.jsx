@@ -5,7 +5,8 @@ import HomeHeader from '../HomePage/HomeHeader';
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, List, Popover, Tabs } from 'antd';
 import { Link } from 'react-router-dom';
-import { countTrangThaiTin, getTinDang } from '../../services/tinDang';
+import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
+import moment from 'moment';
 
 function ManagePost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -15,6 +16,7 @@ function ManagePost() {
 
     useEffect(() => {
         async function fetchData() {
+            await updateTinHetHan();
             setCountTTTin(await countTrangThaiTin());
         }
         fetchData();
@@ -35,6 +37,25 @@ function ManagePost() {
         }
     };
 
+    const handleAnTin = async (id) => {
+        const res = await editPost(id, { trangThaiTin: 'Tin đã ẩn' });
+        if (res) {
+            await updateTinHetHan();
+            setCountTTTin(await countTrangThaiTin());
+            setTinDangData(await getTinDang(1));
+        }
+    }
+
+    const handleHienThiTin = async (id) => {
+        const res = await editPost(id, { trangThaiTin: 'Đang hiển thị' });
+        if (res) {
+            await updateTinHetHan();
+            setCountTTTin(await countTrangThaiTin());
+            setTinDangData(await getTinDang(1));
+            window.location.reload();
+        }
+    }
+
     const handleGetSoLuong = (data, key) => {
         if (data)
             for (var i = 0; i < data.length; i++) {
@@ -49,7 +70,7 @@ function ManagePost() {
         return (
             <div>
                 <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin</Link>
-                <p>Đã bán/Ẩn tin</p>
+                <p onClick={() => handleAnTin(id)} className='cursor-pointer'>Đã bán/Ẩn tin</p>
             </div>
         )
     };
@@ -62,17 +83,35 @@ function ManagePost() {
                     <List.Item.Meta
                         avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
                         title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
-                        description={<p className='text-sm text-red-600'>{item.gia} đ</p>}
+                        description={
+                            <>
+                                <p className='text-sm text-red-600'>{item.gia} đ</p>
+                                {
+                                    status === 'Đang hiển thị' || status === 'Tin đã ẩn' ?
+                                        <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
+                                        : status === 'Bị từ chối' ?
+                                            <p className='text-xs'>Tin đăng còn {5 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
+                                            : status === 'Hết hạn' ?
+                                                <p className='text-xs'>Tin đăng còn {75 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
+                                                : null
+                                }
+                            </>}
                     />
                     {status === 'Đang hiển thị' ?
                         <Popover placement="bottomRight" content={content(item._id)} trigger="click">
                             <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
                         </Popover>
-                        : status === 'Đang đợi duyệt' ? <Popover placement="bottomRight" trigger="click">
-                            <Button disabled>Đang đợi duyệt</Button>
-                        </Popover> : <Popover placement="bottomRight" trigger="click">
-                            <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
-                        </Popover>}
+                        : status === 'Đang đợi duyệt' ?
+                            // <Popover placement="bottomRight" trigger="click">
+                            <Button disabled className='float-right'>Đang đợi duyệt</Button>
+                            // </Popover> 
+                            : status === 'Bị từ chối' ?
+                                <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
+                                : status === 'Hết hạn' ?
+                                    <Button>Khôi phục tin</Button>
+                                    :
+                                    <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
+                    }
                 </List.Item >
             )
             }

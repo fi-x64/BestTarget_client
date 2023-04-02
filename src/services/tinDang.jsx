@@ -81,3 +81,10 @@ export const getStatisticsPostInProvince = async () => {
     if (res.data.status === 'success') return res.data.data
     return []
 }
+
+export const updateTinHetHan = async () => {
+    const res = await request.get(`/updateTinHetHan`, { headers: authHeader() });
+
+    if (res.data.status === 'success') return res.data.data
+    return []
+}

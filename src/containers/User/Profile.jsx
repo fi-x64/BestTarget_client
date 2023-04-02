@@ -6,16 +6,29 @@ import avatar from '../../assets/img/avatar.svg'
 import { Button } from 'antd';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getUser } from '../../services/nguoiDung';
+import { getListFollower, getListFollowing } from '../../services/theoDoi';
 
 function Profile() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentUser, setCurrentUser] = useState();
+  const [countFollower, setCountFollower] = useState();
+  const [countFollowing, setCountFollowing] = useState();
 
   useEffect(() => {
     async function fetchData() {
       const userId = searchParams.get("userId");
+
+      const listFollower = await getListFollower();
+      const listFollowing = await getListFollowing();
+
+      if (listFollower) {
+        setCountFollower(listFollower.count)
+      }
+      if (listFollowing) {
+        setCountFollowing(listFollowing.count)
+      }
 
       if (userId != user.data._id) {
         const userData = await getUser(userId);
@@ -39,8 +52,8 @@ function Profile() {
               <div className="grid grid-rows-3 ml-4">
                 <h1 className="">{currentUser.hoTen}</h1>
                 <div className='text-[13px] flex justify-between'>
-                  <p>Người theo dõi</p>
-                  <p className='ml-12'>Đang theo dõi</p>
+                  <p>Người theo dõi: {countFollowing ? countFollowing : 0}</p>
+                  <p className='ml-12'>Đang theo dõi: {countFollower ? countFollower : 0}</p>
                 </div>
                 {currentUser._id != user.data._id ?
                   <div className='flex'>
