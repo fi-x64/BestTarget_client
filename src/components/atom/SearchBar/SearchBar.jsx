@@ -8,7 +8,6 @@ const { Search } = Input;
 import styles from './SearchBar.module.scss';
 import { handleTimKiem } from '../../../services/timKiem';
 import { Link, useNavigate } from 'react-router-dom';
-// import { handleSearchAPI } from '../../../services/user';
 const cl = classNames.bind(styles);
 
 function SearchBar() {

@@ -29,7 +29,7 @@ const tinDangRoutes = [
         path: "/postList",
         component: PostList,
         layout: null
-    },
+    }
 ];
 
 export default tinDangRoutes;

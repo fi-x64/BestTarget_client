@@ -28,12 +28,6 @@ export const updateUser = async (id, values) => {
     return [];
 };
 
-export const handleSearchAPI = async (values) => {
-    const res = await request.post('/search', values);
-    if (res.data.status === 'success') return res.data.data
-    return []
-}
-
 export const editUser = async (values) => {
     const res = await request.patch(`/users/updateMe`, values, { headers: authHeader() });
     if (res.data.status === 'success') return res.data.data

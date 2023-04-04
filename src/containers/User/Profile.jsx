@@ -6,7 +6,9 @@ import avatar from '../../assets/img/avatar.svg'
 import { Button } from 'antd';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getUser } from '../../services/nguoiDung';
-import { getListFollower, getListFollowing } from '../../services/theoDoi';
+import { getListFollower, getListFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 
 function Profile() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -15,19 +17,29 @@ function Profile() {
   const [currentUser, setCurrentUser] = useState();
   const [countFollower, setCountFollower] = useState();
   const [countFollowing, setCountFollowing] = useState();
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       const userId = searchParams.get("userId");
 
-      const listFollower = await getListFollower();
-      const listFollowing = await getListFollowing();
-
+      const listFollower = await getListFollower(userId);
+      const listFollowing = await getListFollowing(userId);
+      console.log("Check listFollower: ", listFollower);
       if (listFollower) {
         setCountFollower(listFollower.count)
       }
       if (listFollowing) {
-        setCountFollowing(listFollowing.count)
+        console.log("Check listFollowing: ", listFollowing);
+        if (listFollowing) {
+          setCountFollowing(listFollowing.count);
+          listFollowing.data.map((value, index) => {
+            if (value.nguoiDung[0]._id == user.data._id) {
+              setIsFollowing(true);
+              return;
+            }
+          })
+        }
       }
 
       if (userId != user.data._id) {
@@ -41,6 +53,26 @@ function Profile() {
     }
     fetchData()
   }, []);
+
+  const handleXoaTheoDoi = async (userId) => {
+    const res = await xoaTheoDoi(userId);
+    console.log("Check res: ", res);
+    if (res) {
+      setIsFollowing(false);
+      toast.success(res.message);
+    } else
+      toast.error('Huỷ theo dõi không thành công');
+  }
+
+  const handleThemTheoDoi = async (userId) => {
+    const res = await themTheoDoi(userId);
+
+    if (res) {
+      setIsFollowing(true);
+      toast.success(res.message);
+    } else
+      toast.error('Huỷ theo dõi không thành công');
+  }
 
   return (
     <>
@@ -57,7 +89,10 @@ function Profile() {
                 </div>
                 {currentUser._id != user.data._id ?
                   <div className='flex'>
-                    <Button className='rounded-2xl bg-[#ffba22]'><i className="fa-solid fa-plus mr-1"></i>Theo dõi</Button>
+                    {isFollowing ?
+                      <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleXoaTheoDoi(currentUser._id)}><i className="fa-solid fa-check mr-1"></i>Đang theo dõi</Button>
+                      : <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleThemTheoDoi(currentUser._id)}><i className="fa-solid fa-plus mr-1"></i>Theo dõi</Button>
+                    }
                     <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
                   </div> : <div className='flex'>
                     <Link to="/users/editProfile"><Button className='rounded-2xl'>Chỉnh sửa trang cá nhân</Button></Link>
@@ -67,7 +102,7 @@ function Profile() {
             </div>
             <ul className='[&>li]:text-[#9b9b9b] text-[14px] [&>li>i]:mr-2 [&>li]:mb-2'>
               <li><i className="fa-regular fa-star"></i>Đánh giá:</li>
-              <li><i className="fa-regular fa-calendar-days"></i>Ngày tham gia:</li>
+              <li><i className="fa-regular fa-calendar-days"></i>Ngày tham gia: {currentUser ? moment(currentUser.thoiGianTao).format('DD/MM/YYYY') : null}</li>
               <li><i className="fa-solid fa-location-dot"></i>Địa chỉ:</li>
               <li><i className="fa-regular fa-message"></i>Phản hồi chat:</li>
               <li><i className="fa-regular fa-circle-check"></i>Đã cung cấp:</li>

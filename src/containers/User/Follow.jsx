@@ -4,74 +4,83 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, List, Popover, Tabs } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
-import { getListFollower, getListFollowing } from '../../services/theoDoi';
+import { getListLoggedFollower, getListLoggedFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
+import { toast } from 'react-toastify';
 
 function Follow() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
-    const [countTTTin, setCountTTTin] = useState();
-    const [tinDangData, setTinDangData] = useState();
     const [listFollower, setListFollower] = useState();
     const [listFollowing, setListFollowing] = useState();
 
     useEffect(() => {
         async function fetchData() {
-            const listFollower = await getListFollower();
-            const listFollowing = await getListFollowing();
+            const listFollower = await getListLoggedFollower();
+            const listFollowing = await getListLoggedFollowing();
 
             if (listFollower) {
                 setListFollower(listFollower)
             }
             if (listFollowing) {
+                listFollowing.data.map((value, index) => {
+                    value.nguoiDung[0].status = true;
+                })
                 setListFollowing(listFollowing)
             }
         }
         fetchData();
     }, [])
 
-    const onChange = async (key) => {
-        var res = '';
-        res = await getTinDang(key);
+    const handleXoaTheoDoi = async (userId) => {
+        const res = await xoaTheoDoi(userId);
+        console.log("Check res: ", res);
         if (res) {
-            setTinDangData(res);
-        }
-    };
+            const listFollowingData = { ...listFollowing }
+            listFollowingData.data.map((value, index) => {
+                if (value.nguoiDung[0]._id == userId)
+                    value.nguoiDung[0].status = false;
+            })
+            toast.success(res.message);
+            setListFollowing(listFollowingData)
+        } else
+            toast.error('Huỷ theo dõi không thành công');
+    }
 
-    const content = (id) => {
-        return (
-            <div>
-                <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin</Link>
-                <p onClick={() => handleAnTin(id)} className='cursor-pointer'>Đã bán/Ẩn tin</p>
-            </div>
-        )
-    };
+    const handleThemTheoDoi = async (userId) => {
+        const res = await themTheoDoi(userId);
 
-    const getListItem = (tinDangData, status) => {
+        if (res) {
+            const listFollowingData = { ...listFollowing }
+            listFollowingData.data.map((value, index) => {
+                if (value.nguoiDung[0]._id == userId)
+                    value.nguoiDung[0].status = true;
+            })
+            toast.success(res.message);
+            setListFollowing(listFollowingData)
+        } else
+            toast.error('Huỷ theo dõi không thành công');
+    }
+
+    const getListItem = (data, status) => {
         return (
             <List
-                dataSource={tinDangData}
+                pagination={{ position: 'bottom', align: 'center', pageSize: 10 }}
+                dataSource={data}
                 renderItem={(item) => (
-                    <List.Item key={item._id}>
+                    <List.Item key={item.nguoiDung[0]._id}>
                         <List.Item.Meta
-                            avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
-                            title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
-                            description={
-                                <>
-                                    <p className='text-sm text-red-600'>{item.gia} đ</p>
-                                    {
-                                        status === 'Đang hiển thị' || status === 'Tin đã ẩn' ?
-                                            <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
-                                            : status === 'Bị từ chối' ?
-                                                <p className='text-xs'>Tin đăng còn {5 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
-                                                : status === 'Hết hạn' ?
-                                                    <p className='text-xs'>Tin đăng còn {75 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
-                                                    : null
-                                    }
-                                </>}
+                            avatar={<Avatar className='w-[50px] h-[50px]' src={item.nguoiDung[0].anhDaiDien.url} />}
+                            title={<Link to={{ pathname: '/users/profile', search: `?userId=${item.nguoiDung[0]._id}` }} className='text-base'>{item.nguoiDung[0].hoTen}</Link>}
+                        // description={}
                         />
+                        {status === 'Đang theo dõi' && item.nguoiDung[0].status ?
+                            <Button className='float-right'><i className="fa-solid fa-user-check text-[#ffba22]" onClick={() => handleXoaTheoDoi(item.nguoiDung[0]._id)}></i></Button>
+                            : status === 'Đang theo dõi' && !item.nguoiDung[0].status ? <Button className='float-right bg-[#ffba22]' onClick={() => handleThemTheoDoi(item.nguoiDung[0]._id)}><i className="fa-solid fa-user-plus"></i></Button>
+                                : null
+                        }
                     </List.Item >
                 )
                 }
@@ -81,33 +90,31 @@ function Follow() {
     const items = [
         {
             key: '1',
-            label: 'Được theo dõi (' + listFollower.count + ')',
-            children: getListItem(tinDangData, "Đang hiển thị")
+            label: 'Đang theo dõi (' + listFollowing?.count + ')',
+            children: getListItem(listFollowing?.data, 'Đang theo dõi'),
         },
         {
             key: '2',
-            label: 'Đang theo dõi (' + listFollowing.count + ')',
-            children: getListItem(tinDangData, "Hết hạn"),
+            label: 'Được theo dõi (' + listFollower?.count + ')',
+            children: getListItem(listFollower?.data, 'Được theo dõi')
         },
     ];
 
     return (
         <div className="container bg-[#f4f4f4]">
-            <div className="max-w-[712px] h-[700px] bg-[#fff]">
-                <div>
-                    <h1 className='p-4 font-semibold text-lg'>Quản lý theo dõi</h1>
-                    <hr />
-                </div>
-                <div className="grid grid-cols-3 pl-[15px] pt-[15px] bg-white">
-                    <div className='flex col-span-2'>
-
+            {listFollower && listFollowing ?
+                <div className="max-w-[712px] h-[700px] bg-[#fff]">
+                    <div>
+                        <h1 className='p-4 font-semibold text-lg'>Quản lý theo dõi</h1>
+                        <hr />
+                    </div>
+                    <div className='pl-[15px]'>
+                        <Tabs defaultActiveKey="1" items={items} tabBarGutter={50}
+                        // onChange={onChange} 
+                        />
                     </div>
                 </div>
-                <hr />
-                <div className='pl-[15px]'>
-                    <Tabs defaultActiveKey="1" items={items} tabBarGutter={50} onChange={onChange} />
-                </div>
-            </div>
+                : null}
         </div>
     );
 };

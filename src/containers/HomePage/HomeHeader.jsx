@@ -40,13 +40,29 @@ function HomeHeader() {
         {
             key: '3',
             label: (
+                <Link to='/users/follow'>
+                    Người theo dõi/Đang theo dõi
+                </Link>
+            ),
+        },
+        {
+            key: '4',
+            label: (
+                <Link to='/users/wishList'>
+                    Tin đăng đã lưu
+                </Link>
+            ),
+        },
+        {
+            key: '5',
+            label: (
                 <Link to='/walletDashboard'>
                     Quản lý số dư
                 </Link>
             ),
         },
         {
-            key: '4',
+            key: '6',
             label: (
                 <Link to='/users/editProfile'>
                     Cài đặt tài khoản
@@ -54,7 +70,7 @@ function HomeHeader() {
             ),
         },
         {
-            key: '5',
+            key: '7',
             label: (
                 <a rel="noopener noreferrer" onClick={() => handleLogout()}>
                     Đăng xuất
