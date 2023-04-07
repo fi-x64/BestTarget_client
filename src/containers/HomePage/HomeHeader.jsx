@@ -21,7 +21,7 @@ function HomeHeader() {
     }
 
     const items = [
-        isLoggedIn && user.data && user.data.quyen.ten === 'Admin' ? {
+        isLoggedIn && user.data && user.data?.quyen?.ten === 'Admin' ? {
             key: '1',
             label: (
                 <Link to="/managerPage">
@@ -57,12 +57,20 @@ function HomeHeader() {
             key: '5',
             label: (
                 <Link to='/walletDashboard'>
-                    Quản lý số dư
+                    Quản lý số dư và gói tin
                 </Link>
             ),
         },
         {
             key: '6',
+            label: (
+                <Link to='/subscription'>
+                    Nâng cấp gói đăng tin
+                </Link>
+            ),
+        },
+        {
+            key: '7',
             label: (
                 <Link to='/users/editProfile'>
                     Cài đặt tài khoản
@@ -70,7 +78,7 @@ function HomeHeader() {
             ),
         },
         {
-            key: '7',
+            key: '8',
             label: (
                 <a rel="noopener noreferrer" onClick={() => handleLogout()}>
                     Đăng xuất

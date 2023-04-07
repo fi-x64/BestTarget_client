@@ -6,7 +6,7 @@ import avatar from '../../assets/img/avatar.svg'
 import { NumericFormat } from 'react-number-format';
 import CheckOut from './Checkout';
 import { getAllMenhGia } from '../../services/menhGia';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getViTien } from '../../services/thanhToan';
 
 function WalletDashboard() {
@@ -49,6 +49,18 @@ function WalletDashboard() {
                         <i className="fa-solid fa-coins ml-2"></i>
                     </div>
                     <a className='float-right text-blue-500 cursor-pointer text-sm'>Xem lịch sử giao dịch <i className="fa-solid fa-chevron-right"></i></a>
+                </div>
+            </div>
+
+            <div className="p-[15px] bg-white mb-[15px]">
+                <h1 className='text-xl font-semibold'><i className="fa-solid fa-cubes text-[#ffba00] mr-2"></i>Gói tin đăng</h1>
+                <div className='flex justify-between px-8 py-4'>
+                    <div className='text-base'>
+                        <h1>Gói đang áp dụng: <b>{user.data.goiTinDang.id.tenGoi}</b></h1>
+                        <h1>Số lượng tin đăng còn lại: {user.data.goiTinDang.soLuongTinDang}</h1>
+                        <h1 className='italic text-sm'>*Thông tin gói và số lượng tin đăng sẽ được cập nhật lại tin khi qua tháng mới </h1>
+                    </div>
+                    <Link to="/subscription" className='float-right text-blue-500 cursor-pointer text-sm'>Xem các gói tin đăng hoặc mua lẻ lượt đăng tin<i className="fa-solid fa-chevron-right"></i></Link>
                 </div>
             </div>
 

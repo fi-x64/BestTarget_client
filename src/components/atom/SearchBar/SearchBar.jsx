@@ -14,7 +14,7 @@ function SearchBar() {
     const [showResult, setShowResult] = useState(false);
     const [data, setData] = useState([]);
     const [value, setValue] = useState();
-    const naviagte = useNavigate();
+    const navigate = useNavigate();
 
     const handleSearch = async (e) => {
         setValue(e.target.value);
@@ -41,13 +41,13 @@ function SearchBar() {
 
     const handleKeyUp = (event) => {
         if (event.keyCode === 13) {
-            naviagte(`/postList?&keyWord=${value}`)
+            navigate(`/postList?&keyWord=${value}`)
             setShowResult(false);
         }
     }
 
     const handleClick = () => {
-        naviagte(`/postList?&keyWord=${value}`)
+        navigate(`/postList?&keyWord=${value}`)
         setShowResult(false);
     }
 

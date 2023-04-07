@@ -1,3 +1,5 @@
+import CheckOutCoin from "../containers/Wallet/CheckoutCoin";
+import Subscription from "../containers/Post/Subscription";
 import CheckOut from "../containers/Wallet/Checkout";
 import PaymentResult from "../containers/Wallet/PaymentResult";
 import WalletDashboard from "../containers/Wallet/WalletDashboard";
@@ -16,6 +18,16 @@ const thanhToanRoutes = [
     {
         path: "/paymentResult",
         component: PaymentResult,
+        layout: null
+    },
+    {
+        path: "/subscription",
+        component: Subscription,
+        layout: null
+    },
+    {
+        path: "/checkoutCoin",
+        component: CheckOutCoin,
         layout: null
     },
 ];

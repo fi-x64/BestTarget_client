@@ -11,6 +11,8 @@ import { handleTimKiem } from '../../services/timKiem';
 import SelectCategory from '../../components/atom/SelectCategory/SelectCategory';
 import SelectAddress from '../../components/atom/SelectAddress/SelectAddress';
 import Filter from '../../components/atom/Filter/Filter';
+import { toast } from 'react-toastify';
+import { getListTinYeuThich, themTinYeuThich, xoaTinYeuThich } from '../../services/tinYeuThich';
 
 function PostList() {
     const location = useLocation();
@@ -33,12 +35,60 @@ function PostList() {
                 const res = await getTinDangByValue(allParams);
 
                 if (res) {
+                    const tinYeuThichData = await getListTinYeuThich();
+
+                    if (tinYeuThichData) {
+                        res.map((value, index) => {
+                            tinYeuThichData.data.map((tinValue) => {
+                                if (value._id == tinValue.tinYeuThich[0]._id) {
+                                    value.status = true;
+                                }
+                            }
+                            )
+                        })
+                    }
+                    console.log("Check res: ", res);
+
                     setListTinDang(res);
                 }
             }
         }
         fetchData()
     }, [allParams])
+
+    const handleXoaTinYeuThich = async (e, tinDangId) => {
+        e.preventDefault();
+        const res = await xoaTinYeuThich(tinDangId);
+        console.log("Check res: ", res);
+        if (res) {
+            const listTinDangData = [...listTinDang]
+            console.log("Check listTinDangData: ", listTinDangData);
+            listTinDangData.map((value, index) => {
+                if (value._id == tinDangId)
+                    value.status = false;
+            })
+            toast.success(res.message);
+            setListTinDang(listTinDangData)
+        } else
+            toast.error('Huỷ theo dõi không thành công');
+    }
+
+    const handleThemTinYeuThich = async (e, tinDangId) => {
+        e.preventDefault();
+
+        const res = await themTinYeuThich(tinDangId);
+
+        if (res) {
+            const listTinDangData = [...listTinDang]
+            listTinDangData.map((value, index) => {
+                if (value._id == tinDangId)
+                    value.status = true;
+            })
+            toast.success(res.message);
+            setListTinDang(listTinDangData)
+        } else
+            toast.error('Huỷ theo dõi không thành công');
+    }
 
     return (
         <div className="container">
@@ -62,7 +112,9 @@ function PostList() {
                     renderItem={(item, index) => (
                         <div className='hover:border-grey-400 hover:border-2'>
                             <Link id='RouterNavLink' to={{ pathname: '/postDetail', search: `?id=${item._id}` }}>
-                                <List.Item>
+                                <List.Item
+                                    actions={[item.status == true ? <i className="fa-solid fa-heart text-red-600" onClick={(e) => handleXoaTinYeuThich(e, item._id)}></i> : <i className="fa-regular fa-heart" onClick={(e) => handleThemTinYeuThich(e, item._id)}></i>]}
+                                >
                                     <List.Item.Meta
                                         avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
                                         title={item.tieuDe}

@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Layout, List, Menu, Modal, Table, theme } from 'antd';
-import { getAllNguoiDung, getStatisticsUserInWeek, getUser } from '../../services/nguoiDung';
-import { Input, Space } from 'antd';
-import { editPost, getAllPost, getStatisticsPostInProvince, getStatisticsPostInWeek } from '../../services/tinDang';
+import React, { useEffect, useState } from 'react';
+import { getStatisticsUserInWeek } from '../../services/nguoiDung';
+import { getStatisticsPostInProvince, getStatisticsPostInWeek } from '../../services/tinDang';
 import { getAllTinhThanh } from '../../services/diaChi';
 import {
     Chart as ChartJS,

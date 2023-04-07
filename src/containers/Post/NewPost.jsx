@@ -6,18 +6,29 @@ import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
 import { getAllDanhMuc, getAllDanhMucPhu } from '../../services/danhMuc';
 import CreateNewPost from './CreateNewPost';
 import './NewPost.scss';
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { getViTien } from '../../services/thanhToan';
 
 function NewPost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [isSubModalOpen, setIsSubModalOpen] = useState(false);
+    const [isModalPaymentOpen, setIsModalPaymentOpen] = useState(false);
     const [danhMucPhuData, setDanhMucPhuData] = useState([]);
     const danhMucData = useQuery(['getAllDanhMuc'], getAllDanhMuc);
     const [danhMucName, setDanhMucName] = useState();
     const [danhMucPhuName, setDanhMucPhuName] = useState();
     const [danhMucPhuId, setDanhMucPhuId] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
+    const [isAbleCreatePost, setIsAbleCreatePost] = useState(true);
+
+    useEffect(() => {
+        if (user.data.goiTinDang.soLuongTinDang <= 0) {
+            setIsModalOpen(false);
+            setIsAbleCreatePost(false);
+            setIsModalPaymentOpen(true);
+        }
+    }, [])
 
     useEffect(() => {
         setDanhMucPhuId(searchParams.get("danhMucPhuId"));
@@ -33,6 +44,10 @@ function NewPost() {
 
     const handleCancel = () => {
         setIsModalOpen(false);
+    };
+
+    const handlePaymentCancel = () => {
+        setIsModalPaymentOpen(false);
     };
 
     const handleItemModalClick = async (values) => {
@@ -78,6 +93,7 @@ function NewPost() {
                     <div className='p-4'>
                         <h1 className='font-semibold text-lg mb-2'>Chọn danh mục tin đăng <RequiredIcon /></h1>
                         <button
+                            disabled={isAbleCreatePost ? false : true}
                             className='flex justify-between'
                             style={{ width: '90%', height: '30px', border: '1px solid grey', borderRadius: '5px', paddingLeft: '8px', paddingTop: '2px' }}
                             onClick={showModal}>
@@ -94,6 +110,13 @@ function NewPost() {
                                 </ul>
                             </div>
                         </Modal>
+                        {isAbleCreatePost ? null :
+                            <Modal title="Không đủ lượt đăng tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} footer={null}>
+                                <div className=''>
+                                    <h1>Lượt đăng tin trong tài khoản của bạn đã hết. Vui lòng mua thêm lượt đăng tin tại <Link to="/walletDashboard" className='text-[#ffba22]'>đây</Link> </h1>
+                                </div>
+                            </Modal>
+                        }
                         {showSubModal ?
                             <Modal title="Đăng tin" open={isSubModalOpen} onCancel={handleSubCancel} footer={null}>
                                 <div className='menu-category p-4 '>

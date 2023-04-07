@@ -14,20 +14,19 @@ import TextArea from 'antd/es/input/TextArea';
 import ActionButton from '../../components/atom/ActionButton'
 import { createPost, getGoiY } from '../../services/tinDang';
 import { useNavigate } from 'react-router-dom';
+import { editUser, getCurrentUser } from '../../services/nguoiDung';
+import { updateUser } from '../../actions/auth';
 
 function CreateNewPost({ danhMucPhuId }) {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [quanHuyen, setQuanHuyen] = useState([]);
     const [phuongXa, setPhuongXa] = useState([]);
     const tinhThanh = useQuery(['tinhThanh'], getAllTinhThanh);
     const [goiY, setGoiY] = useState();
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-
-    }, [])
 
     useEffect(() => {
         async function fetchData() {
@@ -161,17 +160,34 @@ function CreateNewPost({ danhMucPhuId }) {
         values.nguoiDungId = user.data._id;
 
         // values.fromEntries(values.entries(obj).filter(([_, v]) => v != null));
-
+        console.log("Check values: ", values);
         const res = await createPost(values);
 
         if (res) {
-            setLoading(false)
-            message.success({
-                content: 'Đăng tin thành công, vui lòng chờ duyệt',
-                key,
-                duration: 1,
-            })
-            navigate('/managePost');
+            setLoading(false);
+            const soLuongTinDang = user.data.goiTinDang.soLuongTinDang - 1;
+            const values = {
+                "goiTinDang": {
+                    id: user.data.goiTinDang.id._id,
+                    soLuongTinDang: soLuongTinDang
+                }
+            }
+
+            const updateUserData = await editUser(values);
+            if (updateUserData) {
+                const newUserData = await getCurrentUser();
+                const userData = { ...user };
+                userData.data = newUserData.data;
+                localStorage.setItem("user", JSON.stringify(userData));
+                dispatch(updateUser(userData));
+                message.success({
+                    content: 'Đăng tin thành công, vui lòng chờ duyệt, bạn sẽ bị trừ 1 lượt đăng tin',
+                    key,
+                    duration: 1,
+                })
+                navigate('/managePost');
+                window.location.reload();
+            }
         }
     }
 
@@ -389,7 +405,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
-                                            fieldNames={{ label: 'label', value: 'label' }}
+                                            // fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.hangSX}
                                         ></Select>
                                         <ErrorMessage
@@ -779,7 +795,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
-                                            fieldNames={{ label: 'label', value: 'label' }}
+                                            // fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.thietBi}
                                         ></Select>
                                         <ErrorMessage

@@ -20,26 +20,24 @@ function Profile() {
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
+    console.log("Check user: ", user);
     async function fetchData() {
       const userId = searchParams.get("userId");
 
       const listFollower = await getListFollower(userId);
       const listFollowing = await getListFollowing(userId);
-      console.log("Check listFollower: ", listFollower);
+
       if (listFollower) {
         setCountFollower(listFollower.count)
       }
       if (listFollowing) {
-        console.log("Check listFollowing: ", listFollowing);
-        if (listFollowing) {
-          setCountFollowing(listFollowing.count);
-          listFollowing.data.map((value, index) => {
-            if (value.nguoiDung[0]._id == user.data._id) {
-              setIsFollowing(true);
-              return;
-            }
-          })
-        }
+        setCountFollowing(listFollowing.count);
+        listFollowing.data.map((value, index) => {
+          if (value.nguoiDung[0]._id == user.data._id) {
+            setIsFollowing(true);
+            return;
+          }
+        })
       }
 
       if (userId != user.data._id) {

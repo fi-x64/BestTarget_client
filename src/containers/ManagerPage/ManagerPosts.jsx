@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Layout, List, Menu, Modal, Table, theme } from 'antd';
-import { getAllNguoiDung, getUser } from '../../services/nguoiDung';
+import { editUser, getAllNguoiDung, getCurrentUser, getUser } from '../../services/nguoiDung';
 import { Input, Space } from 'antd';
 import { editPost, getAllPost } from '../../services/tinDang';
 import { SearchOutlined } from '@ant-design/icons';
@@ -9,20 +9,38 @@ import { NumericFormat } from 'react-number-format';
 import Highlighter from 'react-highlight-words';
 import ModalDetailPost from './ModalDetailPost';
 import { toast } from 'react-toastify';
+import { updateUser } from '../../actions/auth';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { Search } = Input;
 
 function ManagerPosts() {
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
+
     const [listPost, setListPost] = useState();
     const [data, setData] = useState();
     const [searchTerm, setSearchTerm] = useState("");
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [postId, setPostId] = useState();
+    const [isOpenHuyModal, setIsOpenHuyModal] = useState(false);
+
+    const inputRef = useRef();
+    const dispatch = useDispatch();
 
     const showDetailModal = (id) => {
         setIsDetailModalOpen(true);
         setPostId(id);
     };
+
+    const fetchData = async () => {
+        const postData = await getAllPost();
+
+        handleRefetchData(postData)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     const handleRefetchData = async (postData) => {
         const refetchData = [];
@@ -36,20 +54,6 @@ function ManagerPosts() {
         setData(refetchData);
     }
 
-    const fetchData = async () => {
-        const postData = await getAllPost();
-
-        if (postData) {
-            for (var i = 0; i < postData.length; i++) {
-                const value = await getUser(postData[i].nguoiDungId)
-                if (value) {
-                    postData[i].nguoiDungId = value.data;
-                }
-            }
-        }
-        handleRefetchData(postData)
-    }
-
     const hanldeDuyetTin = async (postId) => {
         const res = await editPost(postId, { trangThaiTin: 'Đang hiển thị', thoiGianPush: Date.now() });
 
@@ -60,29 +64,45 @@ function ManagerPosts() {
     }
 
     const hanldeTuChoiTin = async (postId) => {
-        const res = await editPost(postId, { trangThaiTin: 'Bị từ chối', thoiGianPush: Date.now() });
+        setIsOpenHuyModal(true);
+        setPostId(postId);
+    }
 
+    const handleCancelHuyModal = () => {
+        setIsOpenHuyModal(false);
+        inputRef.current.value = "";
+    }
+
+    const handleHuyOk = async (postId) => {
+        const value = inputRef.current.value;
+        const res = await editPost(postId, { trangThaiTin: 'Bị từ chối', lyDoTuChoi: value, thoiGianPush: Date.now() });
+        console.log("Check res: ", res);
         if (res) {
+            setIsOpenHuyModal(false);
+            const soLuongTinDang = user.data.goiTinDang.soLuongTinDang + 1;
+            const values = {
+                "goiTinDang": {
+                    id: user.data.goiTinDang.id._id,
+                    soLuongTinDang: soLuongTinDang
+                }
+            }
+            const updateUserData = await editUser(values);
+            if (updateUserData) {
+                const newUserData = await getCurrentUser();
+                const userData = { ...user };
+                userData.data = newUserData.data;
+                localStorage.setItem("user", JSON.stringify(userData));
+                dispatch(updateUser(userData));
+            }
+            inputRef.current.value = "";
+
             toast.success('Đã từ chối tin đăng');
             fetchData();
         }
     }
 
-
     const handleCancel = async () => {
         setIsDetailModalOpen(false);
-    };
-
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    const onSearch = async (e) => {
-        const res = await searchPost(e.target.value);
-
-        if (res) {
-            handleRefetchData(res);
-        }
     };
 
     const [searchText, setSearchText] = useState('');
@@ -288,6 +308,20 @@ function ManagerPosts() {
                 {
                     <ModalDetailPost postId={postId} />
                 }
+            </Modal>
+            <Modal title="Nhập lý do từ chối tin" open={isOpenHuyModal} onCancel={handleCancelHuyModal} onOk={() => handleHuyOk(postId)} footer={[
+                <Button key="back" onClick={handleCancelHuyModal}>
+                    Thoát
+                </Button>,
+                <Button
+                    className='bg-[#ffba00]'
+                    key="ok"
+                    onClick={() => handleHuyOk(postId)}
+                >
+                    Lưu
+                </Button>,
+            ]}>
+                <textarea type="text" ref={inputRef} className='border-gray-200 border-2 w-[100%] rounded-lg p-1' />
             </Modal>
         </>
     );

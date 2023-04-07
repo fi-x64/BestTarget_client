@@ -29,3 +29,9 @@ export const getViTien = async (userId) => {
     if (res.data.status === 'success') return res.data.data
     return []
 }
+
+export const thanhToanCoin = async (values) => {
+    const res = await request.post(`/thanhToan/thanhToanCoin`, values)
+    if (res.data.status) return res.data
+    return []
+}

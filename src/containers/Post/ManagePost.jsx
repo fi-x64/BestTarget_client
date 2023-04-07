@@ -1,18 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Avatar, Button, List, Popover, Tabs } from 'antd';
+import { Avatar, Button, List, Modal, Popover, Tabs } from 'antd';
 import { Link } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
+import { editUser, getCurrentUser } from '../../services/nguoiDung';
+import { updateUser } from '../../actions/auth';
 
 function ManagePost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
     const [countTTTin, setCountTTTin] = useState();
     const [tinDangData, setTinDangData] = useState();
+    const [isAbleRestore, setIsAbleRestore] = useState();
+    const [isModalPaymentOpen, setIsModalPaymentOpen] = useState();
+    const [currentPostId, setCurrentPostId] = useState();
+    const [isModalReasonOpen, setIsModalReasonOpen] = useState(false);
+    const [currentReason, setCurrentReason] = useState();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function fetchData() {
@@ -66,6 +75,55 @@ function ManagePost() {
         return 0
     }
 
+    const handleKhoiPhucTin = (postId) => {
+        if (user.data.goiTinDang.soLuongTinDang <= 0) {
+            setIsAbleRestore(false);
+            setIsModalPaymentOpen(true);
+        } else {
+            setIsAbleRestore(true);
+            setIsModalPaymentOpen(true);
+            setCurrentPostId(postId);
+        }
+    }
+
+    const handlePaymentOk = async () => {
+        const soLuongTinDang = user.data.goiTinDang.soLuongTinDang - 1;
+        const values = {
+            "goiTinDang": {
+                id: user.data.goiTinDang.id._id,
+                soLuongTinDang: soLuongTinDang
+            }
+        }
+        const newPostData = await editPost(currentPostId, { trangThaiTin: 'Đang hiển thị', thoiGianPush: Date.now() });
+
+        if (newPostData) {
+            const updateUserData = await editUser(values);
+            if (updateUserData) {
+                const newUserData = await getCurrentUser();
+                const userData = { ...user };
+                userData.data = newUserData.data;
+                localStorage.setItem("user", JSON.stringify(userData));
+                dispatch(updateUser(userData));
+                window.location.reload();
+            }
+        }
+
+    };
+
+    const handlePaymentCancel = () => {
+        setIsModalPaymentOpen(false);
+    };
+
+    const handleOpenModalReason = (reason) => {
+        setIsModalReasonOpen(true);
+        setCurrentReason(reason);
+    }
+
+    const handleReasonCancel = () => {
+        setIsModalReasonOpen(false);
+        setCurrentReason("");
+    }
+
     const content = (id) => {
         return (
             <div>
@@ -76,46 +134,85 @@ function ManagePost() {
     };
 
     const getListItem = (tinDangData, status) => {
-        return (<List
-            dataSource={tinDangData}
-            renderItem={(item) => (
-                <List.Item key={item._id}>
-                    <List.Item.Meta
-                        avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
-                        title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
-                        description={
-                            <>
-                                <p className='text-sm text-red-600'>{item.gia} đ</p>
-                                {
-                                    status === 'Đang hiển thị' || status === 'Tin đã ẩn' ?
-                                        <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
-                                        : status === 'Bị từ chối' ?
-                                            <p className='text-xs'>Tin đăng còn {5 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
-                                            : status === 'Hết hạn' ?
-                                                <p className='text-xs'>Tin đăng còn {75 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
-                                                : null
-                                }
-                            </>}
-                    />
-                    {status === 'Đang hiển thị' ?
-                        <Popover placement="bottomRight" content={content(item._id)} trigger="click">
-                            <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
-                        </Popover>
-                        : status === 'Đang đợi duyệt' ?
-                            // <Popover placement="bottomRight" trigger="click">
-                            <Button disabled className='float-right'>Đang đợi duyệt</Button>
-                            // </Popover> 
-                            : status === 'Bị từ chối' ?
-                                <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
-                                : status === 'Hết hạn' ?
-                                    <Button>Khôi phục tin</Button>
-                                    :
-                                    <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
+        return (
+            <>
+                <List
+                    pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
+                    dataSource={tinDangData}
+                    renderItem={(item) => (
+                        <List.Item key={item._id}>
+                            <List.Item.Meta
+                                avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
+                                title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
+                                description={
+                                    <>
+                                        <p className='text-sm text-red-600'>{item.gia} đ</p>
+                                        {
+                                            status === 'Đang hiển thị' || status === 'Tin đã ẩn' ?
+                                                <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
+                                                : status === 'Bị từ chối' ?
+                                                    <>
+                                                        {item?.lyDoTuChoi ? <h1 className='italic underline cursor-pointer text-red-600' onClick={() => handleOpenModalReason(item.lyDoTuChoi)}> Nhấn để xem lý do huỷ</h1> : null}
+                                                        <p className='text-xs'>Tin đăng còn {5 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
+                                                    </>
+                                                    : status === 'Hết hạn' ?
+                                                        <p className='text-xs'>Tin đăng còn {75 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
+                                                        : null
+                                        }
+                                    </>}
+                            />
+                            {status === 'Đang hiển thị' ?
+                                <Popover placement="bottomRight" content={content(item._id)} trigger="click">
+                                    <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
+                                </Popover>
+                                : status === 'Đang đợi duyệt' ?
+                                    // <Popover placement="bottomRight" trigger="click">
+                                    <Button disabled className='float-right'>Đang đợi duyệt</Button>
+                                    // </Popover> 
+                                    : status === 'Bị từ chối' ?
+                                        <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
+                                        : status === 'Hết hạn' ?
+                                            <Button onClick={() => handleKhoiPhucTin(item._id)}>Khôi phục tin</Button>
+                                            :
+                                            <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
+                            }
+                            {isAbleRestore ? <Modal title="Xác nhận khôi phục tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} onOk={() => handlePaymentOk(item._id)} footer={[
+                                <Button key="back" onClick={handlePaymentCancel}>
+                                    Thoát
+                                </Button>,
+                                <Button
+                                    className='bg-[#ffba00]'
+                                    key="ok"
+                                    onClick={handlePaymentOk}
+                                >
+                                    Ok
+                                </Button>,
+                            ]}>
+                                <div>
+                                    <h1>Bạn sẽ bị trừ đi 1 lượt đăng tin nếu khôi phục tin thành công. Bạn có đồng ý không?</h1>
+                                </div>
+                            </Modal> :
+                                <Modal title="Không đủ lượt đăng tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} footer={null}>
+                                    <div className=''>
+                                        <h1>Lượt đăng tin trong tài khoản của bạn đã hết. Vui lòng mua thêm lượt đăng tin tại <Link to="/walletDashboard" className='text-[#ffba22]'>đây</Link> </h1>
+                                    </div>
+                                </Modal>
+                            }
+                        </List.Item >
+                    )
                     }
-                </List.Item >
-            )
-            }
-        />)
+                />
+                <Modal title="Lý do tin từ chối hiển thị" open={isModalReasonOpen} onCancel={handleReasonCancel} footer={[
+                    <Button key="back" onClick={handleReasonCancel}>
+                        Đóng
+                    </Button>,
+                ]}>
+                    <div>
+                        <h1>{currentReason}</h1>
+                    </div>
+                </Modal>
+            </>
+        )
     }
 
     const items = [
@@ -148,7 +245,7 @@ function ManagePost() {
 
     return (
         <div className="container bg-[#f4f4f4]">
-            <div className="max-w-[712px] h-[700px] bg-[#fff]">
+            <div className="max-w-[712px] pb-2 bg-[#fff]">
                 <div>
                     <h1 className='p-4 font-semibold text-lg'>Quản lý tin đăng</h1>
                     <hr />

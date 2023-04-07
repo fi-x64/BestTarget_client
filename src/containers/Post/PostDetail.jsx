@@ -13,6 +13,9 @@ import Slider from 'react-slick';
 import ReactPlayer from 'react-player'
 import { NumericFormat } from 'react-number-format';
 import { getOneDiaChi } from '../../services/diaChi';
+import { getListTinYeuThich, themTinYeuThich, xoaTinYeuThich } from '../../services/tinYeuThich';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -22,13 +25,40 @@ function PostDetail() {
     const [currentPostData, setCurrentPostData] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
     const [fullDiaChiTin, setFullDiaChiTin] = useState();
+    const [isTinYeuThich, setIsTinYeuThich] = useState(false);
 
+    const countTime = (thoiGianPush) => {
+        const start = thoiGianPush;
+        const end = moment();
+        const duration = moment.duration(end.diff(start));
+
+        // Lấy giá trị thời gian theo đơn vị phút
+        const minutes = duration.asMinutes();
+        // Kiểm tra và chuyển đổi sang tiếng hoặc ngày nếu lớn hơn 59 phút hoặc 23 tiếng
+        let displayTime;
+        var hours;
+        if (minutes >= 60) {
+            hours = duration.asHours();
+            displayTime = `${hours.toFixed(0)} giờ`;
+        } else {
+            displayTime = `${minutes.toFixed(0)} phút`;
+        }
+        var days;
+        if (hours >= 24) {
+            days = duration.asDays();
+            displayTime = `${days.toFixed(0)} ngày`;
+        }
+
+        return displayTime;
+    }
 
     useEffect(() => {
         async function fetchData() {
-            const res = await getTinDangId(searchParams.get('id'));
+            const tinDangId = searchParams.get('id')
+            const res = await getTinDangId(tinDangId);
 
             if (res) {
+                res.khoangThoigian = countTime(res.thoiGianPush);
                 const diaChiData = await getOneDiaChi(res.diaChiTinDang.tinhTPCode, res.diaChiTinDang.quanHuyenCode, res.diaChiTinDang.phuongXaCode);
 
                 if (diaChiData) {
@@ -40,22 +70,40 @@ function PostDetail() {
                 navigate('/')
                 window.location.reload()
             }
+
+            const listTinYeuThich = await getListTinYeuThich();
+
+            if (listTinYeuThich) {
+                listTinYeuThich.data.map((value, index) => {
+                    if (value.tinYeuThich[0]._id == tinDangId) {
+                        setIsTinYeuThich(true);
+                        return;
+                    }
+                })
+            }
         }
         fetchData();
     }, [])
 
-    const contentStyle = {
-        margin: 0,
-        height: '160px',
-        color: '#fff',
-        lineHeight: '160px',
-        textAlign: 'center',
-        background: '#364d79',
-    };
+    const handleXoaTinYeuThich = async (tinDangId) => {
+        const res = await xoaTinYeuThich(tinDangId);
 
-    const onChange = (currentSlide) => {
-        console.log(currentSlide);
-    };
+        if (res) {
+            setIsTinYeuThich(false);
+            toast.success(res.message);
+        } else
+            toast.error('Xoá tin yêu thích không thành công');
+    }
+
+    const handleThemTinYeuThich = async (tinDangId) => {
+        const res = await themTinYeuThich(tinDangId);
+
+        if (res) {
+            setIsTinYeuThich(true);
+            toast.success(res.message);
+        } else
+            toast.error('Xoá tin yêu thích không thành công');
+    }
 
     var settings = {
         dots: true,
@@ -80,16 +128,17 @@ function PostDetail() {
                                     : null}
                                 {currentPostData.hinhAnh.map((value, index) => {
                                     return (
-                                        <Image key={value.public_id} src={value.url} alt="" height={455} width={606} className='object-contain bg-gray-200' />
+                                        <Image key={value.public_id} src={value.url} height={455} width={606} className='object-contain bg-gray-200' />
                                     )
                                 })
                                 }
                             </Slider>
                             <div className='p-3'>
+                                <h1 className='float-right italic text-sm'>Tin đăng {currentPostData.khoangThoigian} trước</h1>
                                 <h1 className='font-bold'>{currentPostData.tieuDe}</h1>
                                 <div className='flex justify-between'>
                                     <NumericFormat className='text-red-600 py-2' value={currentPostData.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
-                                    <Button className='rounded-[20px] border-red-600 text-red-600'>Lưu tin<i className="fa-regular fa-heart ml-2"></i></Button>
+                                    {isTinYeuThich ? <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleXoaTinYeuThich(currentPostData._id)}>Đã lưu<i className="fa-solid fa-heart ml-1"></i></Button> : <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleThemTinYeuThich(currentPostData._id)}>Lưu tin<i className="fa-regular fa-heart ml-2"></i></Button>}
                                 </div>
                                 <p>{currentPostData.moTa}</p>
                                 <div className='grid grid-cols-2 mt-6 gap-2 text-sm font-light'>
@@ -170,7 +219,7 @@ function PostDetail() {
                                         <i className="fa-solid fa-phone-volume mt-[4px]"></i>
                                         <p>{user.data.sdt}</p>
                                     </div>
-                                    <p>BẤM ĐỂ HIỆN SỐ</p>
+                                    {/* <p>BẤM ĐỂ HIỆN SỐ</p> */}
                                 </Button>
                                 <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
                                     <i className="fa-solid fa-message mt-[4px]"></i>
