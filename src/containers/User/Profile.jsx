@@ -21,6 +21,7 @@ function Profile() {
 
   useEffect(() => {
     console.log("Check user: ", user);
+
     async function fetchData() {
       const userId = searchParams.get("userId");
 
