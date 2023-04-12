@@ -8,6 +8,7 @@ import { getViTien, thanhToanCoin } from '../../services/thanhToan';
 import { toast } from 'react-toastify';
 import { getCurrentUser } from '../../services/nguoiDung';
 import { updateUser } from '../../actions/auth';
+import { getAppliedKhuyenMai } from '../../services/khuyenMai';
 
 function CheckOutCoin() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -17,6 +18,16 @@ function CheckOutCoin() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    function handleRefetchData(goiDangKyData, khuyenMaiData) {
+        for (let i = 0; i < khuyenMaiData.goiDangKyId.length; i++) {
+            if (goiDangKyData._id == khuyenMaiData.goiDangKyId[i]._id) {
+                goiDangKyData.giaTienGiam = Math.floor((goiDangKyData.giaTien * khuyenMaiData.tiLeGiamGia) / 100);
+                break;
+            }
+        }
+        setGoiDangKy(goiDangKyData);
+    }
+
     useEffect(() => {
         async function fetchData() {
             const goiId = searchParams.get("goiId")
@@ -24,10 +35,15 @@ function CheckOutCoin() {
             const goiDangKyData = await getOneGoiDangKy(goiId);
 
             if (goiDangKyData) {
-                setGoiDangKy(goiDangKyData);
+                // setGoiDangKy(goiDangKyData);
+                const khuyenMaiData = await getAppliedKhuyenMai();
+
+                if (khuyenMaiData) {
+                    handleRefetchData(goiDangKyData, khuyenMaiData);
+                }
             }
 
-            const viTienData = await getViTien(user.data._id);
+            const viTienData = await getViTien();
 
             if (viTienData) {
                 console.log("Check viTienData:", viTienData);
@@ -42,19 +58,19 @@ function CheckOutCoin() {
         if (goiDangKy.goiId == 2) {
             values = {
                 userId: user.data._id,
-                soTien: goiDangKy.giaTien,
+                soTien: goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien,
             }
         } else {
             if (user.data.goiTinDang.id.goiId >= goiDangKy.goiId) {
                 values = {
                     userId: user.data._id,
-                    soTien: goiDangKy.giaTien,
+                    soTien: goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien,
                     soLuongTinDang: goiDangKy.soLuongTin
                 }
             } else {
                 values = {
                     userId: user.data._id,
-                    soTien: goiDangKy.giaTien,
+                    soTien: goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien,
                     goiId: goiDangKy._id,
                     soLuongTinDang: goiDangKy.soLuongTin
                 }
@@ -93,28 +109,28 @@ function CheckOutCoin() {
                                 <p>Coin đang có:
                                     <NumericFormat className='ml-2' value={viTien.tongSoDu} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
                                     <i className="fa-solid fa-coins ml-2"></i></p>
-                                <p>Coin sẽ sử dụng:
+                                <p>Giá gói:
                                     <NumericFormat className='ml-2' value={goiDangKy.giaTien} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
                                     <i className="fa-solid fa-coins ml-2"></i></p>
-                                <p>Khuyến mãi:
-                                    <NumericFormat className='ml-2' value={0} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
+                                <p>Giá khuyến mãi:
+                                    <NumericFormat className='ml-2' value={goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : 0} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
                                     <i className="fa-solid fa-coins ml-2"></i>
                                 </p>
 
                             </div>
                             <hr />
                             <h1>Thành tiền:
-                                <NumericFormat className='ml-2 float-right text-red-600' value={goiDangKy.giaTien} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
+                                <NumericFormat className='ml-2 float-right text-red-600' value={goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
                             </h1>
 
                             <hr />
                             {(viTien.tongSoDu - goiDangKy.giaTien) >= 0 ?
                                 <>
                                     <h1>Coin còn lại:
-                                        <NumericFormat className='ml-2 float-right text-red-600' value={viTien.tongSoDu - goiDangKy.giaTien} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
+                                        <NumericFormat className='ml-2 float-right text-red-600' value={viTien.tongSoDu - (goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien)} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
                                     </h1>
-                                    <Button className='bg-[#5a9e3f] w-[480px] h-[40px] text-white' onClick={() => handleSubmit(goiDangKy.giaTien)}>
-                                        <NumericFormat className='mr-1' value={goiDangKy.giaTien} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
+                                    <Button className='bg-[#5a9e3f] w-[480px] h-[40px] text-white' onClick={() => handleSubmit(goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien)}>
+                                        <NumericFormat className='mr-1' value={goiDangKy?.giaTienGiam ? goiDangKy.giaTienGiam : goiDangKy.giaTien} displayType={'text'} suffix={' coin'} thousandSeparator={'.'} decimalSeparator={','} />
                                         - THANH TOÁN NGAY!
                                     </Button>
                                 </>

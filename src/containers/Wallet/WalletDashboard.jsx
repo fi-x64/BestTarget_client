@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
-import avatar from '../../assets/img/avatar.svg'
 import { NumericFormat } from 'react-number-format';
-import CheckOut from './Checkout';
 import { getAllMenhGia } from '../../services/menhGia';
 import { Link, useNavigate } from 'react-router-dom';
 import { getViTien } from '../../services/thanhToan';
+import { getAppliedKhuyenMai } from '../../services/khuyenMai';
+import moment from 'moment';
 
 function WalletDashboard() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const [priceList, setPriceList] = useState();
     const [viTien, setViTien] = useState(0);
+    const [currentKhuyenMai, setCurrentKhuyenMai] = useState();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,10 +24,16 @@ function WalletDashboard() {
                 setPriceList(res);
             }
 
-            const viTien = await getViTien(user.data._id);
+            const viTien = await getViTien();
 
             if (viTien) {
                 setViTien(viTien);
+            }
+
+            const khuyenMaiData = await getAppliedKhuyenMai();
+
+            if (khuyenMaiData) {
+                setCurrentKhuyenMai(khuyenMaiData);
             }
         }
         fetchData();
@@ -86,6 +93,9 @@ function WalletDashboard() {
             <div className="bg-[#fff]">
                 <div className='pb-3'>
                     <h1 className='p-4 font-semibold text-xl'><i className="fa-solid fa-percent text-[#ffba00] mr-2"></i>Khuyến mãi</h1>
+                    {currentKhuyenMai ? <p className='px-7 font-semibold text-base'>{currentKhuyenMai.noiDung}. Từ ngày {moment(currentKhuyenMai.ngayBatDau).format('DD/MM/YYYY')} đến ngày {moment(currentKhuyenMai.ngayKetThuc).format('DD/MM/YYYY')}
+                        BestTarget giảm {currentKhuyenMai.tiLeGiamGia}% cho các gói tin: {currentKhuyenMai.goiDangKyId.map((value) => (value.tenGoi + ', '))}
+                        <Link to="/subscription" className='text-blue-600 cursor-pointer'>xem chi tiết giá các gói tin <i className="fa-solid fa-chevron-right"></i></Link></p> : null}
                 </div>
             </div>
         </div>

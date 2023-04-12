@@ -204,7 +204,6 @@ function EditPost() {
 
         values.hinhAnh = uploadedHinhAnh;
         values.video = uploadedVideo;
-        console.log("Check values: ", values);
 
         values.nguoiDungId = user.data._id;
         values.trangThaiTin = 'Đang đợi duyệt';

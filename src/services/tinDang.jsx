@@ -25,14 +25,14 @@ export const getGoiY = async (danhMucPhuId) => {
     return []
 }
 
-export const countTrangThaiTin = async () => {
-    const res = await request.get(`/tinDang/countTrangThaiTin`);
+export const countTrangThaiTin = async (userId) => {
+    const res = await request.get(`/tinDang/countTrangThaiTin?userId=${userId}`);
     if (res.data.status === 'success') return res.data.data
     return []
 }
 
-export const getTinDang = async (key) => {
-    const res = await request.get(`/tinDang/getTinDang?phanLoai=${key}`);
+export const getTinDang = async (userId, key) => {
+    const res = await request.get(`/tinDang/getTinDang?userId=${userId}&phanLoai=${key}`);
     if (res.data.status === 'success') return res.data.data
     return []
 }

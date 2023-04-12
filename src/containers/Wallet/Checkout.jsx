@@ -7,6 +7,7 @@ import { Link, redirect, useNavigate, useSearchParams } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 import { getOneMenhGia } from '../../services/menhGia';
 import { thanhToanMomo, thanhToanVNPay } from '../../services/thanhToan';
+import { getAppliedKhuyenMai } from '../../services/khuyenMai';
 
 function CheckOut() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);

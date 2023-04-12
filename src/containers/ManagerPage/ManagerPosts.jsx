@@ -11,6 +11,7 @@ import ModalDetailPost from './ModalDetailPost';
 import { toast } from 'react-toastify';
 import { updateUser } from '../../actions/auth';
 import { useDispatch, useSelector } from 'react-redux';
+import { createThongBao } from '../../services/thongBao';
 
 const { Search } = Input;
 
@@ -58,7 +59,20 @@ function ManagerPosts() {
         const res = await editPost(postId, { trangThaiTin: 'Đang hiển thị', thoiGianPush: Date.now() });
 
         if (res) {
-            toast.success('Đã duyệt tin thành công');
+            console.log("Check res: ", res);
+            const thongBaoData = {
+                noiDung: "Tin đăng của bạn đã được duyệt",
+                tinDangId: postId,
+                loai: "tinDuocDuyet",
+                daDoc: false,
+            }
+
+            const newThongBao = await createThongBao(res.nguoiDungId, thongBaoData);
+
+            if (newThongBao)
+                toast.success('Đã duyệt tin thành công');
+            else toast.error('Đã xảy ra lỗi khi duyệt tin');
+
             fetchData();
         }
     }
@@ -96,7 +110,19 @@ function ManagerPosts() {
             }
             inputRef.current.value = "";
 
-            toast.success('Đã từ chối tin đăng');
+            const thongBaoData = {
+                noiDung: "Tin đăng của bạn bị từ chối",
+                tinDangId: postId,
+                loai: "tinBiTuChoi",
+                daDoc: false,
+            }
+
+            const newThongBao = await createThongBao(res.nguoiDungId, thongBaoData);
+
+            if (newThongBao) {
+                toast.success('Đã từ chối tin đăng');
+            } else toast.error('Đã xảy ra lỗi khi từ chối tin đăng');
+
             fetchData();
         }
     }

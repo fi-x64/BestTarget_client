@@ -26,21 +26,21 @@ function ManagePost() {
     useEffect(() => {
         async function fetchData() {
             await updateTinHetHan();
-            setCountTTTin(await countTrangThaiTin());
+            setCountTTTin(await countTrangThaiTin(user.data._id));
         }
         fetchData();
     }, [])
 
     useEffect(() => {
         async function fetchData() {
-            setTinDangData(await getTinDang(1));
+            setTinDangData(await getTinDang(user.data._id, 1));
         }
         fetchData();
     }, [])
 
     const onChange = async (key) => {
         var res = '';
-        res = await getTinDang(key);
+        res = await getTinDang(user.data._id, key);
         if (res) {
             setTinDangData(res);
         }
@@ -50,8 +50,8 @@ function ManagePost() {
         const res = await editPost(id, { trangThaiTin: 'Tin đã ẩn' });
         if (res) {
             await updateTinHetHan();
-            setCountTTTin(await countTrangThaiTin());
-            setTinDangData(await getTinDang(1));
+            setCountTTTin(await countTrangThaiTin(user.data._id));
+            setTinDangData(await getTinDang(user.data._id, 1));
         }
     }
 
@@ -59,8 +59,8 @@ function ManagePost() {
         const res = await editPost(id, { trangThaiTin: 'Đang hiển thị' });
         if (res) {
             await updateTinHetHan();
-            setCountTTTin(await countTrangThaiTin());
-            setTinDangData(await getTinDang(1));
+            setCountTTTin(await countTrangThaiTin(user.data._id));
+            setTinDangData(await getTinDang(user.data._id, 1));
             window.location.reload();
         }
     }
@@ -252,12 +252,11 @@ function ManagePost() {
                 </div>
                 <div className="grid grid-cols-3 pl-[15px] pt-[15px] bg-white">
                     <div className='flex col-span-2'>
-                        <img src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="user's avatar" className='avatar w-[80px] h-[80px] rounded-[50%]' />
+                        <img src={user?.data?.anhDaiDien?.url ? user.data.anhDaiDien.url : avatar} alt="user's avatar" className='avatar w-[80px] h-[80px] rounded-[50%]' />
                         <div className="grid grid-rows-3 ml-4">
                             <div className="...">{user.data.hoTen}</div>
                             <div className='text-[13px] grid grid-cols-2 border-blue-500 border-solid gap-2'>
                                 <Button> <Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>Trang cá nhân</Link></Button>
-                                <Button>Liên kết ví bán hàng</Button>
                             </div>
                         </div>
                     </div>

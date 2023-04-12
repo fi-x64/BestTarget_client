@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
-import HomeHeader from '../HomePage/HomeHeader';
-// import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Avatar, Button, Carousel, Divider, Image, List, Popover, Rate, Tabs } from 'antd';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Button, Divider, Image, Rate } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 import { getTinDangIdRestrict } from '../../services/tinDang';
-import { PhoneOutlined } from '@ant-design/icons';
-import communitcate from '../../assets/img/communicate.png'
-import shield from '../../assets/img/shield.png'
 import Slider from 'react-slick';
 import ReactPlayer from 'react-player'
 import { NumericFormat } from 'react-number-format';
@@ -123,13 +118,13 @@ function ModalDetailPost({ postId }) {
                     </div>
                     <div>
                         <h1 className='text-lg font-semibold p-[15px]'>Người đăng tin</h1>
-                        <Link to='/users/profile' className='flex gap-3 p-[15px] text-center justify-center'>
-                            <img className='w-[46px] h-[46px] rounded-[50%]' src={user.data.anhDaiDien.url ? user.data.anhDaiDien.url : avatar} alt="" />
+                        <Link to={{ pathname: '/users/profile', search: `?userId=${currentPostData.nguoiDungId._id}` }} className='flex gap-3 p-[15px] text-center justify-center'>
+                            <img className='w-[46px] h-[46px] rounded-[50%]' src={currentPostData?.nguoiDungId?.anhDaiDien?.url ? currentPostData.nguoiDungId.anhDaiDien.url : avatar} alt="" />
                             <div className='block text-sm'>
-                                <p>{user.data.hoTen}</p>
+                                <p>{currentPostData.nguoiDungId.hoTen}</p>
                                 <p>Đang hoạt động</p>
                             </div>
-                            <Button className='ml-[20px] rounded-[25px]' ><Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>Xem trang</Link></Button>
+                            <Button className='ml-[20px] rounded-[25px]' ><Link to={{ pathname: '/users/profile', search: `?userId=${currentPostData.nguoiDungId._id}` }}>Xem trang</Link></Button>
                         </Link>
                         <div className='flex text-[14px] text-center justify-center'>
                             <div className='block'>
@@ -148,7 +143,7 @@ function ModalDetailPost({ postId }) {
                             <Button className='flex justify-between  w-[50%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
                                 <div className='flex gap-1'>
                                     <i className="fa-solid fa-phone-volume mt-[4px]"></i>
-                                    <p>{user.data.sdt}</p>
+                                    <p>{currentPostData.nguoiDungId.sdt}</p>
                                 </div>
                             </Button>
                             <Button className='flex justify-between w-[50%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>

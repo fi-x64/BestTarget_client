@@ -26,7 +26,7 @@ function App() {
       if (isLoggedIn && message.status == 'sucess') {
         socket.emit("currentUserId", user.data._id);
       }
-      socket.on('cuurentUserData', async (data) => {
+      socket.on(`cuurentUserData_${user.data._id}`, async (data) => {
         const userData = { ...user };
         userData.data = data.userData;
         localStorage.setItem("user", JSON.stringify(userData));

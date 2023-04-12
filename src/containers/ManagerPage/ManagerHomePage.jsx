@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import avatar from '../../assets/img/avatar.svg'
 import { logout } from '../../actions/auth';
 import ManagerStatistics from './ManagerStatistics';
+import ManagerPromotions from './ManagerPromotions';
 
 const { Header, Sider, Content } = Layout;
 
@@ -135,6 +136,7 @@ function ManagerHomePage() {
                     {key == 1 ? <ManagerUsers /> : null}
                     {key == 2 ? <ManagerPosts /> : null}
                     {key == 3 ? <ManagerStatistics /> : null}
+                    {key == 4 ? <ManagerPromotions /> : null}
                 </Content>
             </Layout>
         </Layout>

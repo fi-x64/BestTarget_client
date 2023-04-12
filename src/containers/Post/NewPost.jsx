@@ -7,7 +7,6 @@ import { getAllDanhMuc, getAllDanhMucPhu } from '../../services/danhMuc';
 import CreateNewPost from './CreateNewPost';
 import './NewPost.scss';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { getViTien } from '../../services/thanhToan';
 
 function NewPost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);

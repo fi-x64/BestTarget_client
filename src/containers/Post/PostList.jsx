@@ -6,8 +6,6 @@ import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, Image, List, Popover, Tabs } from 'antd';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { getTinDangByValue } from '../../services/tinDang';
-import { FilterOutlined, EnvironmentOutlined, CaretDownOutlined } from '@ant-design/icons';
-import { handleTimKiem } from '../../services/timKiem';
 import SelectCategory from '../../components/atom/SelectCategory/SelectCategory';
 import SelectAddress from '../../components/atom/SelectAddress/SelectAddress';
 import Filter from '../../components/atom/Filter/Filter';

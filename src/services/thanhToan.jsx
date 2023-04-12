@@ -1,4 +1,5 @@
 import request from "../utils/request"
+import authHeader from "./auth-header";
 
 export const thanhToanMomo = async (userId, menhGia) => {
     const res = await request.get(`/thanhToan/thanhToanMomo?userId=${userId}&soTien=${menhGia}`)
@@ -25,7 +26,7 @@ export const saveVNPayPayment = async (userId, values) => {
 }
 
 export const getViTien = async (userId) => {
-    const res = await request.get(`/thanhToan/getViTien?userId=${userId}`)
+    const res = await request.get(`/thanhToan/getViTien`, { headers: authHeader() })
     if (res.data.status === 'success') return res.data.data
     return []
 }

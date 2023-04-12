@@ -155,7 +155,6 @@ function EditProfile() {
                             user.data ? user.data : {
                                 hoTen: '',
                                 gioiTinh: '',
-                                ngaySinh: null,
                                 diaChi: sampleAddress,
                                 email: '',
                                 sdt: '',
@@ -495,83 +494,6 @@ function EditProfile() {
                                             <Link to="/users/editPassword"><EditOutlined className='text-[18px]' /></Link>
 
                                         } />
-                                    {/* {showPassForm ?
-                                        <>
-                                            <div>
-                                                <label>
-                                                    Mật khẩu hiện tại: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`currentPassword`}
-                                                    id={`currentPassword`}
-                                                    component={Input}
-                                                    value={values.currentPassword}
-                                                    status={
-                                                        errors?.currentPassword &&
-                                                            touched?.currentPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`currentPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    Mật khẩu mới: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`newPassword`}
-                                                    id={`newPassword`}
-                                                    component={Input}
-                                                    value={values.newPassword}
-                                                    status={
-                                                        errors?.newPassword &&
-                                                            touched?.newPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`newPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                            <div>
-                                                <label>
-                                                    Xác nhận mật khẩu mới: <RequiredIcon />
-                                                </label>
-                                                <Field
-                                                    name={`confirmPassword`}
-                                                    id={`confirmPassword`}
-                                                    component={Input}
-                                                    value={values.confirmPassword}
-                                                    status={
-                                                        errors?.confirmPassword &&
-                                                            touched?.confirmPassword
-                                                            ? 'error'
-                                                            : ''
-                                                    }
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                ></Field>
-                                                <ErrorMessage
-                                                    className="field-error"
-                                                    component="div"
-                                                    name={`confirmPassword`}
-                                                ></ErrorMessage>
-                                            </div>
-                                        </>
-                                        : null
-                                    } */}
                                 </div>
                                 <div>
                                     <Button

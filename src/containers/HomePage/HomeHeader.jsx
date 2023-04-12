@@ -7,6 +7,7 @@ import { logout } from '../../actions/auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import SearchBar from '../../components/atom/SearchBar/SearchBar';
+import Notification from './Notification';
 
 function HomeHeader() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -93,12 +94,12 @@ function HomeHeader() {
                     <Link to="/" className='logo'>
                         <img src={logo} alt="" className='h-14' />
                     </Link>
-                    <li className='button flex [&>*]:mr-8 mt-5'>
-                        <ul><Link to='/'><i className="fa-solid fa-house"></i> Trang chủ</Link></ul>
-                        <ul><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></ul>
-                        <ul><a href=""><i className="fa-solid fa-box"></i> Đơn hàng</a></ul>
-                        <ul><a href=""><i className="fa-solid fa-comments"></i> Chat</a></ul>
-                        <ul><a href=""><i className="fa-solid fa-bell"></i> Thông báo</a></ul>
+                    <ul className='button flex [&>*]:mr-8 mt-5'>
+                        <li><Link to='/'><i className="fa-solid fa-house"></i> Trang chủ</Link></li>
+                        <li><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></li>
+                        <li><a href=""><i className="fa-solid fa-comments"></i> Chat</a></li>
+                        {/* <li><a href=""><i className="fa-solid fa-bell"></i> Thông báo</a></li> */}
+                        <li><Notification /></li>
                         {isLoggedIn && user && user.data ?
                             <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer" placement='bottomRight'>
                                 <a onClick={(e) => e.preventDefault()}>
@@ -109,9 +110,9 @@ function HomeHeader() {
                                 </a>
                             </Dropdown>
                             :
-                            <ul><a href="/login"><i className="fa-solid fa-circle-user"></i> Đăng nhập/Đăng ký</a></ul>}
+                            <li><a href="/login"><i className="fa-solid fa-circle-user"></i> Đăng nhập/Đăng ký</a></li>}
 
-                    </li>
+                    </ul>
                 </div>
                 <div className='flex relative my-[12px] mx-auto px-2'>
                     {/* <SearchBar className="fle" /> */}
