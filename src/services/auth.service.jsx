@@ -19,8 +19,14 @@ export const register = async (values) => {
   return [];
 };
 
+export const createOTP = async (email) => {
+  const res = await request.post('/users/createOTP', { email })
+  if (res.data.status === 'success') return res.data;
+  return [];
+};
+
 export const activeAccount = async (email, otp) => {
-  const res = await request.post('/activeAccount', { email, otp })
+  const res = await request.post('/users/activeAccount', { email, otp })
   if (res.data.status === 'success') return res.data;
   return [];
 };

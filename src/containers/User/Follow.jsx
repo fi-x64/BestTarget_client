@@ -5,8 +5,6 @@ import HomeHeader from '../HomePage/HomeHeader';
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, List, Popover, Tabs } from 'antd';
 import { Link, useSearchParams } from 'react-router-dom';
-import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
-import moment from 'moment';
 import { getListLoggedFollower, getListLoggedFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
 import { toast } from 'react-toastify';
 
@@ -72,7 +70,7 @@ function Follow() {
                 renderItem={(item) => (
                     <List.Item key={item.nguoiDung[0]._id}>
                         <List.Item.Meta
-                            avatar={<Avatar className='w-[50px] h-[50px]' src={item.nguoiDung[0].anhDaiDien.url} />}
+                            avatar={<Avatar className='w-[50px] h-[50px]' src={item?.nguoiDung[0]?.anhDaiDien?.url ? item.nguoiDung[0].anhDaiDien.url : avatar} />}
                             title={<Link to={{ pathname: '/users/profile', search: `?userId=${item.nguoiDung[0]._id}` }} className='text-base'>{item.nguoiDung[0].hoTen}</Link>}
                         // description={}
                         />

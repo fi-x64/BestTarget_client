@@ -55,7 +55,7 @@ function WalletDashboard() {
                         <NumericFormat className='text-green-600 py-2' value={viTien ? viTien.tongSoDu : 0} displayType={'text'} thousandSeparator={'.'} decimalSeparator={','} />
                         <i className="fa-solid fa-coins ml-2"></i>
                     </div>
-                    <a className='float-right text-blue-500 cursor-pointer text-sm'>Xem lịch sử giao dịch <i className="fa-solid fa-chevron-right"></i></a>
+                    <Link to='/transactionDashboard' className='float-right text-blue-500 cursor-pointer text-sm'>Xem lịch sử giao dịch <i className="fa-solid fa-chevron-right"></i></Link>
                 </div>
             </div>
 

@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import { Button, Form, Input } from 'antd'
 import { ErrorMessage, FastField, Formik } from 'formik'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon'
-import { register } from '../../services/auth.service'
+import { createOTP, register } from '../../services/auth.service'
 import ActiveAccount from './ActiveAccount'
 import { SET_MESSAGE } from '../../actions/types'
 
@@ -33,8 +33,16 @@ function Register() {
 
     const handleSubmit = async (values) => {
         const res = await register(values);
+        console.log("Check values: ", values);
         if (res.status === 'success') {
-            setMoveNextPage(true);
+            const createOTPData = await createOTP(values.email);
+            if (createOTPData) {
+                setMoveNextPage(true);
+                dispatch({
+                    type: SET_MESSAGE,
+                    payload: '',
+                });
+            }
         } else if (res.status === 'fail') {
             const message = res.message;
 
@@ -195,7 +203,7 @@ function Register() {
                                         <div
                                             className="error-msg"
                                             role="alert"
-                                            style={{ color: 'red', fontSize: 14 }}
+                                            style={{ color: 'red', fontSize: 14, marginBottom: '10px' }}
                                         >
                                             {message}
                                         </div>

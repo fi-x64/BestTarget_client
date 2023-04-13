@@ -405,7 +405,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
-                                            // fieldNames={{ label: 'label', value: 'label' }}
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.hangSX}
                                         ></Select>
                                         <ErrorMessage
@@ -795,7 +795,7 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     .toLowerCase()
                                                     .includes(input.toLowerCase())
                                             }
-                                            // fieldNames={{ label: 'label', value: 'label' }}
+                                            fieldNames={{ label: 'label', value: 'label' }}
                                             options={goiY?.thietBi}
                                         ></Select>
                                         <ErrorMessage

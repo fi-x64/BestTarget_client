@@ -29,11 +29,13 @@ function EditProfile() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        async function fetchData() {
-            setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
-            setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+        if (user?.data?.tinhTPCode && user?.data?.diaChi?.quanHuyenCode) {
+            async function fetchData() {
+                setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
+                setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+            }
+            fetchData();
         }
-        fetchData();
     }, []);
 
     const onChangeTinhTP = async (value) => {
@@ -249,7 +251,7 @@ function EditProfile() {
                                                 name={`diaChi.kinhDo`}
                                                 id={`diaChi.kinhDo`}
                                                 component={Input}
-                                                value={values.diaChi.kinhDo}
+                                                value={values?.diaChi?.kinhDo}
                                                 status={
                                                     errors?.diaChi?.kinhDo &&
                                                         touched?.diaChi?.kinhDo
@@ -275,7 +277,7 @@ function EditProfile() {
                                                 name={`diaChi.viDo`}
                                                 id={`diaChi.viDo`}
                                                 component={Input}
-                                                value={values.diaChi.viDo}
+                                                value={values?.diaChi?.viDo}
                                                 status={
                                                     errors?.diaChi?.viDo &&
                                                         touched?.diaChi?.viDo
@@ -301,7 +303,7 @@ function EditProfile() {
                                                 name={`diaChi.soNha`}
                                                 id={`diaChi.soNha`}
                                                 component={Input}
-                                                value={values.diaChi.soNha}
+                                                value={values?.diaChi?.soNha}
                                                 status={
                                                     errors?.diaChi?.soNha &&
                                                         touched?.diaChi?.soNha
@@ -327,7 +329,7 @@ function EditProfile() {
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.tinhTPCode`}
                                                 id={`diaChi.tinhTPCode`}
-                                                value={values.diaChi.tinhTPCode}
+                                                value={values?.diaChi?.tinhTPCode}
                                                 status={
                                                     errors?.diaChi?.tinhTPCode &&
                                                         touched?.diaChi?.tinhTPCode
@@ -370,7 +372,7 @@ function EditProfile() {
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.quanHuyenCode`}
                                                 id={`diaChi.quanHuyenCode`}
-                                                value={values.diaChi.quanHuyenCode}
+                                                value={values?.diaChi?.quanHuyenCode}
                                                 status={
                                                     errors?.diaChi?.quanHuyenCode &&
                                                         touched?.diaChi?.quanHuyenCode
@@ -412,7 +414,7 @@ function EditProfile() {
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.phuongXaCode`}
                                                 id={`diaChi.phuongXaCode`}
-                                                value={values.diaChi.phuongXaCode}
+                                                value={values?.diaChi?.phuongXaCode}
                                                 status={
                                                     errors?.diaChi?.phuongXaCode &&
                                                         touched?.diaChi?.phuongXaCode

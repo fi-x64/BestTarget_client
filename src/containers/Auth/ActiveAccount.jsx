@@ -7,11 +7,11 @@ import * as Yup from 'yup'
 import { Button, Form, Input } from 'antd'
 import { ErrorMessage, FastField, Formik } from 'formik'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon'
-import { activeAccount } from '../../services/auth.service'
 import { toast } from 'react-toastify'
+import { activeAccount } from '../../services/auth.service'
 
 const ActiveSchema = Yup.object().shape({
-    otp: Yup.number("Chỉ được nhập chữ số").min(6, "OTP gồm 6 chữ số").required('Vui lòng nhập mã OTP'),
+    otp: Yup.number().min(6, "OTP gồm 6 chữ số").required('Vui lòng nhập mã OTP').typeError("Chỉ được nhập chữ số"),
 })
 
 const cl = classNames.bind(styles)
@@ -19,16 +19,16 @@ const cl = classNames.bind(styles)
 function ActiveAccount({ email }) {
     const { isLoggedIn } = useSelector((state) => state.auth)
     const { message } = useSelector((state) => state.message)
-    let navigate = useNavigate()
+    const navigate = useNavigate();
+
     const ref = useRef();
 
-    const dispatch = useDispatch()
-
-    const handleSubmit = async ({ otp }) => {
-        const res = await activeAccount(email, otp);
-        if (res.status.status === 'success') {
+    const handleSubmit = async (values) => {
+        const res = await activeAccount(email, values.otp);
+        if (res.status === 'success') {
             toast.success('Xác thực tài khoản thành công, vui lòng đăng nhập với tài khoản vừa tạo')
             navigate('/login');
+            window.location.reload();
         }
     }
 
