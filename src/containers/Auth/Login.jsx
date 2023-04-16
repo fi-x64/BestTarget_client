@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styles from './Login.module.scss'
 import classNames from 'classnames/bind'
-import { login } from '../../actions/auth'
+import { googleLogin, login } from '../../actions/auth'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import { Button, Form, Input } from 'antd'
@@ -10,6 +10,9 @@ import { ErrorMessage, FastField, Formik } from 'formik'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon'
 import ActiveAccount from './ActiveAccount'
 import { createOTP } from '../../services/auth.service'
+import { SET_MESSAGE } from '../../actions/types'
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios'
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Email không hợp lệ').required('Required'),
@@ -41,12 +44,12 @@ function Login() {
     console.log("Check values: ", values);
     const res = await createOTP(values.email);
     if (res) {
-      setCurrentEmail(values.email)
-      setActiveAccount(true);
       dispatch({
         type: SET_MESSAGE,
         payload: '',
       });
+      setCurrentEmail(values.email)
+      setActiveAccount(true);
     }
   }
 
@@ -56,6 +59,24 @@ function Login() {
       handleSubmit(values);
     }
   }
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const userInfo = await axios.get(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
+      );
+
+      if (userInfo) {
+        dispatch(googleLogin(userInfo.data)).then(() => {
+          navigate('/')
+          window.location.reload()
+        })
+      }
+      console.log("Check userInfo: ", userInfo);
+    },
+    onError: errorResponse => console.log(errorResponse),
+  });
 
   if (isLoggedIn) {
     return <Navigate to={'/'} />
@@ -153,11 +174,11 @@ function Login() {
                         Đăng nhập
                       </Button>
                       <div className='block'>
-                        <a href="" className='block text-blue-600'>Bạn quên mật khẩu?</a>
+                        <Link to='/forgotPassword' className='block text-blue-600'>Bạn quên mật khẩu?</Link>
                         <p>Hoặc sử dụng</p>
                         <ul className={cl('login-logo')}>
                           <li><img src="https://static.chotot.com/storage/assets/LOGIN/facebook.svg" id="facebook-login-btn" alt='facebook-logo' /></li>
-                          <li><img src="https://static.chotot.com/storage/assets/LOGIN/google.svg" id="google-login-btn" alt='google-logo' /></li>
+                          <li className='cursor-pointer' onClick={() => handleGoogleLogin()}><img src="https://static.chotot.com/storage/assets/LOGIN/google.svg" id="google-login-btn" alt='google-logo' /></li>
                         </ul>
                       </div>
                       <p>Chưa có tài khoản? <Link to='/register' className='text-blue-600'>Đăng ký ngay</Link></p>

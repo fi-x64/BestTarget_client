@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import routes from './routes'
 import DefaultLayout from './layouts/DefaultLayout'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import HomeHeader from './containers/HomePage/HomeHeader'
 import HomeFooter from './containers/HomePage/HomeFooter'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
@@ -9,8 +9,8 @@ import { ToastContainer } from 'react-toastify';
 import BackToTopButton from './components/atom/BackToTopButton/BackToTopButton'
 import socketIoClient from 'socket.io-client';
 import { useDispatch, useSelector } from 'react-redux'
-import { getCurrentUser } from './services/nguoiDung'
-import { updateUser } from './actions/auth'
+import { logout, updateUser } from './actions/auth'
+import AuthVerify from './utils/AuthVerify'
 
 // const socket = io('http://localhost:3000');
 
@@ -20,6 +20,10 @@ function App() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const socket = socketIoClient.io('http://localhost:3001');
+
+  const logOut = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
 
   useEffect(() => {
     socket.on('goiTinDang_updated', (message) => {
@@ -86,6 +90,7 @@ function App() {
             })}
 
           </Routes>
+          <AuthVerify logOut={logOut} />
           {/* Same as */}
           <ToastContainer />
         </Router>

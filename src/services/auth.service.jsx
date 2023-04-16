@@ -25,14 +25,19 @@ export const createOTP = async (email) => {
   return [];
 };
 
-export const activeAccount = async (email, otp) => {
-  const res = await request.post('/users/activeAccount', { email, otp })
-  if (res.data.status === 'success') return res.data;
+export const login = async (email, password) => {
+  const res = await request.post('/users/login', { email, matKhau: password })
+  if (res.data.status === 'success') {
+    if (res.data.token) {
+      localStorage.setItem("user", JSON.stringify(res.data));
+      return res.data;
+    }
+  }
   return [];
 };
 
-export const login = async (email, password) => {
-  const res = await request.post('/users/login', { email, matKhau: password })
+export const googleLogin = async (values) => {
+  const res = await request.post('/users/googleLogin', values)
   if (res.data.status === 'success') {
     if (res.data.token) {
       localStorage.setItem("user", JSON.stringify(res.data));
@@ -51,6 +56,36 @@ export const updatePassword = async (values) => {
     }
   }
   return res.data;
+};
+
+export const forgotPassword = async (email) => {
+  const res = await request.post(`/users/forgotPassword`, { email })
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+};
+
+export const validateToken = async (token) => {
+  const res = await request.get(`/users/validateToken?token=${token}`)
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+};
+
+export const resetPassword = async (values) => {
+  const res = await request.patch(`/users/resetPassword`, values)
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+};
+
+export const activeAccount = async (email, otp) => {
+  const res = await request.post('/users/activeAccount', { email, otp })
+  if (res.data.status === 'success') return res.data;
+  return [];
 };
 
 export const logout = () => {

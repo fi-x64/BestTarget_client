@@ -2,23 +2,17 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import avatar from '../../assets/img/avatar.svg'
 import { Button, Form, Input, Select } from 'antd';
-import { Link, useHref } from 'react-router-dom';
-import { CameraOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { useQuery } from '@tanstack/react-query'
-import { getAllTinhThanh, getPhuongXa, getQuanHuyen } from '../../services/diaChi';
 import { ErrorMessage, FastField, Field, FieldArray, Formik } from 'formik'
 import * as Yup from 'yup'
 import './EditPassword.scss'
 import RequiredIcon from '../../components/atom/RequiredIcon/RequiredIcon';
-import { editUser } from '../../services/nguoiDung';
-import { getCurrentUser } from '../../services/nguoiDung';
 import { toast } from 'react-toastify';
 import { updateUser } from '../../actions/auth';
-import axios from 'axios';
 import { updatePassword } from '../../services/auth.service';
 
 function EditPassword() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
+    const { message } = useSelector((state) => state.message)
 
     const dispatch = useDispatch();
 
@@ -40,6 +34,8 @@ function EditPassword() {
             toast.success("Cập nhật mật khẩu thành công");
             const newUserInfo = { ...user, token: res.data.token }
             dispatch(updateUser(newUserInfo))
+        } else {
+            toast.error(res.message);
         }
     }
 
@@ -48,6 +44,7 @@ function EditPassword() {
             <div className="max-w-[936px] bg-[#fff]">
                 <h1 className='p-4 font-semibold text-lg'>Cập nhật mật khẩu</h1>
                 <hr />
+                <h1 className='text-center italic text-red-500'>Đối với tài khoản đăng nhập bằng Google chưa tạo mật khẩu thì nhập ngẫu nhiên ký tự ở mật khẩu hiện tại</h1>
                 <div className='flex items-center justify-center'>
                     <Formik
                         initialValues={
@@ -151,6 +148,17 @@ function EditPassword() {
                                                 name={`confirmPassword`}
                                             ></ErrorMessage>
                                         </div>
+                                        {message ? (
+                                            <div
+                                                className="error-msg"
+                                                role="alert"
+                                                style={{ color: 'red', fontSize: 14 }}
+                                            >
+                                                {message}
+                                            </div>
+                                        ) : (
+                                            ''
+                                        )}
                                     </div>
                                     <div>
                                         <Button

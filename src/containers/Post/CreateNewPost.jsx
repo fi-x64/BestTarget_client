@@ -38,8 +38,10 @@ function CreateNewPost({ danhMucPhuId }) {
 
     useEffect(() => {
         async function fetchData() {
-            setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
-            setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+            if (user.data.diaChi) {
+                setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
+                setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+            }
         }
         fetchData();
     }, []);
