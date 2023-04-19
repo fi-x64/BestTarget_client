@@ -4,7 +4,7 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, List, Modal, Popover, Tabs } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
 import { editUser, getCurrentUser } from '../../services/nguoiDung';
@@ -22,6 +22,10 @@ function ManagePost() {
     const [currentReason, setCurrentReason] = useState();
 
     const dispatch = useDispatch();
+
+    if (!isLoggedIn) {
+        return <Navigate to={'/login'} />
+    }
 
     useEffect(() => {
         async function fetchData() {

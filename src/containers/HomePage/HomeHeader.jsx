@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import SearchBar from '../../components/atom/SearchBar/SearchBar';
 import Notification from './Notification';
+import ChatNotification from './ChatNotification';
 
 function HomeHeader() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -97,8 +98,8 @@ function HomeHeader() {
                     <ul className='button flex [&>*]:mr-8 mt-5'>
                         <li><Link to='/'><i className="fa-solid fa-house"></i> Trang chủ</Link></li>
                         <li><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></li>
-                        <li><a href=""><i className="fa-solid fa-comments"></i> Chat</a></li>
-                        {/* <li><a href=""><i className="fa-solid fa-bell"></i> Thông báo</a></li> */}
+                        {/* <li><Link to="/chat"><i className="fa-solid fa-comments"></i> Chat</Link></li> */}
+                        <li><ChatNotification /></li>
                         <li><Notification /></li>
                         {isLoggedIn && user && user.data ?
                             <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer" placement='bottomRight'>

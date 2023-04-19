@@ -3,6 +3,7 @@ import EditProfile from "../containers/User/EditProfile";
 import EditPassword from "../containers/User/EditPassword";
 import Follow from "../containers/User/Follow";
 import WishList from "../containers/Post/Wishlist";
+import Chat from "../containers/User/Chat";
 
 const nguoiDungRoutes = [
     {
@@ -28,6 +29,11 @@ const nguoiDungRoutes = [
     {
         path: "/users/wishList",
         component: WishList,
+        layout: null
+    },
+    {
+        path: "/chat",
+        component: Chat,
         layout: null
     },
 ];

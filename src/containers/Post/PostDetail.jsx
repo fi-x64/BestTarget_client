@@ -15,6 +15,7 @@ import { getOneDiaChi } from '../../services/diaChi';
 import { getListTinYeuThich, themTinYeuThich, xoaTinYeuThich } from '../../services/tinYeuThich';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { createPhongChat } from '../../services/phongChat';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -102,6 +103,21 @@ function PostDetail() {
             toast.success(res.message);
         } else
             toast.error('Xoá tin yêu thích không thành công');
+    }
+
+    const handleChat = async (postId, nguoiDungId2) => {
+        const res = await createPhongChat({
+            nguoiDungId1: user.data._id,
+            nguoiDungId2: nguoiDungId2,
+            tinDangId: postId
+        })
+
+        if (res) {
+            return navigate({
+                pathname: `/chat`,
+                search: `?phongChatId=${res._id}`,
+            })
+        }
     }
 
     var settings = {
@@ -216,14 +232,22 @@ function PostDetail() {
                                 <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
                                     <div className='flex gap-1'>
                                         <i className="fa-solid fa-phone-volume mt-[4px]"></i>
-                                        <p>{currentPostData.nguoiDungId.sdt}</p>
+                                        <p className='ml-2'>{currentPostData.nguoiDungId.sdt}</p>
                                     </div>
                                     {/* <p>BẤM ĐỂ HIỆN SỐ</p> */}
                                 </Button>
-                                <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
-                                    <i className="fa-solid fa-message mt-[4px]"></i>
-                                    <p>CHAT VỚI NGƯỜI BÁN</p>
-                                </Button>
+                                {currentPostData.nguoiDungId._id === user.data._id ?
+                                    <Link to={{ pathname: '/postEdit', search: `?id=${currentPostData._id}` }} >
+                                        <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
+                                            <i className="fa-solid fa-pen-to-square mt-[4px]"></i>
+                                            <p>CHỈNH SỬA TIN ĐĂNG</p>
+                                        </Button>
+                                    </Link> :
+                                    <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
+                                        <i className="fa-solid fa-message mt-[4px]"></i>
+                                        <p onClick={() => handleChat(currentPostData._id, currentPostData.nguoiDungId._id)}>CHAT VỚI NGƯỜI BÁN</p>
+                                    </Button>
+                                }
                             </div>
                             <div className='flex m-4'>
                                 <img className='w-[100px] h-[100px]' src={communitcate} alt="" />
