@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import avatar from '../../assets/img/avatar.svg'
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Tooltip } from 'antd';
 import { Link, useHref } from 'react-router-dom';
 import { CameraOutlined, EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query'
@@ -21,7 +21,6 @@ function EditProfile() {
 
     const [loading, setLoading] = useState(false);
     // const [imageUrl, setImageUrl] = useState();
-
     const [quanHuyen, setQuanHuyen] = useState([]);
     const [phuongXa, setPhuongXa] = useState([]);
     const tinhThanh = useQuery(['tinhThanh'], getAllTinhThanh);
@@ -62,13 +61,13 @@ function EditProfile() {
         diaChi:
             Yup.object().shape({
                 kinhDo: Yup.number()
-                    .min(-180)
-                    .max(180)
-                    .required('Kinh độ phải từ -180 đến 180!'),
+                    .min(-180, 'Kinh độ phải từ -180 đến 180!')
+                    .max(180, 'Kinh độ phải từ -180 đến 180!')
+                    .required('Vui lòng nhập kinh độ').typeError('Vui lòng nhập số'),
                 viDo: Yup.number()
-                    .min(-90)
-                    .max(90)
-                    .required('Vĩ độ phải từ -90 đến 90!'),
+                    .min(-90, 'Vĩ độ phải từ -90 đến 90!')
+                    .max(90, 'Vĩ độ phải từ -90 đến 90!')
+                    .required('Vui lòng nhập vĩ độ!').typeError('Vui lòng nhập số'),
                 soNha: Yup.string().required(
                     'Vui lòng nhập số nhà, đường!'
                 ),
@@ -143,6 +142,7 @@ function EditProfile() {
 
     return (
         <div className="container bg-[#f4f4f4]">
+            {console.log("Check user: ", user)}
             <div className="max-w-[936px] bg-[#fff]">
                 <h1 className='p-4 font-semibold text-lg'>Thông tin cá nhân</h1>
                 <hr />
@@ -237,61 +237,96 @@ function EditProfile() {
                                     ></ErrorMessage>
                                 </div>
                                 <div>
-                                    <label htmlFor="">Địa chỉ</label>
-                                </div>
-                                <div>
+                                    <div>
+                                        <label htmlFor="">Địa chỉ</label>
+                                    </div>
                                     <div className='ml-3 [&>*]:mb-4'>
-                                        <div>
-                                            <label
-                                                htmlFor={`diaChi.kinhDo`}
-                                            >
-                                                Kinh độ: <RequiredIcon />
-                                            </label>
-                                            <Field
-                                                name={`diaChi.kinhDo`}
-                                                id={`diaChi.kinhDo`}
-                                                component={Input}
-                                                value={values?.diaChi?.kinhDo}
-                                                status={
-                                                    errors?.diaChi?.kinhDo &&
-                                                        touched?.diaChi?.kinhDo
-                                                        ? 'error'
-                                                        : ''
-                                                }
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                            ></Field>
-                                            <ErrorMessage
-                                                className="field-error"
-                                                component="div"
-                                                name={`diaChi.kinhDo`}
-                                            ></ErrorMessage>
-                                        </div>
-                                        <div>
-                                            <label
-                                                htmlFor={`diaChi.viDo`}
-                                            >
-                                                Vĩ độ: <RequiredIcon />
-                                            </label>
-                                            <Field
-                                                name={`diaChi.viDo`}
-                                                id={`diaChi.viDo`}
-                                                component={Input}
-                                                value={values?.diaChi?.viDo}
-                                                status={
-                                                    errors?.diaChi?.viDo &&
-                                                        touched?.diaChi?.viDo
-                                                        ? 'error'
-                                                        : ''
-                                                }
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                            ></Field>
-                                            <ErrorMessage
-                                                className="field-error"
-                                                component="div"
-                                                name={`diaChi.viDo`}
-                                            ></ErrorMessage>
+                                        <div className='flex'>
+                                            <Tooltip title="Nhấn vào để lấy vị trí hiện tại" className='mt-4'>
+                                                <Button
+                                                    onClick={() => {
+                                                        navigator.geolocation.getCurrentPosition(
+                                                            (position) => {
+                                                                const { latitude, longitude } = position.coords;
+                                                                // setFieldValue({
+                                                                //     "diaChi.kinhDo": longitude,
+                                                                //     "diaChi.viDo": latitude,
+                                                                // });
+                                                                setFieldValue(
+                                                                    `diaChi.kinhDo`,
+                                                                    longitude
+                                                                )
+                                                                setFieldValue(
+                                                                    `diaChi.viDo`,
+                                                                    latitude
+                                                                )
+                                                            },
+                                                            (error) => {
+                                                                console.log(error);
+                                                            },
+                                                            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+                                                        );
+                                                    }}
+                                                    className='go-button bg-[#1677ff]'
+                                                    type="primary"
+                                                    shape="circle"
+                                                    icon={<i className="fa-solid fa-location-arrow"></i>}
+                                                />
+                                            </Tooltip>
+                                            <div className='ml-4 w-[100%]'>
+                                                <div>
+                                                    <label
+                                                        htmlFor={`diaChi.kinhDo`}
+                                                    >
+                                                        Kinh độ: <RequiredIcon />
+                                                    </label>
+                                                    <Field
+                                                        name={`diaChi.kinhDo`}
+                                                        id={`diaChi.kinhDo`}
+                                                        component={Input}
+                                                        value={values?.diaChi?.kinhDo}
+                                                        status={
+                                                            errors?.diaChi?.kinhDo &&
+                                                                touched?.diaChi?.kinhDo
+                                                                ? 'error'
+                                                                : ''
+                                                        }
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    ></Field>
+                                                    <ErrorMessage
+                                                        className="field-error"
+                                                        component="div"
+                                                        name={`diaChi.kinhDo`}
+                                                    ></ErrorMessage>
+                                                </div>
+                                                <div>
+                                                    <label
+                                                        htmlFor={`diaChi.viDo`}
+                                                    >
+                                                        Vĩ độ: <RequiredIcon />
+                                                    </label>
+                                                    <Field
+                                                        name={`diaChi.viDo`}
+                                                        id={`diaChi.viDo`}
+                                                        component={Input}
+                                                        value={values?.diaChi?.viDo}
+                                                        status={
+                                                            errors?.diaChi?.viDo &&
+                                                                touched?.diaChi?.viDo
+                                                                ? 'error'
+                                                                : ''
+                                                        }
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    ></Field>
+                                                    <ErrorMessage
+                                                        className="field-error"
+                                                        component="div"
+                                                        name={`diaChi.viDo`}
+                                                    ></ErrorMessage>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div>
                                             <label

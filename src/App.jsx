@@ -12,6 +12,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout, updateUser } from './actions/auth'
 import AuthVerify from './utils/AuthVerify'
 
+import 'leaflet/dist/leaflet.css'
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css'
+
 // const socket = io('http://localhost:3000');
 
 const queryClient = new QueryClient();

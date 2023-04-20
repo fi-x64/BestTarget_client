@@ -41,20 +41,7 @@ function ChatNotification() {
 
     useEffect(() => {
         if (chatData) {
-            // for (let i = 0; i < chatData.data.length; i++) {
             socket.on(`newMessageNoti_${user.data._id}`, async (values) => {
-                // if (values.status === 'success') {
-                // const notiData = await getAllPhongChatForNoti(user.data._id);
-
-                // if (notiData) {
-                //     setTinChuaDoc(notiData.soLuongTinChuaDoc);
-                //     dispatch({
-                //         type: COUNT_MESSAGE,
-                //         payload: notiData.soLuongTinChuaDoc,
-                //     });
-                //     setChatData(notiData);
-                //     return;
-                // }
                 if (values) {
                     setTinChuaDoc(values.soLuongTinChuaDoc);
                     dispatch({
@@ -63,9 +50,7 @@ function ChatNotification() {
                     });
                     setChatData(values);
                 }
-                // }
             })
-            // }
         }
     })
 

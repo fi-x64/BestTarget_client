@@ -16,6 +16,9 @@ import { getListTinYeuThich, themTinYeuThich, xoaTinYeuThich } from '../../servi
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { createPhongChat } from '../../services/phongChat';
+import Map from '../../components/atom/Map/Map';
+import Modal from 'react-modal';
+import './PostDetail.scss';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -26,6 +29,9 @@ function PostDetail() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [fullDiaChiTin, setFullDiaChiTin] = useState();
     const [isTinYeuThich, setIsTinYeuThich] = useState(false);
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    const [isHaveCoord, setIsHaveCoord] = useState(false);
+    // const [map, setMap] = useState();
 
     const countTime = (thoiGianPush) => {
         const start = thoiGianPush;
@@ -66,6 +72,11 @@ function PostDetail() {
                 }
 
                 setCurrentPostData(res);
+
+                // if (res.nguoiDungId.diaChi.kinhDo && res.nguoiDungId.diaChi.viDo) {
+
+                //     setMap(<Map />);
+                // }
             } else {
                 navigate('/')
                 window.location.reload()
@@ -118,6 +129,18 @@ function PostDetail() {
                 search: `?phongChatId=${res._id}`,
             })
         }
+    }
+
+    const handleOpenMap = (longitude, latitude) => {
+        if (longitude && latitude) {
+            setIsHaveCoord(true);
+            setIsMapOpen(true);
+        }
+    }
+
+    const handleMapCancel = () => {
+        setIsHaveCoord(false);
+        setIsMapOpen(false);
     }
 
     var settings = {
@@ -234,7 +257,6 @@ function PostDetail() {
                                         <i className="fa-solid fa-phone-volume mt-[4px]"></i>
                                         <p className='ml-2'>{currentPostData.nguoiDungId.sdt}</p>
                                     </div>
-                                    {/* <p>BẤM ĐỂ HIỆN SỐ</p> */}
                                 </Button>
                                 {currentPostData.nguoiDungId._id === user.data._id ?
                                     <Link to={{ pathname: '/postEdit', search: `?id=${currentPostData._id}` }} >
@@ -247,6 +269,25 @@ function PostDetail() {
                                         <i className="fa-solid fa-message mt-[4px]"></i>
                                         <p onClick={() => handleChat(currentPostData._id, currentPostData.nguoiDungId._id)}>CHAT VỚI NGƯỜI BÁN</p>
                                     </Button>
+                                }
+                                <Button onClick={() => handleOpenMap(currentPostData?.nguoiDungId?.diaChi?.kinhDo, currentPostData?.nguoiDungId?.diaChi?.viDo)} className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
+                                    <i className="fa-solid fa-map-location-dot mt-[4px]"></i>
+                                    <p>XEM VỊ TRÍ NGƯỜI ĐĂNG</p>
+                                </Button>
+                                {isHaveCoord ?
+                                    <Modal ariaHideApp={false}
+                                        className={'map-component w-[850px] h-[500px]'}
+                                        contentLabel="Bản đồ" isOpen={isMapOpen}
+                                        onRequestClose={handleMapCancel}
+                                    >
+                                        <Button className='float-right bg-[#fff] mb-1' onClick={handleMapCancel}><i className="fa-solid fa-x mr-2"></i> Đóng</Button>
+                                        <Map staticLongitude={currentPostData?.nguoiDungId?.diaChi?.kinhDo} staticLatitude={currentPostData?.nguoiDungId?.diaChi?.viDo} />
+                                    </Modal> :
+                                    <Modal contentLabel="Bản đồ" isOpen={isMapOpen} onRequestClose={handleMapCancel} footer={null}>
+                                        <div className=''>
+                                            <h1>{currentPostData.nguoiDungId.hoTen} chưa lưu vị trí. Hãy nhắn tin cho người bán để biết trao đổi và yêu cầu họ cung cấp vị trí<Link to="/walletDashboard" className='text-[#ffba22]'>đây</Link> </h1>
+                                        </div>
+                                    </Modal>
                                 }
                             </div>
                             <div className='flex m-4'>

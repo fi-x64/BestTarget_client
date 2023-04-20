@@ -4,6 +4,7 @@ import EditPassword from "../containers/User/EditPassword";
 import Follow from "../containers/User/Follow";
 import WishList from "../containers/Post/Wishlist";
 import Chat from "../containers/User/Chat";
+import Map from "../components/atom/Map/Map";
 
 const nguoiDungRoutes = [
     {
@@ -34,6 +35,11 @@ const nguoiDungRoutes = [
     {
         path: "/chat",
         component: Chat,
+        layout: null
+    },
+    {
+        path: "/map",
+        component: Map,
         layout: null
     },
 ];
