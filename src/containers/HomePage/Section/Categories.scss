@@ -4,8 +4,10 @@
 
 img.categories-img {
     height: 84px;
-    width : 84px;
+    width : 90px;
     margin: auto;
+    object-fit: fit;
+    border-radius: 20%;
 }
 
 .slick-prev {

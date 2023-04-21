@@ -10,6 +10,10 @@ import goiPro from '../../../assets/img/subBanner/goiPro.webp'
 import dongTot from '../../../assets/img/subBanner/dongTot.webp'
 import uuDai from '../../../assets/img/subBanner/uuDai.webp'
 import thuMuaDT from '../../../assets/img/subBanner/thuMuaDT.webp'
+import tinDangDaLuu from '../../../assets/img/subBanner/tinDangDaLuu.webp'
+import lichSuTimKiem from '../../../assets/img/subBanner/lichSuTimKiem.webp'
+import dangTheoDoi from '../../../assets/img/subBanner/dangTheoDoi.png'
+import { Link } from 'react-router-dom';
 
 var settings = {
     dots: true,
@@ -46,14 +50,13 @@ function Banner() {
                 </Slider>
             </div>
             <div className='subBanner flex justify-between px-4 [&>a>img]:h-[33px] [&>a>img]:w-[33px] [&>a>img]:m-auto [&>*]:text-[14px]'>
-                <a href='#'><img src={goiPro} alt="" />Gói Pro</a>
-                <a href='#'><img src={dongTot} alt="" />Nạp Đồng Tốt</a>
-                <a href='#'><img src={uuDai} alt="" />Ưu Đãi</a>
-                <a href='#'><img src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
-                <a href='#'><img src={goiPro} alt="" />Gói Pro</a>
-                <a href='#'><img src={dongTot} alt="" />Nạp Đồng Tốt</a>
-                <a href='#'><img src={uuDai} alt="" />Ưu Đãi</a>
-                <a href='#'><img src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <Link to='/subscription' className="categories-item" ><img className='categories-img' src={goiPro} alt="" />Gói Đăng Tin</Link>
+                <Link to='/walletDashboard' className="categories-item" ><img className='categories-img' src={dongTot} alt="" />Nạp Coin</Link>
+                <Link to='/walletDashboard' className="categories-item" ><img className='categories-img' src={uuDai} alt="" />Ưu Đãi</Link>
+                <a className="categories-item" href='#'><img className='categories-img' src={thuMuaDT} alt="" />Thu Mua Điện Thoại</a>
+                <Link to='/users/wishList' className="categories-item"><img className='categories-img' src={tinDangDaLuu} alt="" />Tin đăng đã lưu</Link>
+                <a className="categories-item" href='#'><img className='categories-img' src={lichSuTimKiem} alt="" />Lịch sử tìm kiếm</a>
+                <Link to='/users/follow' className="categories-item"><img className='categories-img' src={dangTheoDoi} alt="" />Đang theo dõi</Link>
             </div>
         </div >
     )

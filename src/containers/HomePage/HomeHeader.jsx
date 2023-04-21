@@ -90,7 +90,7 @@ function HomeHeader() {
     ];
     return (
         <header className='bg-[#ffba00] sticky top-0 z-50 pb-3'>
-            <div className="max-w-[936px] mx-auto">
+            <div className="max-w-[960px] mx-auto">
                 <div className='flex justify-between'>
                     <Link to="/" className='logo'>
                         <img src={logo} alt="" className='h-14' />

@@ -104,7 +104,7 @@ function Pane({ staticLatitude, staticLongitude }) {
                     handleSubmit,
                 }) => (
                     <Form className='relative z-[100000] float-left ml-14'>
-                        <div className='flex bg-white opacity-90 p-1 rounded-bl-lg gap-2'>
+                        <div className='flex bg-white opacity-90 p-1 rounded-bl-lg rounded-br-lg gap-2'>
                             <div >
                                 <label className='label mr-2' htmlFor="longitude">
                                     Kinh độ:

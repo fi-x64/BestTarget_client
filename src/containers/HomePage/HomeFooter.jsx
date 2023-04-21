@@ -3,7 +3,7 @@ import React from 'react'
 function HomeFooter() {
     return (
         <footer className='bg-[#f4f4f4] p-[16px]'>
-            <div className="max-w-[936px] mx-auto">
+            <div className="max-w-[960px] mx-auto">
                 <div className='grid grid-cols-3'>
                     <div className="footer-item">
                         <div className='text-lg font-bold'>Hỗ trợ khách hàng</div>
