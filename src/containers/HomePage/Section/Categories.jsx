@@ -1,13 +1,5 @@
 import React from 'react'
 import Slider from "react-slick"
-import { Button, Carousel, ConfigProvider } from 'antd'
-import goiPro from '../../../assets/img/subBanner/goiPro.webp'
-import dongTot from '../../../assets/img/subBanner/dongTot.webp'
-import uuDai from '../../../assets/img/subBanner/uuDai.webp'
-import thuMuaDT from '../../../assets/img/subBanner/thuMuaDT.webp'
-import tinDangDaLuu from '../../../assets/img/subBanner/tinDangDaLuu.webp'
-import lichSuTimKiem from '../../../assets/img/subBanner/lichSuTimKiem.webp'
-import dangTheoDoi from '../../../assets/img/subBanner/dangTheoDoi.png'
 
 import dienThoai from '../../../assets/img/categories/dienThoai.jpg';
 import laptop from '../../../assets/img/categories/laptop.jpg';
@@ -18,8 +10,6 @@ import mayTinhDeBan from '../../../assets/img/categories/mayTinhDeBan.jpg';
 import phuKien from '../../../assets/img/categories/phuKien.jpg';
 import thietBiDeoThongMinh from '../../../assets/img/categories/thietBiDeoThongMinh.webp';
 import tvAmThanh from '../../../assets/img/categories/tvAmThanh.jpg';
-
-
 
 import './Categories.scss';
 import { Link } from 'react-router-dom'

@@ -2,7 +2,7 @@ import React from 'react'
 
 function HomeFooter() {
     return (
-        <footer className='bg-[#f4f4f4] p-[16px]'>
+        <footer className='bg-[#f4f4f4] p-[16px] relative bottom-0'>
             <div className="max-w-[960px] mx-auto">
                 <div className='grid grid-cols-3'>
                     <div className="footer-item">

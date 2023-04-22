@@ -20,11 +20,11 @@ function PostList() {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
 
-        const allParams = {};
+        const allParamsData = {};
         for (const [key, value] of queryParams.entries()) {
-            allParams[key] = value;
+            allParamsData[key] = value;
         }
-        setAllParams(allParams);
+        setAllParams(allParamsData);
     }, [location]);
 
     useEffect(() => {
@@ -45,8 +45,6 @@ function PostList() {
                             )
                         })
                     }
-                    console.log("Check res: ", res);
-
                     setListTinDang(res);
                 }
             }
@@ -57,10 +55,10 @@ function PostList() {
     const handleXoaTinYeuThich = async (e, tinDangId) => {
         e.preventDefault();
         const res = await xoaTinYeuThich(tinDangId);
-        console.log("Check res: ", res);
+
         if (res) {
-            const listTinDangData = [...listTinDang]
-            console.log("Check listTinDangData: ", listTinDangData);
+            const listTinDangData = [...listTinDang];
+
             listTinDangData.map((value, index) => {
                 if (value._id == tinDangId)
                     value.status = false;
@@ -103,26 +101,28 @@ function PostList() {
                 </div>
             </div>
             <div className='mt-[15px] bg-[#fff]'>
-                <List
-                    pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
-                    itemLayout="horizontal"
-                    dataSource={listTinDang}
-                    renderItem={(item, index) => (
-                        <div className='hover:border-grey-400 hover:border-2'>
-                            <Link id='RouterNavLink' to={{ pathname: '/postDetail', search: `?id=${item._id}` }}>
-                                <List.Item
-                                    actions={[item.status == true ? <i className="fa-solid fa-heart text-red-600" onClick={(e) => handleXoaTinYeuThich(e, item._id)}></i> : <i className="fa-regular fa-heart" onClick={(e) => handleThemTinYeuThich(e, item._id)}></i>]}
-                                >
-                                    <List.Item.Meta
-                                        avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
-                                        title={item.tieuDe}
-                                        description={item.gia}
-                                    />
-                                </List.Item>
-                            </Link>
-                        </div>
-                    )}
-                />
+                {listTinDang ?
+                    <List
+                        pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
+                        itemLayout="horizontal"
+                        dataSource={listTinDang}
+                        renderItem={(item, index) => (
+                            <div className='hover:border-grey-400 hover:border-2'>
+                                <Link id='RouterNavLink' to={{ pathname: '/postDetail', search: `?id=${item._id}` }}>
+                                    <List.Item
+                                        actions={[item.status == true ? <i className="fa-solid fa-heart text-red-600" onClick={(e) => handleXoaTinYeuThich(e, item._id)}></i> : <i className="fa-regular fa-heart" onClick={(e) => handleThemTinYeuThich(e, item._id)}></i>]}
+                                    >
+                                        <List.Item.Meta
+                                            avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
+                                            title={item.tieuDe}
+                                            description={item.gia}
+                                        />
+                                    </List.Item>
+                                </Link>
+                            </div>
+                        )}
+                    />
+                    : null}
             </div>
         </div>
     );

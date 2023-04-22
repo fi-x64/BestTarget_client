@@ -7,6 +7,18 @@ export const getAllPost = async () => {
     return []
 }
 
+export const getAllPostsNewest = async (amount) => {
+    const res = await request.get(`/tinDang/getAllPostsNewest?amount=${amount}`,)
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
+export const getAllTinDangByUserId = async (userId) => {
+    const res = await request.get(`/tinDang/getTinDangByUserId?userId=${userId}`)
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
 export const createPost = async (values) => {
     const res = await request.post('/tinDang/createPost', values)
     if (res.data.status === 'success') return res.data.data

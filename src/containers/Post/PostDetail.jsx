@@ -19,6 +19,8 @@ import { createPhongChat } from '../../services/phongChat';
 import Map from '../../components/atom/Map/Map';
 import Modal from 'react-modal';
 import './PostDetail.scss';
+import countTime from '../../utils/countTime';
+import SuggestPostsUser from '../../components/atom/Suggest/SuggestPostsUser';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -32,31 +34,6 @@ function PostDetail() {
     const [isMapOpen, setIsMapOpen] = useState(false);
     const [isHaveCoord, setIsHaveCoord] = useState(false);
     // const [map, setMap] = useState();
-
-    const countTime = (thoiGianPush) => {
-        const start = thoiGianPush;
-        const end = moment();
-        const duration = moment.duration(end.diff(start));
-
-        // Lấy giá trị thời gian theo đơn vị phút
-        const minutes = duration.asMinutes();
-        // Kiểm tra và chuyển đổi sang tiếng hoặc ngày nếu lớn hơn 59 phút hoặc 23 tiếng
-        let displayTime;
-        var hours;
-        if (minutes >= 60) {
-            hours = duration.asHours();
-            displayTime = `${hours.toFixed(0)} giờ`;
-        } else {
-            displayTime = `${minutes.toFixed(0)} phút`;
-        }
-        var days;
-        if (hours >= 24) {
-            days = duration.asDays();
-            displayTime = `${days.toFixed(0)} ngày`;
-        }
-
-        return displayTime;
-    }
 
     useEffect(() => {
         async function fetchData() {
@@ -299,14 +276,9 @@ function PostDetail() {
                             </div>
                         </div>
                     </div>
-                    <div className="max-w-[936px] h-[180px] bg-[#fff] mb-5">
-                        <div className='flex justify-between p-4 font-semibold text-base'>
-                            <h1>Tin rao khác của {currentPostData.nguoiDungId.hoTen}</h1>
-                            <Link to='/' className='text-blue-600'>Xem tất cả <i className="fa-solid fa-chevron-right"></i></Link>
-                        </div>
-                        <hr />
-                    </div>
-                    <div className="max-w-[936px] h-[180px] bg-[#fff]">
+                    <SuggestPostsUser postUserId={currentPostData.nguoiDungId._id} postId={currentPostData._id} postHoTen={currentPostData.nguoiDungId.hoTen} />
+
+                    <div className="bg-[#fff]">
                         <div className='flex justify-between p-4 font-semibold text-base'>
                             <h1>Tin đăng tương tự</h1>
                             <Link to='/' className='text-blue-600'>Xem tất cả <i className="fa-solid fa-chevron-right"></i></Link>

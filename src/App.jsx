@@ -65,11 +65,11 @@ function App() {
                     <>
                       <HomeHeader />
                       <div className='bg-[#f4f4f4]'>
-                        <div className='max-w-[960px] mx-auto'>
+                        <div className='max-w-[960px] h-auto mx-auto'>
                           <Component></Component>
+                          <HomeFooter />
                         </div>
                       </div>
-                      <HomeFooter />
                     </>
                   }
                   <ToastContainer
