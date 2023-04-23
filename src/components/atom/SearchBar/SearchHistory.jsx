@@ -25,7 +25,6 @@ function SearchHistory({ setShowSearchHistory }) {
         async function fetchData() {
             const res = await getLichSuTimKiemByUserId(user.data._id);
             if (res) {
-                console.log("Check res: ", res);
                 setData(res);
             }
         }
@@ -71,10 +70,15 @@ function SearchHistory({ setShowSearchHistory }) {
                                         />
 
                                     </List.Item>
-                                    : item?.noiDung?.tieuDe ? <List.Item>
+                                    : item?.noiDung?.danhMucPhuId ? <List.Item>
                                         <List.Item.Meta
                                             title={<Link to={{ pathname: '/postList', search: `?keyWord=${encodeURIComponent(item.noiDung.tieuDe)}&danhMucPhuId=${encodeURIComponent(item.noiDung.danhMucPhuId)}` }} className='flex'
-                                                onClick={() => handleClickResult()}  >{item.noiDung.tieuDe} <p className='ml-1' style={{ color: "#3a8ece" }}> trong {item.noiDung.danhMucPhu[0].ten}</p></Link>}
+                                                onClick={() => handleClickResult()}  >{item.noiDung.tieuDe} <p className='ml-1' style={{ color: "#3a8ece" }}> trong {item.noiDung?.danhMucPhu[0]?.ten}</p></Link>}
+                                        />
+                                    </List.Item> : item?.noiDung?.tieuDe ? <List.Item>
+                                        <List.Item.Meta
+                                            title={<Link to={{ pathname: '/postList', search: `?keyWord=${encodeURIComponent(item.noiDung.tieuDe)}` }} className='flex'
+                                                onClick={() => handleClickResult()}  >{item.noiDung.tieuDe} <p className='ml-1' style={{ color: "#3a8ece" }}></p></Link>}
                                         />
                                     </List.Item> : null}
                             </div>

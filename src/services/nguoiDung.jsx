@@ -19,6 +19,15 @@ export const getUser = async (id) => {
     return [];
 };
 
+export const getUserProfile = async (id) => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/getUserProfile?userId=${id}`);
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};
+
 export const updateUser = async (id, values) => {
     // return JSON.parse(localStorage.getItem("user"));
     const res = await request.patch(`/users/${id}`, values, { headers: authHeader() });

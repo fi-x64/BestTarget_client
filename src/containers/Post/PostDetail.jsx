@@ -21,6 +21,7 @@ import Modal from 'react-modal';
 import './PostDetail.scss';
 import countTime from '../../utils/countTime';
 import SuggestPostsUser from '../../components/atom/Suggest/SuggestPostsUser';
+import SuggestPostsRelated from '../../components/atom/Suggest/SuggestPostsRelated';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -133,7 +134,7 @@ function PostDetail() {
             {currentPostData ?
                 <div>
                     <div className='flex bg-[#fff] mb-5'>
-                        <div className="h-[840px]">
+                        <div className="h-auto">
                             <Slider className="w-[606px] h-[455px]" {...settings}>
                                 {currentPostData.video ? currentPostData.video.map((value, index) => {
                                     return (
@@ -277,14 +278,7 @@ function PostDetail() {
                         </div>
                     </div>
                     <SuggestPostsUser postUserId={currentPostData.nguoiDungId._id} postId={currentPostData._id} postHoTen={currentPostData.nguoiDungId.hoTen} />
-
-                    <div className="bg-[#fff]">
-                        <div className='flex justify-between p-4 font-semibold text-base'>
-                            <h1>Tin đăng tương tự</h1>
-                            <Link to='/' className='text-blue-600'>Xem tất cả <i className="fa-solid fa-chevron-right"></i></Link>
-                        </div>
-                        <hr />
-                    </div>
+                    <SuggestPostsRelated currentPostData={currentPostData} />
                 </div>
                 : null}
         </div >

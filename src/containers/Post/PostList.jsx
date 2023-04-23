@@ -11,6 +11,8 @@ import SelectAddress from '../../components/atom/SelectAddress/SelectAddress';
 import Filter from '../../components/atom/Filter/Filter';
 import { toast } from 'react-toastify';
 import { getListTinYeuThich, themTinYeuThich, xoaTinYeuThich } from '../../services/tinYeuThich';
+import { NumericFormat } from 'react-number-format';
+import countTime from '../../utils/countTime';
 
 function PostList() {
     const location = useLocation();
@@ -45,6 +47,7 @@ function PostList() {
                             )
                         })
                     }
+
                     setListTinDang(res);
                 }
             }
@@ -114,9 +117,18 @@ function PostList() {
                                     >
                                         <List.Item.Meta
                                             avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
-                                            title={item.tieuDe}
-                                            description={item.gia}
+                                            title={
+                                                <>
+                                                    <p>{item.tieuDe}</p>
+                                                    <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
+                                                </>
+
+                                            }
+                                            description={
+                                                <p className='mt-14'>{countTime(item.thoiGianPush)}</p>
+                                            }
                                         />
+
                                     </List.Item>
                                 </Link>
                             </div>

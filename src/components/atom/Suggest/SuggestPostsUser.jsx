@@ -13,10 +13,9 @@ function SuggestPostsUser({ postUserId, postId, postHoTen }) {
 
     useEffect(() => {
         async function fetchData() {
-            const res = await getAllTinDangByUserId(postUserId);
+            const res = await getAllTinDangByUserId(postUserId, postId);
 
             if (res) {
-                console.log("Check res: ", res);
                 setData(res);
             }
         }
@@ -66,10 +65,10 @@ function SuggestPostsUser({ postUserId, postId, postHoTen }) {
 
     return (
         <div className="bg-[#fff] mb-5">
-            {data ?
+            {data && data.length > 0 ?
                 <div>
                     <div className='flex justify-between p-4 font-bold text-lg'>
-                        <h1>Tin rao khác của {postHoTen}</h1>
+                        <h1>Tin đăng khác của {postHoTen}</h1>
                         <Link to={{ pathname: '/users/profile', search: `?userId=${postUserId}` }} className='text-blue-600'>Xem tất cả <i className="fa-solid fa-chevron-right"></i></Link>
                     </div>
                     <hr />

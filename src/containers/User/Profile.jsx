@@ -3,12 +3,15 @@ import { useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Button } from 'antd';
+import { Button, List, Tooltip } from 'antd';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getUser } from '../../services/nguoiDung';
+import { getUser, getUserProfile } from '../../services/nguoiDung';
 import { getListFollower, getListFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { getTinDang } from '../../services/tinDang';
+import { NumericFormat } from 'react-number-format';
+import countTime from '../../utils/countTime';
 
 function Profile() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -18,10 +21,10 @@ function Profile() {
   const [countFollower, setCountFollower] = useState();
   const [countFollowing, setCountFollowing] = useState();
   const [isFollowing, setIsFollowing] = useState(false);
+  const [postDangHienThi, setPostDangHienThi] = useState();
+  const [postDaBan, setPostDaBan] = useState();
 
   useEffect(() => {
-    console.log("Check user: ", user);
-
     async function fetchData() {
       const userId = searchParams.get("userId");
 
@@ -41,13 +44,20 @@ function Profile() {
         })
       }
 
-      if (userId != user.data._id) {
-        const userData = await getUser(userId);
-        if (userData) {
-          setCurrentUser(userData.data);
+      const userData = await getUserProfile(userId);
+      if (userData) {
+        const postDangHienThiData = await getTinDang(userId, 1);
+
+        if (postDangHienThiData) {
+          console.log("Check postDangHienThiData: ", postDangHienThiData);
+          setPostDangHienThi(postDangHienThiData);
         }
-      } else {
-        setCurrentUser(user.data);
+
+        const postDaBanData = await getTinDang(userId, 6);
+        if (postDaBanData) {
+          setPostDaBan(postDaBanData);
+        }
+        setCurrentUser(userData.data[0]);
       }
     }
     fetchData()
@@ -55,7 +65,6 @@ function Profile() {
 
   const handleXoaTheoDoi = async (userId) => {
     const res = await xoaTheoDoi(userId);
-    console.log("Check res: ", res);
     if (res) {
       setIsFollowing(false);
       toast.success(res.message);
@@ -99,25 +108,91 @@ function Profile() {
                   </div>}
               </div>
             </div>
-            <ul className='[&>li]:text-[#9b9b9b] text-[14px] [&>li>i]:mr-2 [&>li]:mb-2'>
-              <li><i className="fa-regular fa-star"></i>Đánh giá:</li>
+            <ul className='[&>li]:text-[#9b9b9b] text-[15px] [&>li>i]:mr-2 [&>li]:mb-2'>
+              <li><i className="fa-regular fa-star"></i>Gói đăng ký: {currentUser?.goiTinDang[0].tenGoi}</li>
               <li><i className="fa-regular fa-calendar-days"></i>Ngày tham gia: {currentUser ? moment(currentUser.thoiGianTao).format('DD/MM/YYYY') : null}</li>
-              <li><i className="fa-solid fa-location-dot"></i>Địa chỉ:</li>
-              <li><i className="fa-regular fa-message"></i>Phản hồi chat:</li>
-              <li><i className="fa-regular fa-circle-check"></i>Đã cung cấp:</li>
+              <li><i className="fa-solid fa-location-dot"></i>Địa chỉ: {currentUser?.diaChi.soNha + ' ' + currentUser?.phuongXa[0].path_with_type}</li>
+              <li className='flex'>
+                <i className="fa-regular fa-circle-check mt-1"></i>
+                <h1>Đã cung cấp:</h1>
+                <Tooltip title="Đã cung cấp email">
+                  <i className="fa-solid fa-envelope text-green-700 mt-1 ml-2"></i>
+                </Tooltip>
+                {currentUser?.diaChi?.kinhDo && currentUser?.diaChi?.viDo ?
+                  <Tooltip title="Đã cung cấp địa chỉ chính xác trên bản đồ">
+                    <i className="fa-solid fa-location-dot text-green-700 mt-1 ml-2"></i>
+                  </Tooltip> : null
+                }
+              </li>
             </ul>
           </div>
 
-          <div className="max-w-[936px] h-[180px] bg-[#fff] mb-[15px]">
+          <div className=" bg-[#fff] mb-[15px]">
             <div className=''>
-              <h1 className='p-4 font-semibold text-lg'>Tin đang đăng - 0 tin</h1>
+              <h1 className='p-4 font-semibold text-lg'>Tin đang đăng - {postDangHienThi ? postDangHienThi.length : 0} tin</h1>
               <hr />
+              {postDangHienThi ?
+                <List
+                  pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
+                  itemLayout="horizontal"
+                  dataSource={postDangHienThi}
+                  renderItem={(item, index) => (
+                    <div className='hover:border-grey-400 hover:border-2'>
+                      <Link id='RouterNavLink' to={{ pathname: '/postDetail', search: `?id=${item._id}` }}>
+                        <List.Item>
+                          <List.Item.Meta
+                            avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
+                            title={
+                              <>
+                                <p>{item.tieuDe}</p>
+                                <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
+                              </>
+
+                            }
+                            description={
+                              <p className='mt-14'>{countTime(item.thoiGianPush)}</p>
+                            }
+                          />
+
+                        </List.Item>
+                      </Link>
+                    </div>
+                  )}
+                />
+                : null}
             </div>
           </div>
-          <div className="max-w-[936px] h-[180px] bg-[#fff]">
+          <div className="bg-[#fff]">
             <div className=''>
-              <h1 className='p-4 font-semibold text-lg'>Đã bán thành công - 0 tin</h1>
+              <h1 className='p-4 font-semibold text-lg'>Đã bán thành công - {postDaBan ? postDaBan.length : 0} tin</h1>
               <hr />
+              {postDaBan ?
+                <List
+                  pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
+                  itemLayout="horizontal"
+                  dataSource={postDaBan}
+                  renderItem={(item, index) => (
+                    <div className='hover:border-grey-400 hover:border-2'>
+                      <List.Item>
+                        <List.Item.Meta
+                          avatar={<img className='w-[128px] h-[128px]' src={item.hinhAnh[0].url} />}
+                          title={
+                            <>
+                              <p>{item.tieuDe}</p>
+                              <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
+                            </>
+
+                          }
+                          description={
+                            <p className='mt-14'>{countTime(item.thoiGianPush)}</p>
+                          }
+                        />
+
+                      </List.Item>
+                    </div>
+                  )}
+                />
+                : null}
             </div>
           </div>
         </div>

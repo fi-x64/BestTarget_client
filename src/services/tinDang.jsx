@@ -13,8 +13,14 @@ export const getAllPostsNewest = async (amount) => {
     return []
 }
 
-export const getAllTinDangByUserId = async (userId) => {
-    const res = await request.get(`/tinDang/getTinDangByUserId?userId=${userId}`)
+export const getAllTinDangByUserId = async (userId, postId) => {
+    const res = await request.get(`/tinDang/getAllTinDangByUserId?userId=${userId}&postId=${postId}`)
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
+export const getAllTinDangRelated = async (values) => {
+    const res = await request.post(`/tinDang/getAllTinDangRelated`, values)
     if (res.data.status === 'success') return res.data.data
     return []
 }
@@ -44,7 +50,7 @@ export const countTrangThaiTin = async (userId) => {
 }
 
 export const getTinDang = async (userId, key) => {
-    const res = await request.get(`/tinDang/getTinDang?userId=${userId}&phanLoai=${key}`);
+    const res = await request.post(`/tinDang/getTinDang`, { userId, phanLoai: key });
     if (res.data.status === 'success') return res.data.data
     return []
 }

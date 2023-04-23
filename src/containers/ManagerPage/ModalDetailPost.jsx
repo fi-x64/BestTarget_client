@@ -124,7 +124,7 @@ function ModalDetailPost({ postId }) {
                                 <p>{currentPostData.nguoiDungId.hoTen}</p>
                                 <p>Đang hoạt động</p>
                             </div>
-                            <Button className='ml-[20px] rounded-[25px]' ><Link to={{ pathname: '/users/profile', search: `?userId=${currentPostData.nguoiDungId._id}` }}>Xem trang</Link></Button>
+                            <Button className='ml-[20px] rounded-[25px]' >Xem trang</Button>
                         </Link>
                         <div className='flex text-[14px] text-center justify-center'>
                             <div className='block'>

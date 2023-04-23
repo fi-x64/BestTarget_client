@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Avatar, Button, List, Modal, Popover, Tabs } from 'antd';
+import { Avatar, Button, List, Modal, Popover, Tabs, Tooltip } from 'antd';
 import { Link, Navigate } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
@@ -50,8 +50,14 @@ function ManagePost() {
         }
     };
 
-    const handleAnTin = async (id) => {
-        const res = await editPost(id, { trangThaiTin: 'Tin đã ẩn' });
+    const handleChuyenTrangThaiTin = async (id, trangThai) => {
+        var res;
+        if (trangThai === 'Đã bán') {
+            res = await editPost(currentPostId, { trangThaiTin: 'Đã bán', thoiGianPush: Date.now() })
+        } else {
+            res = await editPost(id, { trangThaiTin: trangThai });
+        }
+
         if (res) {
             await updateTinHetHan();
             setCountTTTin(await countTrangThaiTin(user.data._id));
@@ -132,7 +138,12 @@ function ManagePost() {
         return (
             <div>
                 <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin</Link>
-                <p onClick={() => handleAnTin(id)} className='cursor-pointer'>Đã bán/Ẩn tin</p>
+                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã bán')} className='cursor-pointer'>
+                    <Tooltip title="Lưu ý: Tin đã bán không thể hiển thị lại" >
+                        Đã bán
+                    </Tooltip>
+                </p>
+                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã ẩn')} className='cursor-pointer'>Ẩn tin</p>
             </div>
         )
     };
@@ -152,7 +163,7 @@ function ManagePost() {
                                     <>
                                         <p className='text-sm text-red-600'>{item.gia} đ</p>
                                         {
-                                            status === 'Đang hiển thị' || status === 'Tin đã ẩn' ?
+                                            status === 'Đang hiển thị' || status === 'Đã ẩn' ?
                                                 <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
                                                 : status === 'Bị từ chối' ?
                                                     <>
@@ -177,8 +188,9 @@ function ManagePost() {
                                         <i className="fa-solid fa-circle-exclamation text-red-600 text-xl"></i>
                                         : status === 'Hết hạn' ?
                                             <Button onClick={() => handleKhoiPhucTin(item._id)}>Khôi phục tin</Button>
-                                            :
-                                            <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
+                                            : status === 'Đã ẩn' ?
+                                                <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
+                                                : null
                             }
                             {isAbleRestore ? <Modal title="Xác nhận khôi phục tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} onOk={() => handlePaymentOk(item._id)} footer={[
                                 <Button key="back" onClick={handlePaymentCancel}>
@@ -242,14 +254,19 @@ function ManagePost() {
         },
         {
             key: '5',
-            label: 'Tin đã ẩn (' + handleGetSoLuong(countTTTin, "Tin đã ẩn") + ')',
-            children: getListItem(tinDangData, "Tin đã ẩn"),
+            label: 'Đã ẩn (' + handleGetSoLuong(countTTTin, "Đã ẩn") + ')',
+            children: getListItem(tinDangData, "Đã ẩn"),
+        },
+        {
+            key: '6',
+            label: 'Đã bán (' + handleGetSoLuong(countTTTin, "Đã bán") + ')',
+            children: getListItem(tinDangData, "Đã bán"),
         },
     ];
 
     return (
         <div className="container bg-[#f4f4f4]">
-            <div className="max-w-[712px] pb-2 bg-[#fff]">
+            <div className="pb-2 bg-[#fff]">
                 <div>
                     <h1 className='p-4 font-semibold text-lg'>Quản lý tin đăng</h1>
                     <hr />
