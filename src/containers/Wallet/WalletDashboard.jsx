@@ -4,7 +4,7 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import { NumericFormat } from 'react-number-format';
 import { getAllMenhGia } from '../../services/menhGia';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { getViTien } from '../../services/thanhToan';
 import { getAppliedKhuyenMai } from '../../services/khuyenMai';
 import moment from 'moment';
@@ -44,6 +44,10 @@ function WalletDashboard() {
             pathname: `/checkout`,
             search: `?menhGiaId=${values._id}`,
         })
+    }
+
+    if (!isLoggedIn) {
+        return <Navigate to={'/'} />
     }
 
     return (

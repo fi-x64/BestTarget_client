@@ -4,7 +4,7 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Button, List, Tooltip } from 'antd';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getUser, getUserProfile } from '../../services/nguoiDung';
 import { getListFollower, getListFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
 import { toast } from 'react-toastify';
@@ -24,6 +24,8 @@ function Profile() {
   const [postDangHienThi, setPostDangHienThi] = useState();
   const [postDaBan, setPostDaBan] = useState();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchData() {
       const userId = searchParams.get("userId");
@@ -36,12 +38,14 @@ function Profile() {
       }
       if (listFollowing) {
         setCountFollowing(listFollowing.count);
-        listFollowing.data.map((value, index) => {
-          if (value.nguoiDung[0]._id == user.data._id) {
-            setIsFollowing(true);
-            return;
-          }
-        })
+        if (isLoggedIn) {
+          listFollowing.data.some((value, index) => {
+            if (value.nguoiDung[0]._id == user.data._id) {
+              setIsFollowing(true);
+              return true;
+            }
+          })
+        }
       }
 
       const userData = await getUserProfile(userId);
@@ -49,7 +53,6 @@ function Profile() {
         const postDangHienThiData = await getTinDang(userId, 1);
 
         if (postDangHienThiData) {
-          console.log("Check postDangHienThiData: ", postDangHienThiData);
           setPostDangHienThi(postDangHienThiData);
         }
 
@@ -73,13 +76,17 @@ function Profile() {
   }
 
   const handleThemTheoDoi = async (userId) => {
-    const res = await themTheoDoi(userId);
+    if (isLoggedIn) {
+      const res = await themTheoDoi(userId);
 
-    if (res) {
-      setIsFollowing(true);
-      toast.success(res.message);
-    } else
-      toast.error('Huỷ theo dõi không thành công');
+      if (res) {
+        setIsFollowing(true);
+        toast.success(res.message);
+      } else
+        toast.error('Huỷ theo dõi không thành công');
+    } else {
+      return navigate("/login");
+    }
   }
 
   return (
@@ -95,15 +102,16 @@ function Profile() {
                   <p>Người theo dõi: {countFollowing ? countFollowing : 0}</p>
                   <p className='ml-12'>Đang theo dõi: {countFollower ? countFollower : 0}</p>
                 </div>
-                {currentUser._id != user.data._id ?
+                {isLoggedIn && currentUser._id == user.data._id ?
                   <div className='flex'>
+                    <Link to="/users/editProfile"><Button className='rounded-2xl'>Chỉnh sửa trang cá nhân</Button></Link>
+                    <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
+                  </div>
+                  : <div className='flex'>
                     {isFollowing ?
                       <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleXoaTheoDoi(currentUser._id)}><i className="fa-solid fa-check mr-1"></i>Đang theo dõi</Button>
                       : <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleThemTheoDoi(currentUser._id)}><i className="fa-solid fa-plus mr-1"></i>Theo dõi</Button>
                     }
-                    <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
-                  </div> : <div className='flex'>
-                    <Link to="/users/editProfile"><Button className='rounded-2xl'>Chỉnh sửa trang cá nhân</Button></Link>
                     <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
                   </div>}
               </div>
@@ -111,7 +119,7 @@ function Profile() {
             <ul className='[&>li]:text-[#9b9b9b] text-[15px] [&>li>i]:mr-2 [&>li]:mb-2'>
               <li><i className="fa-regular fa-star"></i>Gói đăng ký: {currentUser?.goiTinDang[0].tenGoi}</li>
               <li><i className="fa-regular fa-calendar-days"></i>Ngày tham gia: {currentUser ? moment(currentUser.thoiGianTao).format('DD/MM/YYYY') : null}</li>
-              <li><i className="fa-solid fa-location-dot"></i>Địa chỉ: {currentUser?.diaChi.soNha + ' ' + currentUser?.phuongXa[0].path_with_type}</li>
+              <li><i className="fa-solid fa-location-dot"></i>Địa chỉ: {currentUser?.diaChi ? currentUser.diaChi.soNha + ' ' + currentUser.phuongXa[0].path_with_type : ''}</li>
               <li className='flex'>
                 <i className="fa-regular fa-circle-check mt-1"></i>
                 <h1>Đã cung cấp:</h1>

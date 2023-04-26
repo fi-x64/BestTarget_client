@@ -22,6 +22,9 @@ import './PostDetail.scss';
 import countTime from '../../utils/countTime';
 import SuggestPostsUser from '../../components/atom/Suggest/SuggestPostsUser';
 import SuggestPostsRelated from '../../components/atom/Suggest/SuggestPostsRelated';
+import { createLuotXemTin } from '../../services/luotXemTin';
+import postNotFond from '../../assets/img/post_not_found.png';
+import SuggestPostsRelatedHot from '../../components/atom/Suggest/SuggestPostsRelatedHot';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -51,6 +54,26 @@ function PostDetail() {
 
                 setCurrentPostData(res);
 
+                if (isLoggedIn) {
+                    await createLuotXemTin({
+                        tinDangId: tinDangId,
+                        noiDung: {
+                            nguoiDungId: user.data._id
+                        }
+                    })
+
+                    const listTinYeuThich = await getListTinYeuThich();
+
+                    if (listTinYeuThich) {
+                        listTinYeuThich.data.map((value, index) => {
+                            if (value.tinYeuThich[0]._id == tinDangId) {
+                                setIsTinYeuThich(true);
+                                return;
+                            }
+                        })
+                    }
+                }
+
                 // if (res.nguoiDungId.diaChi.kinhDo && res.nguoiDungId.diaChi.viDo) {
 
                 //     setMap(<Map />);
@@ -58,17 +81,6 @@ function PostDetail() {
             } else {
                 navigate('/')
                 window.location.reload()
-            }
-
-            const listTinYeuThich = await getListTinYeuThich();
-
-            if (listTinYeuThich) {
-                listTinYeuThich.data.map((value, index) => {
-                    if (value.tinYeuThich[0]._id == tinDangId) {
-                        setIsTinYeuThich(true);
-                        return;
-                    }
-                })
             }
         }
         fetchData();
@@ -85,20 +97,25 @@ function PostDetail() {
     }
 
     const handleThemTinYeuThich = async (tinDangId) => {
-        const res = await themTinYeuThich(tinDangId);
+        if (isLoggedIn) {
+            const res = await themTinYeuThich(tinDangId);
 
-        if (res) {
-            setIsTinYeuThich(true);
-            toast.success(res.message);
-        } else
-            toast.error('Xoá tin yêu thích không thành công');
+            if (res) {
+                setIsTinYeuThich(true);
+                toast.success(res.message);
+            } else
+                toast.error('Xoá tin yêu thích không thành công');
+        } else {
+            return navigate('/login');
+        }
     }
 
     const handleChat = async (postId, nguoiDungId2) => {
         const res = await createPhongChat({
             nguoiDungId1: user.data._id,
             nguoiDungId2: nguoiDungId2,
-            tinDangId: postId
+            tinDangId: postId,
+            loaiPhongChat: "troChuyen"
         })
 
         if (res) {
@@ -150,11 +167,12 @@ function PostDetail() {
                                 }
                             </Slider>
                             <div className='p-3'>
-                                <h1 className='float-right italic text-sm'>Tin đăng {currentPostData.khoangThoigian} trước</h1>
+                                <h1 className='float-right italic text-sm'>Tin đăng {currentPostData.khoangThoigian}</h1>
                                 <h1 className='font-bold'>{currentPostData.tieuDe}</h1>
                                 <div className='flex justify-between'>
                                     <NumericFormat className='text-red-600 py-2' value={currentPostData.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
-                                    {isTinYeuThich ? <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleXoaTinYeuThich(currentPostData._id)}>Đã lưu<i className="fa-solid fa-heart ml-1"></i></Button> : <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleThemTinYeuThich(currentPostData._id)}>Lưu tin<i className="fa-regular fa-heart ml-2"></i></Button>}
+                                    {isTinYeuThich && isLoggedIn ? <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleXoaTinYeuThich(currentPostData._id)}>Đã lưu<i className="fa-solid fa-heart ml-1"></i></Button>
+                                        : <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleThemTinYeuThich(currentPostData._id)}>Lưu tin<i className="fa-regular fa-heart ml-2"></i></Button>}
                                 </div>
                                 <p>{currentPostData.moTa}</p>
                                 <div className='grid grid-cols-2 mt-6 gap-2 text-sm font-light'>
@@ -236,7 +254,7 @@ function PostDetail() {
                                         <p className='ml-2'>{currentPostData.nguoiDungId.sdt}</p>
                                     </div>
                                 </Button>
-                                {currentPostData.nguoiDungId._id === user.data._id ?
+                                {isLoggedIn && currentPostData.nguoiDungId._id === user.data._id ?
                                     <Link to={{ pathname: '/postEdit', search: `?id=${currentPostData._id}` }} >
                                         <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
                                             <i className="fa-solid fa-pen-to-square mt-[4px]"></i>
@@ -254,19 +272,17 @@ function PostDetail() {
                                 </Button>
                                 {isHaveCoord ?
                                     <Modal ariaHideApp={false}
-                                        className={'map-component w-[850px] h-[500px]'}
+                                        className={'map-component w-[850px] h-[400px]'}
                                         contentLabel="Bản đồ" isOpen={isMapOpen}
                                         onRequestClose={handleMapCancel}
                                     >
                                         <Button className='float-right bg-[#fff] mb-1' onClick={handleMapCancel}><i className="fa-solid fa-x mr-2"></i> Đóng</Button>
                                         <Map staticLongitude={currentPostData?.nguoiDungId?.diaChi?.kinhDo} staticLatitude={currentPostData?.nguoiDungId?.diaChi?.viDo} />
-                                    </Modal> :
-                                    <Modal contentLabel="Bản đồ" isOpen={isMapOpen} onRequestClose={handleMapCancel} footer={null}>
-                                        <div className=''>
-                                            <h1>{currentPostData.nguoiDungId.hoTen} chưa lưu vị trí. Hãy nhắn tin cho người bán để biết trao đổi và yêu cầu họ cung cấp vị trí<Link to="/walletDashboard" className='text-[#ffba22]'>đây</Link> </h1>
-                                        </div>
-                                    </Modal>
+                                    </Modal> : null
                                 }
+                                {!isHaveCoord && isMapOpen ?
+                                    <h1 className='text-red-700'>{currentPostData.nguoiDungId.hoTen} chưa lưu vị trí. Hãy nhắn tin cho người bán để biết trao đổi và yêu cầu họ cung cấp vị trí</h1>
+                                    : null}
                             </div>
                             <div className='flex m-4'>
                                 <img className='w-[100px] h-[100px]' src={communitcate} alt="" />
@@ -279,8 +295,21 @@ function PostDetail() {
                     </div>
                     <SuggestPostsUser postUserId={currentPostData.nguoiDungId._id} postId={currentPostData._id} postHoTen={currentPostData.nguoiDungId.hoTen} />
                     <SuggestPostsRelated currentPostData={currentPostData} />
+                    <SuggestPostsRelatedHot currentPostData={currentPostData} />
                 </div>
-                : null}
+                :
+                <div className="container">
+                    <div className='bg-[#fff] py-40'>
+                        <div className="translate-x-[30%]">
+                            <img src={postNotFond} alt="" />
+                        </div>
+                        <div className='block text-center'>
+                            <h1 className='text-2xl font-bold'>Tin đăng không còn tồn tại</h1>
+                            <p>Tin đăng này đã hết hạn hoặc đã ẩn/ đã bán. Hãy thử những tin đăng khác, bạn nhé.</p>
+                        </div>
+                    </div>
+                </div>
+            }
         </div >
     );
 };

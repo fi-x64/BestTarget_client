@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../../components/atom/SearchBar/SearchBar';
 import Notification from './Notification';
 import ChatNotification from './ChatNotification';
+import { createPhongChat } from '../../services/phongChat';
 
 function HomeHeader() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -22,12 +23,27 @@ function HomeHeader() {
         window.location.reload();
     }
 
+    const handleChat = async () => {
+        const res = await createPhongChat({
+            nguoiDungId1: user.data._id,
+            nguoiDungId2: '64074e99002eba5a852968a0',
+            loaiPhongChat: 'hoTro'
+        })
+
+        if (res) {
+            return navigate({
+                pathname: `/chat/hoTro`,
+                search: `?phongChatId=${res._id}`,
+            })
+        }
+    }
+
     const items = [
         isLoggedIn && user.data && user.data?.quyen?.ten === 'Admin' ? {
             key: '1',
             label: (
                 <Link to="/managerPage">
-                    Chuyển đến trang quản lý
+                    <i className="fa-solid fa-bars-progress w-[14px] h-[14px] mr-2"></i>Chuyển đến trang quản lý
                 </Link>
             ),
         } : null,
@@ -35,7 +51,7 @@ function HomeHeader() {
             key: '2',
             label: (
                 <Link to={{ pathname: '/users/profile', search: `?userId=${user?.data?._id}` }}>
-                    Trang cá nhân
+                    <i className="fa-regular fa-id-card w-[14px] h-[14px] mr-2"></i>Trang cá nhân
                 </Link>
             ),
         },
@@ -43,7 +59,7 @@ function HomeHeader() {
             key: '3',
             label: (
                 <Link to='/users/follow'>
-                    Người theo dõi/Đang theo dõi
+                    <i className="fa-solid fa-user-plus w-[14px] h-[14px] mr-2"></i>Người theo dõi/Đang theo dõi
                 </Link>
             ),
         },
@@ -51,7 +67,7 @@ function HomeHeader() {
             key: '4',
             label: (
                 <Link to='/users/wishList'>
-                    Tin đăng đã lưu
+                    <i className="fa-solid fa-bookmark w-[14px] h-[14px] mr-2"></i>Tin đăng đã lưu
                 </Link>
             ),
         },
@@ -59,7 +75,7 @@ function HomeHeader() {
             key: '5',
             label: (
                 <Link to='/walletDashboard'>
-                    Quản lý số dư và gói tin
+                    <i className="fa-solid fa-wallet w-[14px] h-[14px] mr-2"></i>Quản lý số dư và gói tin
                 </Link>
             ),
         },
@@ -67,7 +83,7 @@ function HomeHeader() {
             key: '6',
             label: (
                 <Link to='/subscription'>
-                    Nâng cấp gói đăng tin
+                    <i className="fa-solid fa-circle-up w-[14px] h-[14px] mr-2"></i>Nâng cấp gói đăng tin
                 </Link>
             ),
         },
@@ -75,15 +91,23 @@ function HomeHeader() {
             key: '7',
             label: (
                 <Link to='/users/editProfile'>
-                    Cài đặt tài khoản
+                    <i className="fa-solid fa-gear w-[14px] h-[14px] mr-2"></i>Cài đặt tài khoản
                 </Link>
             ),
         },
         {
             key: '8',
             label: (
+                <Link to='/chat/hoTro' onClick={() => handleChat()}>
+                    <i className="fa-solid fa-circle-question w-[14px] h-[14px] mr-2"></i>Liên hệ trợ giúp
+                </Link>
+            ),
+        },
+        {
+            key: '9',
+            label: (
                 <a rel="noopener noreferrer" onClick={() => handleLogout()}>
-                    Đăng xuất
+                    <i className="fa-solid fa-arrow-right-from-bracket w-[14px] h-[14px] mr-2"></i>Đăng xuất
                 </a>
             ),
         },
@@ -125,7 +149,8 @@ function HomeHeader() {
                             <span className="sr-only">Search</span>
                         </button> */}
                     </div>
-                    <Button className='bg-[#FF8800] ml-2 flex-4'><Link to="/newPost"><i className="fa-solid fa-pen-to-square"></i> Đăng tin</Link></Button>
+
+                    <Button className='bg-[#FF8800] ml-2 flex-4'><Link to={isLoggedIn ? "/newPost" : "/login"}><i className="fa-solid fa-pen-to-square"></i> Đăng tin</Link></Button>
                 </div>
 
             </div>

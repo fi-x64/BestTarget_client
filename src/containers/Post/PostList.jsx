@@ -4,7 +4,7 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, Image, List, Popover, Tabs } from 'antd';
-import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getTinDangByValue } from '../../services/tinDang';
 import SelectCategory from '../../components/atom/SelectCategory/SelectCategory';
 import SelectAddress from '../../components/atom/SelectAddress/SelectAddress';
@@ -15,9 +15,13 @@ import { NumericFormat } from 'react-number-format';
 import countTime from '../../utils/countTime';
 
 function PostList() {
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
+
     const location = useLocation();
     const [listTinDang, setListTinDang] = useState();
     const [allParams, setAllParams] = useState({});
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -35,19 +39,20 @@ function PostList() {
                 const res = await getTinDangByValue(allParams);
 
                 if (res) {
-                    const tinYeuThichData = await getListTinYeuThich();
+                    if (isLoggedIn) {
+                        const tinYeuThichData = await getListTinYeuThich();
 
-                    if (tinYeuThichData) {
-                        res.map((value, index) => {
-                            tinYeuThichData.data.map((tinValue) => {
-                                if (value._id == tinValue.tinYeuThich[0]._id) {
-                                    value.status = true;
+                        if (tinYeuThichData) {
+                            res.map((value, index) => {
+                                tinYeuThichData.data.map((tinValue) => {
+                                    if (value._id == tinValue.tinYeuThich[0]._id) {
+                                        value.status = true;
+                                    }
                                 }
-                            }
-                            )
-                        })
+                                )
+                            })
+                        }
                     }
-
                     setListTinDang(res);
                 }
             }
@@ -75,22 +80,26 @@ function PostList() {
     const handleThemTinYeuThich = async (e, tinDangId) => {
         e.preventDefault();
 
-        const res = await themTinYeuThich(tinDangId);
+        if (isLoggedIn) {
+            const res = await themTinYeuThich(tinDangId);
 
-        if (res) {
-            const listTinDangData = [...listTinDang]
-            listTinDangData.map((value, index) => {
-                if (value._id == tinDangId)
-                    value.status = true;
-            })
-            toast.success(res.message);
-            setListTinDang(listTinDangData)
-        } else
-            toast.error('Huỷ theo dõi không thành công');
+            if (res) {
+                const listTinDangData = [...listTinDang]
+                listTinDangData.map((value, index) => {
+                    if (value._id == tinDangId)
+                        value.status = true;
+                })
+                toast.success(res.message);
+                setListTinDang(listTinDangData)
+            } else
+                toast.error('Huỷ theo dõi không thành công');
+        } else {
+            return navigate("/login");
+        }
     }
 
     return (
-        <div className="container">
+        <div className="container min-h-[600px]">
             <div className="bg-[#fff]">
                 <div className='flex [&>*]:ml-2 py-2'>
                     <Filter />

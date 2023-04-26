@@ -41,7 +41,6 @@ function Login() {
   }
 
   const handleClickActive = async (values) => {
-    console.log("Check values: ", values);
     const res = await createOTP(values.email);
     if (res) {
       dispatch({

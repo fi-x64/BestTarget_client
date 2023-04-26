@@ -213,7 +213,7 @@ function EditPost() {
         if (res) {
             setLoading(false)
             message.success({
-                content: 'Đăng tin thành công, vui lòng chờ duyệt',
+                content: 'Chỉnh sửa tin thành công, vui lòng chờ duyệt',
                 key,
                 duration: 1,
             })

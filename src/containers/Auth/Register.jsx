@@ -15,8 +15,8 @@ const RegisterSchema = Yup.object().shape({
     hoTen: Yup.string().min(5, "Tên ít nhất 5 ký tự").required('Vui lòng nhập họ tên'),
     email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
     sdt: Yup.string().required('Vui lòng nhập số điện thoại').matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, "Số điện thoại không hợp lệ"),
-    matKhau: Yup.string().required('Vui lòng nhập mật khẩu!').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "Mật khẩu phải ít nhất 8 ký tự, gồm ít nhất 1 chữ in hoa, 1 ký tự đặc biệt và 1 số"),
+    matKhau: Yup.string().required('Vui lòng nhập mật khẩu!').matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Mật khẩu phải ít nhất 8 ký tự, 1 ký tự đặc biệt và 1 số"),
     xacNhanMatKhau: Yup.string().oneOf([Yup.ref('matKhau'), null], 'Xác nhận mật khẩu không khớp!')
 })
 

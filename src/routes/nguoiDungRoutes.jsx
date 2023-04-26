@@ -38,6 +38,11 @@ const nguoiDungRoutes = [
         layout: null
     },
     {
+        path: "/chat/hoTro",
+        component: Chat,
+        layout: null
+    },
+    {
         path: "/map",
         component: Map,
         layout: null

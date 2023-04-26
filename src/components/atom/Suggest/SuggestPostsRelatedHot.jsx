@@ -7,38 +7,27 @@ import { getAllTinDangByUserId, getAllTinDangRelated } from '../../../services/t
 import { NumericFormat } from 'react-number-format';
 import countTime from '../../../utils/countTime';
 import { useSelector } from 'react-redux';
+import { getAllTinDangRelatedHot } from '../../../services/luotXemTin';
 
-function SuggestPostsRelated({ currentPostData }) {
+function SuggestPostsRelatedHot({ currentPostData }) {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
 
     const [data, setData] = useState();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (currentPostData) {
             async function fetchData() {
-                if (user?.data?.diaChi?.tinhTPCode) {
-                    var res;
-                    if (currentPostData?.hangSX) {
-                        res = await getAllTinDangRelated({
-                            postId: currentPostData._id,
-                            tieuDe: currentPostData.tieuDe,
-                            hangSX: currentPostData.hangSX,
-                            tinhTPCode: user.data.diaChi.tinhTPCode
-                        });
-                    } else {
-                        res = await getAllTinDangRelated({
-                            postId: currentPostData._id,
-                            tieuDe: currentPostData.tieuDe,
-                            tinhTPCode: user.data.diaChi.tinhTPCode
-                        })
-                    }
+                const res = await getAllTinDangRelatedHot({
+                    postId: currentPostData._id,
+                    danhMucPhuId: currentPostData.danhMucPhuId
+                });
 
-                    if (res) {
-                        setData(res);
-                    }
+                if (res) {
+                    setData(res);
                 }
             }
+
             fetchData();
         }
     }, []);
@@ -89,7 +78,7 @@ function SuggestPostsRelated({ currentPostData }) {
             {data && data.length > 0 ?
                 <div>
                     <div className='flex justify-between p-4 font-bold text-lg'>
-                        <h1>Tin đăng tương tự ở khu vực bạn</h1>
+                        <h1>Những người khác cũng đều xem</h1>
                     </div>
                     <hr />
                     <div className=''>
@@ -99,13 +88,13 @@ function SuggestPostsRelated({ currentPostData }) {
                                 return (
                                     <div key={item._id} onClick={() => handleClickItem(item._id)} className="categories-item">
                                         <div className='interest-items block cursor-pointer hover:shadow-inner-lg hover:shadow-lg'>
-                                            <img className="item-image w-[166px] p-[4px] h-[166px] object-cover" src={item.hinhAnh[0].url} alt="" />
-                                            <div className="item-title my-2 text-[14px]">{item.tieuDe}</div>
-                                            <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
+                                            <img className="item-image w-[166px] p-[4px] h-[166px] object-cover" src={item.tinDang[0].hinhAnh[0].url} alt="" />
+                                            <div className="item-title my-2 text-[14px]">{item.tinDang[0].tieuDe}</div>
+                                            <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.tinDang[0].gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                                             <div className="item-info flex">
                                                 <img className='item-avatar w-[19px] h-[16px] mt-[7px]' src="https://static.chotot.com/storage/chotot-icons/svg/user.svg" alt="" />
                                                 <div className='common-style m-[2px] after:content-["·"]'></div>
-                                                <div className="item-time my-2 text-[10px] font-extralight">{countTime(item.thoiGianPush)}</div>
+                                                <div className="item-time my-2 text-[10px] font-extralight">{countTime(item.tinDang[0].thoiGianPush)}</div>
                                                 <div className='common-style m-[2px] after:content-["·"]'></div>
                                                 <div className="item-place my-2 text-[10px] font-extralight">{item.tinhThanhPho[0].ten}</div>
                                             </div>
@@ -123,4 +112,4 @@ function SuggestPostsRelated({ currentPostData }) {
     )
 }
 
-export default SuggestPostsRelated
+export default SuggestPostsRelatedHot

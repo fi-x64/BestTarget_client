@@ -65,7 +65,7 @@ function CreateNewPost({ danhMucPhuId }) {
         const PostSchema = Yup.object().shape({
             tieuDe: Yup.string().min(4).max(50).required('Vui lòng nhập tiêu đề tin đăng!'),
             moTa: Yup.string().min(4).max(1500).required('Vui lòng nhập mô tả chi tiết sản phẩm!'),
-            gia: Yup.number().min(10000).required('Vui lòng nhập giá bán'),
+            gia: Yup.number().min(10000).required('Vui lòng nhập giá bán').typeError('Vui lòng nhập số'),
             diaChiTinDang:
                 Yup.object().shape({
                     tinhTPCode: Yup.string().required(

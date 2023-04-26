@@ -34,7 +34,6 @@ function Follow() {
 
     const handleXoaTheoDoi = async (userId) => {
         const res = await xoaTheoDoi(userId);
-        console.log("Check res: ", res);
         if (res) {
             const listFollowingData = { ...listFollowing }
             listFollowingData.data.map((value, index) => {
@@ -93,8 +92,8 @@ function Follow() {
         },
         {
             key: '2',
-            label: 'Được theo dõi (' + listFollower?.count + ')',
-            children: getListItem(listFollower?.data, 'Được theo dõi')
+            label: 'Người theo dõi (' + listFollower?.count + ')',
+            children: getListItem(listFollower?.data, 'Người theo dõi')
         },
     ];
 

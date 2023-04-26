@@ -163,7 +163,7 @@ function ManagePost() {
                                     <>
                                         <p className='text-sm text-red-600'>{item.gia} đ</p>
                                         {
-                                            status === 'Đang hiển thị' || status === 'Đã ẩn' ?
+                                            status === 'Đang hiển thị' || status === 'Đã ẩn' || status === 'Đã bán' ?
                                                 <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
                                                 : status === 'Bị từ chối' ?
                                                     <>
@@ -265,7 +265,7 @@ function ManagePost() {
     ];
 
     return (
-        <div className="container bg-[#f4f4f4]">
+        <div className="container bg-[#f4f4f4] min-h-[600px]">
             <div className="pb-2 bg-[#fff]">
                 <div>
                     <h1 className='p-4 font-semibold text-lg'>Quản lý tin đăng</h1>

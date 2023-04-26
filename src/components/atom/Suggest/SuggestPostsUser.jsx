@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Slider from "react-slick"
 
 import { Link, useNavigate } from 'react-router-dom';
-import './SuggestPostsUser.module.scss';
+import './Suggest.module.scss';
 import { getAllTinDangByUserId } from '../../../services/tinDang';
 import { NumericFormat } from 'react-number-format';
 import countTime from '../../../utils/countTime';

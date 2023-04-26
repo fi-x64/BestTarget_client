@@ -11,6 +11,8 @@ import CheckOutCoin from '../Wallet/CheckoutCoin';
 import { getAppliedKhuyenMai } from '../../services/khuyenMai';
 
 function Subscription() {
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
+
     const location = useLocation();
     const [listAllGoiDangKy, setListAllGoiDangKy] = useState();
     const [allParams, setAllParams] = useState({});
@@ -91,7 +93,7 @@ function Subscription() {
                                         </h1>
                                     </ul>
                                 </li>
-                                <Link to={{ pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[1]._id}` }}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[1]?.giaTienGiam ? listAllGoiDangKy[1]?.giaTienGiam / 1000 : listAllGoiDangKy[1].giaTien / 1000}k</Button></Link>
+                                <Link to={isLoggedIn ? { pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[1]._id}` } : "/login"}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[1]?.giaTienGiam ? listAllGoiDangKy[1]?.giaTienGiam / 1000 : listAllGoiDangKy[1].giaTien / 1000}k</Button></Link>
                             </Card>
                         </Col>
                         <Col span={8}>
@@ -124,7 +126,7 @@ function Subscription() {
                                         </h1>
                                     </ul>
                                 </li>
-                                <Link to={{ pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[2]._id}` }}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[2]?.giaTienGiam ? listAllGoiDangKy[2]?.giaTienGiam / 1000 : listAllGoiDangKy[2].giaTien / 1000}k</Button> </Link>
+                                <Link to={isLoggedIn ? { pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[2]._id}` } : "/login"}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[2]?.giaTienGiam ? listAllGoiDangKy[2]?.giaTienGiam / 1000 : listAllGoiDangKy[2].giaTien / 1000}k</Button> </Link>
                             </Card>
                         </Col>
                         <Col span={8} className='mt-4'>
@@ -157,7 +159,7 @@ function Subscription() {
                                         </h1>
                                     </ul>
                                 </li>
-                                <Link to={{ pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[3]._id}` }}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[3]?.giaTienGiam ? listAllGoiDangKy[3]?.giaTienGiam / 1000 : listAllGoiDangKy[3].giaTien / 1000}k</Button></Link>
+                                <Link to={isLoggedIn ? { pathname: '/checkoutCoin', search: `?goiId=${listAllGoiDangKy[3]._id}` } : "/login"}><Button className='w-[100%] bg-green-600 text-white'>Mua ngay - {listAllGoiDangKy[3]?.giaTienGiam ? listAllGoiDangKy[3]?.giaTienGiam / 1000 : listAllGoiDangKy[3].giaTien / 1000}k</Button></Link>
                             </Card>
                         </Col>
                     </Row>

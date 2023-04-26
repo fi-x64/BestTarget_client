@@ -199,16 +199,16 @@ function TransactionHistory() {
     ].filter(item => item.title != 'id');;
 
     return (
-        <>
+        <div>
             {hoaDonUser ?
-                <div>
+                <div className='h-[600px]'>
                     <Table columns={columns} dataSource={hoaDonUser} className='pt-5' rowKey='_id'
                         pagination={{ position: 'bottom', pageSize: 5 }}
                     />
                 </div>
 
                 : null}
-        </>
+        </div>
     );
 };
 

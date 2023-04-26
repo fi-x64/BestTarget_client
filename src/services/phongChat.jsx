@@ -1,8 +1,8 @@
 import request from "../utils/request"
 import authHeader from "./auth-header"
 
-export const getAllPhongChatByUserId = async () => {
-    const res = await request.get(`/phongChat/getAllPhongChatByUserId`, { headers: authHeader() })
+export const getAllPhongChatByUserId = async (type) => {
+    const res = await request.get(`/phongChat/getAllPhongChatByUserId?type=${type}`, { headers: authHeader() })
     if (res.data.status === 'success') return res.data.data
     return []
 }

@@ -16,6 +16,7 @@ import avatar from '../../assets/img/avatar.svg'
 import { logout } from '../../actions/auth';
 import ManagerStatistics from './ManagerStatistics';
 import ManagerPromotions from './ManagerPromotions';
+import ManagerChatSupport from './ManagerChatSupport';
 
 const { Header, Sider, Content } = Layout;
 
@@ -104,6 +105,11 @@ function ManagerHomePage() {
                         },
                         {
                             key: '4',
+                            icon: <LineChartOutlined />,
+                            label: 'Tin nhắn hỗ trợ',
+                        },
+                        {
+                            key: '5',
                             icon: <i className="fa-solid fa-tags"></i>,
                             label: 'Tạo khuyến mãi',
                         },
@@ -136,7 +142,8 @@ function ManagerHomePage() {
                     {key == 1 ? <ManagerUsers /> : null}
                     {key == 2 ? <ManagerPosts /> : null}
                     {key == 3 ? <ManagerStatistics /> : null}
-                    {key == 4 ? <ManagerPromotions /> : null}
+                    {key == 4 ? <ManagerChatSupport /> : null}
+                    {key == 5 ? <ManagerPromotions /> : null}
                 </Content>
             </Layout>
         </Layout>

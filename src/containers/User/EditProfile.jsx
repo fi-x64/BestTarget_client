@@ -28,7 +28,7 @@ function EditProfile() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (user?.data?.tinhTPCode && user?.data?.diaChi?.quanHuyenCode) {
+        if (user?.data?.diaChi?.tinhTPCode && user?.data?.diaChi?.quanHuyenCode) {
             async function fetchData() {
                 setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
                 setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
@@ -48,10 +48,10 @@ function EditProfile() {
     const sampleAddress = {
         kinhDo: null,
         viDo: null,
-        soNha: '',
-        phuongXaCode: {},
-        quanHuyenCode: {},
-        tinhTPCode: {},
+        soNha: "",
+        phuongXaCode: "",
+        quanHuyenCode: "",
+        tinhTPCode: "",
     }
 
     const ProfileSchema = Yup.object().shape({
@@ -62,12 +62,10 @@ function EditProfile() {
             Yup.object().shape({
                 kinhDo: Yup.number()
                     .min(-180, 'Kinh độ phải từ -180 đến 180!')
-                    .max(180, 'Kinh độ phải từ -180 đến 180!')
-                    .required('Vui lòng nhập kinh độ').typeError('Vui lòng nhập số'),
+                    .max(180, 'Kinh độ phải từ -180 đến 180!').typeError('Vui lòng nhập số'),
                 viDo: Yup.number()
                     .min(-90, 'Vĩ độ phải từ -90 đến 90!')
-                    .max(90, 'Vĩ độ phải từ -90 đến 90!')
-                    .required('Vui lòng nhập vĩ độ!').typeError('Vui lòng nhập số'),
+                    .max(90, 'Vĩ độ phải từ -90 đến 90!').typeError('Vui lòng nhập số'),
                 soNha: Yup.string().required(
                     'Vui lòng nhập số nhà, đường!'
                 ),
@@ -142,7 +140,6 @@ function EditProfile() {
 
     return (
         <div className="container bg-[#f4f4f4]">
-            {console.log("Check user: ", user)}
             <div className="max-w-[936px] bg-[#fff]">
                 <h1 className='p-4 font-semibold text-lg'>Thông tin cá nhân</h1>
                 <hr />
@@ -187,7 +184,7 @@ function EditProfile() {
                                         name="hoTen"
                                         id="hoTen"
                                         component={Input}
-                                        status={errors?.name && touched?.name ? 'error' : ''}
+                                        status={errors?.hoTen && touched?.hoTen ? 'error' : ''}
                                         value={values.hoTen}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
@@ -214,7 +211,7 @@ function EditProfile() {
                                     <ErrorMessage
                                         className="field-error"
                                         component="div"
-                                        name="hoTen"
+                                        name="sdt"
                                     ></ErrorMessage>
                                 </div>
                                 <div>
@@ -233,7 +230,7 @@ function EditProfile() {
                                     <ErrorMessage
                                         className="field-error"
                                         component="div"
-                                        name="hoTen"
+                                        name="email"
                                     ></ErrorMessage>
                                 </div>
                                 <div>
@@ -278,7 +275,7 @@ function EditProfile() {
                                                     <label
                                                         htmlFor={`diaChi.kinhDo`}
                                                     >
-                                                        Kinh độ: <RequiredIcon />
+                                                        Kinh độ:
                                                     </label>
                                                     <Field
                                                         name={`diaChi.kinhDo`}
@@ -304,7 +301,7 @@ function EditProfile() {
                                                     <label
                                                         htmlFor={`diaChi.viDo`}
                                                     >
-                                                        Vĩ độ: <RequiredIcon />
+                                                        Vĩ độ:
                                                     </label>
                                                     <Field
                                                         name={`diaChi.viDo`}
@@ -408,6 +405,7 @@ function EditProfile() {
                                                 name={`diaChi.quanHuyenCode`}
                                                 id={`diaChi.quanHuyenCode`}
                                                 value={values?.diaChi?.quanHuyenCode}
+                                                options={quanHuyen}
                                                 status={
                                                     errors?.diaChi?.quanHuyenCode &&
                                                         touched?.diaChi?.quanHuyenCode
@@ -431,12 +429,11 @@ function EditProfile() {
                                                         .includes(input.toLowerCase())
                                                 }
                                                 fieldNames={{ label: 'ten', value: 'id' }}
-                                                options={quanHuyen}
                                             ></Select>
                                             <ErrorMessage
                                                 className="field-error"
                                                 component="div"
-                                                name={`diaChi.tinhTPCode`}
+                                                name={`diaChi.quanHuyenCode`}
                                             ></ErrorMessage>
                                         </div>
                                         <div>
@@ -449,6 +446,7 @@ function EditProfile() {
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.phuongXaCode`}
                                                 id={`diaChi.phuongXaCode`}
+                                                options={phuongXa}
                                                 value={values?.diaChi?.phuongXaCode}
                                                 status={
                                                     errors?.diaChi?.phuongXaCode &&
@@ -472,8 +470,6 @@ function EditProfile() {
                                                         .includes(input.toLowerCase())
                                                 }
                                                 fieldNames={{ label: 'ten', value: 'id' }}
-
-                                                options={phuongXa}
                                             ></Select>
                                             <ErrorMessage
                                                 className="field-error"
@@ -519,6 +515,11 @@ function EditProfile() {
                                             { ten: "Other", code: "Other" }
                                         ]}
                                     ></Select>
+                                    <ErrorMessage
+                                        className="field-error"
+                                        component="div"
+                                        name={`gioiTinh`}
+                                    ></ErrorMessage>
                                 </div>
                                 <div>
                                     <label htmlFor="">

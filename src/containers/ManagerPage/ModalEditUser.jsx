@@ -16,7 +16,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 function ModalEditUser({ user }) {
-
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState();
 
@@ -24,19 +23,20 @@ function ModalEditUser({ user }) {
     const [phuongXa, setPhuongXa] = useState([]);
     const tinhThanh = useQuery(['tinhThanh'], getAllTinhThanh);
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        setImageUrl(user.data?.anhDaiDien?.url)
-    }, [user])
-
     useEffect(() => {
         async function fetchData() {
-            setQuanHuyen(await getQuanHuyen(user.data?.diaChi?.tinhTPCode));
-            setPhuongXa(await getPhuongXa(user.data?.diaChi?.quanHuyenCode))
+            setImageUrl(user.data?.anhDaiDien?.url);
+
+            if (user?.data?.diaChi?.tinhTPCode && user?.data?.diaChi?.quanHuyenCode) {
+                async function fetchData() {
+                    setQuanHuyen(await getQuanHuyen(user.data.diaChi.tinhTPCode));
+                    setPhuongXa(await getPhuongXa(user.data.diaChi.quanHuyenCode))
+                }
+                fetchData();
+            }
         }
         fetchData();
-    }, []);
+    }, [user]);
 
     const onChangeTinhTP = async (value) => {
         setQuanHuyen(await getQuanHuyen(value));
@@ -121,6 +121,7 @@ function ModalEditUser({ user }) {
 
     return (
         <div className="container bg-[#f4f4f4]">
+            {console.log("Check user: ", user)}
             <div className="max-w-[936px] bg-[#fff]">
                 <hr />
                 <div className='block'>
