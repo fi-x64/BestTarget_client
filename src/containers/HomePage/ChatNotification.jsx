@@ -10,8 +10,11 @@ import moment from 'moment';
 import socket from '../../utils/socketio';
 import { getAllPhongChatForNoti } from '../../services/phongChat';
 import { COUNT_MESSAGE } from '../../actions/types';
+import {
+    MessageOutlined
+} from '@ant-design/icons';
 
-function ChatNotification() {
+function ChatNotification({ type }) {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
     const { countMessage } = useSelector((state) => state.chatNoti);
 
@@ -59,10 +62,19 @@ function ChatNotification() {
             {isLoggedIn && user && user.data ?
                 <Link to="/chat">
                     <Space>
-                        <Badge count={countMessage ? countMessage : 0} size='small' className='mr-1'>
-                            <i className="fa-solid fa-comments mt-1"></i>
-                        </Badge>
-                        Chat
+                        {type && type == 'managerPage' ?
+                            <>
+                                <Badge count={countMessage ? countMessage : 0} size='small' className='mr-1'>
+                                    <i className="fa-regular fa-comment-dots text-white mr-1"></i>
+                                </Badge>
+                            </>
+                            :
+                            <>
+                                <Badge count={countMessage ? countMessage : 0} size='small' className='mr-1'>
+                                    <i className="fa-solid fa-comments mt-1"></i>
+                                </Badge>
+                            </>
+                        }
                     </Space>
                 </Link>
                 :

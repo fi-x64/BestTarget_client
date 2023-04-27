@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
-import { Button, List, Tooltip } from 'antd';
+import { Button, List, Popover, Tooltip } from 'antd';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getUser, getUserProfile } from '../../services/nguoiDung';
 import { getListFollower, getListFollowing, themTheoDoi, xoaTheoDoi } from '../../services/theoDoi';
@@ -12,6 +12,7 @@ import moment from 'moment';
 import { getTinDang } from '../../services/tinDang';
 import { NumericFormat } from 'react-number-format';
 import countTime from '../../utils/countTime';
+import { createPhongChat } from '../../services/phongChat';
 
 function Profile() {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -89,6 +90,30 @@ function Profile() {
     }
   }
 
+  const handleChat = async () => {
+    if (isLoggedIn) {
+      const res = await createPhongChat({
+        nguoiDungId1: user.data._id,
+        nguoiDungId2: '64074e99002eba5a852968a0',
+        loaiPhongChat: 'hoTro'
+      })
+
+      if (res) {
+        return navigate('/chat/hoTro')
+      }
+    } else {
+      return navigate('/login');
+    }
+  }
+
+  const content = () => {
+    return (
+      <div>
+        <Button onClick={() => handleChat()} className='text-red-500'>Báo cáo người dùng</Button>
+      </div>
+    )
+  };
+
   return (
     <>
       {currentUser ?
@@ -105,14 +130,15 @@ function Profile() {
                 {isLoggedIn && currentUser._id == user.data._id ?
                   <div className='flex'>
                     <Link to="/users/editProfile"><Button className='rounded-2xl'>Chỉnh sửa trang cá nhân</Button></Link>
-                    <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
                   </div>
                   : <div className='flex'>
                     {isFollowing ?
                       <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleXoaTheoDoi(currentUser._id)}><i className="fa-solid fa-check mr-1"></i>Đang theo dõi</Button>
                       : <Button className='rounded-2xl bg-[#ffba22]' onClick={() => handleThemTheoDoi(currentUser._id)}><i className="fa-solid fa-plus mr-1"></i>Theo dõi</Button>
                     }
-                    <Button className='rounded-full ml-2'><i className="fa-solid fa-ellipsis"></i></Button>
+                    <Popover placement="bottomLeft" className='border-1 px-2 rounded-full ml-2' content={content()} trigger="click">
+                      <Button className='rounded-full ml-2 w-[40px]'><i className="fa-solid fa-ellipsis"></i></Button>
+                    </Popover>
                   </div>}
               </div>
             </div>

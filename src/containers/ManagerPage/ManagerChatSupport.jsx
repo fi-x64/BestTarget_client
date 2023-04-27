@@ -59,8 +59,6 @@ function ManagerChatSupport() {
 
     useEffect(() => {
         if (data) {
-            const phongChatId = searchParams.get("phongChatId");
-
             if (phongChatId) {
                 for (let i = 0; i < data.length; i++) {
                     if (data[i]._id == phongChatId) {
@@ -70,10 +68,12 @@ function ManagerChatSupport() {
                 }
                 setPhongChatId(phongChatId);
 
-
+                if (messagesEndRef && messagesEndRef.current) {
+                    scrollToBottom();
+                }
             }
         }
-    })
+    });
 
     const handleClickItem = async (data) => {
         setPhongChatId(data._id);
@@ -93,6 +93,7 @@ function ManagerChatSupport() {
         if (messagesEndRef && messagesEndRef.current) {
             scrollToBottom();
         }
+
     }
 
     const handleChangeInput = (e) => {
@@ -146,9 +147,9 @@ function ManagerChatSupport() {
 
     return (
         <div className="container bg-[#f4f4f4]">
-            <h1 className='p-4 font-semibold text-lg'>Tin nhắn cần hỗ trợ từ người dùng</h1>
+            <h1 className='p-4 font-semibold text-lg'>Tin nhắn hỗ trợ từ người dùng</h1>
             <hr />
-            <div className="grid grid-cols-3 max-w-[936px] bg-[#fff]">
+            <div className="grid grid-cols-3  bg-[#fff]">
                 {data ?
                     <div className='left-component'>
                         <div
@@ -188,9 +189,6 @@ function ManagerChatSupport() {
                                                 />
 
                                                 : null}
-                                        {/* <Popover placement="bottomRight" content={content(item._id)} trigger="click" className='p-2'>
-                                                <div className='cursor-pointer text-lg'><i className="fa-solid fa-ellipsis-vertical"></i></div>
-                                            </Popover> */}
                                     </List.Item>
                                 )}
                             />

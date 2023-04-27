@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     LineChartOutlined,
     UserOutlined,
     FormOutlined,
+    MessageOutlined
 } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Layout, Menu, Space, theme } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Layout, Menu, Space, theme } from 'antd';
 import logo from '../../assets/img/logo.png';
 import ManagerUsers from './ManagerUsers';
 import ManagerPosts from './ManagerPosts';
@@ -17,11 +18,13 @@ import { logout } from '../../actions/auth';
 import ManagerStatistics from './ManagerStatistics';
 import ManagerPromotions from './ManagerPromotions';
 import ManagerChatSupport from './ManagerChatSupport';
+import ChatNotification from '../HomePage/ChatNotification';
 
 const { Header, Sider, Content } = Layout;
 
 function ManagerHomePage() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
+    const { countMessage } = useSelector((state) => state.chatNoti);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -34,7 +37,8 @@ function ManagerHomePage() {
     const [key, setKey] = useState(1);
 
     const handleOnClickSider = (e) => {
-        setKey(e.key)
+        setKey(e.key);
+        navigate(`/managerPage/${e.key}`);
     }
 
     const handleLogout = () => {
@@ -42,6 +46,18 @@ function ManagerHomePage() {
         navigate('/login');
         window.location.reload();
     }
+
+    useEffect(() => {
+        const pathName = window.location.pathname;
+        const params = pathName.split('/');
+        const keyParam = params[params.length - 1];
+
+        if (keyParam > 0 && keyParam < 6) {
+            setKey(keyParam)
+        } else {
+            navigate(`/managerPage/1`);
+        }
+    }, [])
 
     const items = [
         {
@@ -85,7 +101,8 @@ function ManagerHomePage() {
                 <Menu
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
+                    // defaultSelectedKeys={key ? [`${key}`] : ['1']}
+                    selectedKeys={key}
                     onClick={(e) => handleOnClickSider(e)}
                     items={[
                         {
@@ -105,7 +122,7 @@ function ManagerHomePage() {
                         },
                         {
                             key: '4',
-                            icon: <LineChartOutlined />,
+                            icon: <ChatNotification type={'managerPage'} />,
                             label: 'Tin nhắn hỗ trợ',
                         },
                         {

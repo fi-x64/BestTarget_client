@@ -182,7 +182,7 @@ function ManagerStatistics() {
             const sevenDaysAgo = moment().subtract(7, 'days').toISOString();
             const category = await statisticsLuotXemTinByCategory({ startDate: sevenDaysAgo, endDate: currentDate });
             const hoaDon = await statisticsHoaDon({ startDate: sevenDaysAgo, endDate: currentDate });
-            console.log("Check hoaDon: ", hoaDon);
+
             handleRefetchData(userInWeek, postInProvince, postInWeek, category, hoaDon);
         }
         fetchData();
@@ -282,6 +282,8 @@ function ManagerStatistics() {
         const category = await statisticsLuotXemTinByCategory({ startDate: dates[0]?.$d, endDate: dates[1]?.$d });
 
         if (category) {
+            console.log("Check category: ", category);
+
             const categoryRefetch = handleCategoryRefetch(category);
 
             setDataCategory(categoryRefetch);
@@ -291,25 +293,6 @@ function ManagerStatistics() {
     return (
         <>
             <div className='grid grid-cols-2 m-4 gap-4 [&>div]:mr-2 [&>div]:pt-2 p-4 [&>div]:w-[90%]'>
-                {dataUserInWeek ?
-                    <div className='w-[400px] h-[400px]'>
-                        <Bar options={userInWeekOptions} data={dataUserInWeek} />
-                    </div>
-                    : null
-                }
-                {dataPostInWeek ?
-                    <div className='h-[400px]'>
-                        <Bar options={postInWeekOptions} data={dataPostInWeek} />
-                    </div>
-                    : null
-                }
-                {dataUserInProvince ?
-                    <div className='h-[500px] mt-7'>
-                        <Line options={userInProvinceOptions} data={dataUserInProvince} />
-                    </div>
-                    : null
-                }
-                <div></div>
                 {dataCategory ?
                     <div>
                         <label htmlFor="ngayHieuLuc">
@@ -342,6 +325,25 @@ function ManagerStatistics() {
                     </div>
                     : null
                 }
+                {dataUserInWeek ?
+                    <div className='w-[400px] h-[400px]'>
+                        <Bar options={userInWeekOptions} data={dataUserInWeek} />
+                    </div>
+                    : null
+                }
+                {dataPostInWeek ?
+                    <div className='h-[400px]'>
+                        <Bar options={postInWeekOptions} data={dataPostInWeek} />
+                    </div>
+                    : null
+                }
+                {dataUserInProvince ?
+                    <div className='h-[500px] mt-7'>
+                        <Line options={userInProvinceOptions} data={dataUserInProvince} />
+                    </div>
+                    : null
+                }
+                <div></div>
             </div>
         </>
     );

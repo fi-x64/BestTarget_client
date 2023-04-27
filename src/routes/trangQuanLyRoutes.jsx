@@ -8,6 +8,12 @@ const trangQuanLyRoutes = [
         permission: true,
         layout: null
     },
+    {
+        path: "/managerPage/:key",
+        component: ManagerHomePage,
+        permission: true,
+        layout: null
+    },
 ];
 
 export default trangQuanLyRoutes;

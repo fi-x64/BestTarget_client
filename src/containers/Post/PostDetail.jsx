@@ -86,6 +86,22 @@ function PostDetail() {
         fetchData();
     }, [])
 
+    const handleChatSupport = async () => {
+        if (isLoggedIn) {
+            const res = await createPhongChat({
+                nguoiDungId1: user.data._id,
+                nguoiDungId2: '64074e99002eba5a852968a0',
+                loaiPhongChat: 'hoTro'
+            })
+
+            if (res) {
+                return navigate('/chat/hoTro')
+            }
+        } else {
+            return navigate('/login');
+        }
+    }
+
     const handleXoaTinYeuThich = async (tinDangId) => {
         const res = await xoaTinYeuThich(tinDangId);
 
@@ -111,18 +127,22 @@ function PostDetail() {
     }
 
     const handleChat = async (postId, nguoiDungId2) => {
-        const res = await createPhongChat({
-            nguoiDungId1: user.data._id,
-            nguoiDungId2: nguoiDungId2,
-            tinDangId: postId,
-            loaiPhongChat: "troChuyen"
-        })
-
-        if (res) {
-            return navigate({
-                pathname: `/chat`,
-                search: `?phongChatId=${res._id}`,
+        if (isLoggedIn) {
+            const res = await createPhongChat({
+                nguoiDungId1: user.data._id,
+                nguoiDungId2: nguoiDungId2,
+                tinDangId: postId,
+                loaiPhongChat: "troChuyen"
             })
+
+            if (res) {
+                return navigate({
+                    pathname: `/chat`,
+                    search: `?phongChatId=${res._id}`,
+                })
+            }
+        } else {
+            return navigate('/login');
         }
     }
 
@@ -219,6 +239,7 @@ function PostDetail() {
                                     <h1 className='my-3 text-sm'><i className="fa-solid fa-location-dot"></i> {fullDiaChiTin ? fullDiaChiTin.path_with_type : null}</h1>
                                     <hr />
                                 </div>
+                                <Button className='mt-4 bg-[#fe991b]' onClick={() => handleChatSupport()}>Có điều gì đó không ổn về tin đăng này? Nhắn cho CSKH để được trợ giúp</Button>
                                 <div className='flex mt-4'>
                                     <img src={shield} alt="" className='w-[35px] h-[35px]' />
                                     <p className='text-xs'><i>Tin đăng này đã được kiểm duyệt. Nếu gặp vấn đề, vui lòng báo cáo tin đăng hoặc liên hệ CSKH để được trợ giúp.</i></p>
@@ -230,9 +251,9 @@ function PostDetail() {
                                 <img className='w-[46px] h-[46px] rounded-[50%]' src={currentPostData?.nguoiDungId?.anhDaiDien?.url ? currentPostData.nguoiDungId.anhDaiDien.url : avatar} alt="" />
                                 <div className='block text-sm'>
                                     <p>{currentPostData.nguoiDungId.hoTen}</p>
-                                    <p>Đang hoạt động</p>
+                                    <p><i className="fa-solid fa-circle text-green-600 text-[10px] mr-1"></i>Đang hoạt động</p>
                                 </div>
-                                <Button className='ml-[20px] rounded-[25px]' >Xem trang</Button>
+                                <Button className='ml-8 rounded-[25px]' >Xem trang</Button>
                             </Link>
                             <div className='flex text-[14px] text-center justify-center'>
                                 <div className='block'>
