@@ -146,10 +146,6 @@ function ModalDetailPost({ postId }) {
                                     <p>{currentPostData.nguoiDungId.sdt}</p>
                                 </div>
                             </Button>
-                            <Button className='flex justify-between w-[50%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
-                                <i className="fa-solid fa-message mt-[4px]"></i>
-                                <p>CHAT VỚI NGƯỜI BÁN</p>
-                            </Button>
                         </div>
                     </div>
                 </div>

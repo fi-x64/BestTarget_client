@@ -92,12 +92,14 @@ function SearchBar() {
             };
             navigate(`/postList?&keyWord=${value}`)
             setShowResult(false);
+            setShowSearchHistory(false);
         }
     }
 
     const handleClickSearchBar = async (e) => {
         if (e?.target?.value) {
             handleSearch(e);
+            setShowSearchHistory(false);
         } else {
             if (isLoggedIn) {
                 setShowSearchHistory(true);

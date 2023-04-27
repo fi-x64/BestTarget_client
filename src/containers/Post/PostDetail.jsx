@@ -128,6 +128,7 @@ function PostDetail() {
 
     const handleChat = async (postId, nguoiDungId2) => {
         if (isLoggedIn) {
+            console.log("Check postId, nguoiDungId2: ", postId, nguoiDungId2);
             const res = await createPhongChat({
                 nguoiDungId1: user.data._id,
                 nguoiDungId2: nguoiDungId2,
@@ -136,9 +137,10 @@ function PostDetail() {
             })
 
             if (res) {
+                console.log("Check res: ", res);
                 return navigate({
                     pathname: `/chat`,
-                    search: `?phongChatId=${res._id}`,
+                    search: `?phongChatId=${res[0]._id}`,
                 })
             }
         } else {
@@ -282,9 +284,9 @@ function PostDetail() {
                                             <p>CHỈNH SỬA TIN ĐĂNG</p>
                                         </Button>
                                     </Link> :
-                                    <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
+                                    <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold' onClick={() => handleChat(currentPostData._id, currentPostData.nguoiDungId._id)}>
                                         <i className="fa-solid fa-message mt-[4px]"></i>
-                                        <p onClick={() => handleChat(currentPostData._id, currentPostData.nguoiDungId._id)}>CHAT VỚI NGƯỜI BÁN</p>
+                                        <p>CHAT VỚI NGƯỜI BÁN</p>
                                     </Button>
                                 }
                                 <Button onClick={() => handleOpenMap(currentPostData?.nguoiDungId?.diaChi?.kinhDo, currentPostData?.nguoiDungId?.diaChi?.viDo)} className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>

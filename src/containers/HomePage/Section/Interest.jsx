@@ -96,7 +96,7 @@ function Interest() {
                         <div className='grid gap-4 grid-cols-5 p-[16px]'>
                             {data.map((item, index) => {
                                 return (
-                                    <Link key={item._id} to={{ pathname: '/postDetail', search: `? id = ${item._id}` }} className="categories-item">
+                                    <Link key={item._id} to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className="categories-item">
                                         <div className='interest-items block cursor-pointer hover:shadow-inner-lg hover:shadow-lg'>
                                             <img className="item-image w-[166px] p-[4px] h-[166px] object-cover" src={item.hinhAnh[0].url} alt="" />
                                             <div className="item-title my-2 text-[14px]">{item.tieuDe}</div>
