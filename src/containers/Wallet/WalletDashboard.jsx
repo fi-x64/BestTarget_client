@@ -97,8 +97,7 @@ function WalletDashboard() {
             <div className="bg-[#fff]">
                 <div className='pb-3'>
                     <h1 className='p-4 font-semibold text-xl'><i className="fa-solid fa-percent text-[#ffba00] mr-2"></i>Khuyến mãi</h1>
-                    {currentKhuyenMai ? <p className='px-7 font-semibold text-base'>{currentKhuyenMai.noiDung}. Từ ngày {moment(currentKhuyenMai.ngayBatDau).format('DD/MM/YYYY')} đến ngày {moment(currentKhuyenMai.ngayKetThuc).format('DD/MM/YYYY')}
-                        BestTarget giảm {currentKhuyenMai.tiLeGiamGia}% cho các gói tin: {currentKhuyenMai.goiDangKyId.map((value) => (value.tenGoi + ', '))}
+                    {currentKhuyenMai ? <p className='px-7 font-semibold text-base'>{currentKhuyenMai.noiDung}. Từ ngày {moment(currentKhuyenMai.ngayBatDau).format('DD/MM/YYYY')} đến ngày {moment(currentKhuyenMai.ngayKetThuc).format('DD/MM/YYYY')}, BestTarget giảm {currentKhuyenMai.tiLeGiamGia}% cho các gói tin: {currentKhuyenMai.goiDangKyId.map((value) => (value.tenGoi + ', '))}
                         <Link to="/subscription" className='text-blue-600 cursor-pointer'>xem chi tiết giá các gói tin <i className="fa-solid fa-chevron-right"></i></Link></p> : null}
                 </div>
             </div>

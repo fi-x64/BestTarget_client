@@ -123,7 +123,7 @@ function HomeHeader() {
                         <li><Link to='/'><i className="fa-solid fa-house"></i> Trang chủ</Link></li>
                         <li><Link to="/managePost" ><i className="fa-solid fa-list-check"></i> Quản lý tin</Link></li>
                         {/* <li><Link to="/chat"><i className="fa-solid fa-comments"></i> Chat</Link></li> */}
-                        <li className='flex'><ChatNotification /><h1 className='ml-1'>Chat</h1></li>
+                        <li className='flex'><ChatNotification /></li>
                         <li><Notification /></li>
                         {isLoggedIn && user && user.data ?
                             <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer" placement='bottomRight'>

@@ -23,6 +23,43 @@ function PostList() {
 
     const navigate = useNavigate();
 
+    async function fetchData() {
+        if (allParams) {
+            const res = await getTinDangByValue(allParams);
+
+            if (res) {
+                if (isLoggedIn) {
+                    const tinYeuThichData = await getListTinYeuThich();
+
+                    if (tinYeuThichData) {
+                        res.map((value, index) => {
+                            tinYeuThichData.data.map((tinValue) => {
+                                if (value._id == tinValue.tinYeuThich[0]._id) {
+                                    value.status = true;
+                                }
+                            }
+                            )
+                        })
+                    }
+                }
+                setListTinDang(res);
+            }
+        }
+    }
+
+    // useEffect(() => {
+    //     const queryParams = new URLSearchParams(location.search);
+
+    //     const allParamsData = {};
+    //     for (const [key, value] of queryParams.entries()) {
+    //         allParamsData[key] = value;
+    //     }
+    //     if (allParamsData) {
+    //         setAllParams(allParamsData);
+    //         fetchData();
+    //     }
+    // }, [])
+
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
 
@@ -34,29 +71,6 @@ function PostList() {
     }, [location]);
 
     useEffect(() => {
-        async function fetchData() {
-            if (allParams) {
-                const res = await getTinDangByValue(allParams);
-
-                if (res) {
-                    if (isLoggedIn) {
-                        const tinYeuThichData = await getListTinYeuThich();
-
-                        if (tinYeuThichData) {
-                            res.map((value, index) => {
-                                tinYeuThichData.data.map((tinValue) => {
-                                    if (value._id == tinValue.tinYeuThich[0]._id) {
-                                        value.status = true;
-                                    }
-                                }
-                                )
-                            })
-                        }
-                    }
-                    setListTinDang(res);
-                }
-            }
-        }
         fetchData()
     }, [allParams])
 

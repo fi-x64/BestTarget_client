@@ -2,10 +2,10 @@ import { Button, Carousel, ConfigProvider } from 'antd'
 import React from 'react'
 import Slider from "react-slick"
 import './Banner.scss'
-import banner1 from '../../../assets/img/banner/banner1.jpg';
-import banner2 from '../../../assets/img/banner/banner2.jpg';
-import banner3 from '../../../assets/img/banner/banner3.jpg';
-import banner4 from '../../../assets/img/banner/banner4.jpg';
+import banner1 from '../../../assets/img/banner/banner1.png';
+import banner2 from '../../../assets/img/banner/banner2.png';
+import banner3 from '../../../assets/img/banner/banner3.png';
+import banner4 from '../../../assets/img/banner/banner4.png';
 import goiPro from '../../../assets/img/subBanner/goiPro.webp'
 import dongTot from '../../../assets/img/subBanner/dongTot.webp'
 import uuDai from '../../../assets/img/subBanner/uuDai.webp'
@@ -27,14 +27,10 @@ var settings = {
 };
 
 function Banner() {
-    const onChange = (currentSlide) => {
-        // console.log(currentSlide);
-    };
-
     return (
         <div className='wrapper-banner bg-[#fff]'>
             <div className="banner p-4">
-                <Slider className="[&>div]:h-[234px] max-h-[500px]" {...settings}>
+                <Slider className="[&>div]:h-[300px] max-h-[500px]" {...settings}>
                     <div>
                         <img src={banner1} alt="" />
                     </div>

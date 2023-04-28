@@ -25,6 +25,7 @@ import SuggestPostsRelated from '../../components/atom/Suggest/SuggestPostsRelat
 import { createLuotXemTin } from '../../services/luotXemTin';
 import postNotFond from '../../assets/img/post_not_found.png';
 import SuggestPostsRelatedHot from '../../components/atom/Suggest/SuggestPostsRelatedHot';
+import parse from 'html-react-parser';
 
 function PostDetail() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -190,13 +191,13 @@ function PostDetail() {
                             </Slider>
                             <div className='p-3'>
                                 <h1 className='float-right italic text-sm'>Tin đăng {currentPostData.khoangThoigian}</h1>
-                                <h1 className='font-bold'>{currentPostData.tieuDe}</h1>
+                                <h1 className='font-bold text-lg'>{currentPostData.tieuDe}</h1>
                                 <div className='flex justify-between'>
                                     <NumericFormat className='text-red-600 py-2' value={currentPostData.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                                     {isTinYeuThich && isLoggedIn ? <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleXoaTinYeuThich(currentPostData._id)}>Đã lưu<i className="fa-solid fa-heart ml-1"></i></Button>
                                         : <Button className='rounded-[20px] border-red-600 text-red-600' onClick={() => handleThemTinYeuThich(currentPostData._id)}>Lưu tin<i className="fa-regular fa-heart ml-2"></i></Button>}
                                 </div>
-                                <p>{currentPostData.moTa}</p>
+                                {parse(parse(currentPostData.moTa.html))}
                                 <div className='grid grid-cols-2 mt-6 gap-2 text-sm font-light'>
                                     {currentPostData.danhMucPhuId == 5 || currentPostData.danhMucPhuId == 6 || currentPostData.danhMucPhuId == 7 ?
                                         <p><i className="fa-solid fa-fax"></i> Loại thiết bị: {currentPostData.thietBi}</p>

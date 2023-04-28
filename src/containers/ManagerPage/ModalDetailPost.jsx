@@ -8,6 +8,7 @@ import Slider from 'react-slick';
 import ReactPlayer from 'react-player'
 import { NumericFormat } from 'react-number-format';
 import { getOneDiaChi } from '../../services/diaChi';
+import parse from 'html-react-parser';
 
 function ModalDetailPost({ postId }) {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -69,7 +70,7 @@ function ModalDetailPost({ postId }) {
                             <div className='flex justify-between'>
                                 <NumericFormat className='text-red-600 py-2' value={currentPostData.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                             </div>
-                            <p>{currentPostData.moTa}</p>
+                            {parse(parse(currentPostData.moTa.html))}
                             <div className='grid grid-cols-2 mt-6 gap-2 text-sm font-light'>
                                 {currentPostData.danhMucPhuId == 5 || currentPostData.danhMucPhuId == 6 || currentPostData.danhMucPhuId == 7 ?
                                     <p><i className="fa-solid fa-fax"></i> Loại thiết bị: {currentPostData.thietBi}</p>

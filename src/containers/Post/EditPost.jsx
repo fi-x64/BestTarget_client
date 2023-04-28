@@ -15,7 +15,10 @@ import TextArea from 'antd/es/input/TextArea';
 import ActionButton from '../../components/atom/ActionButton'
 import { createPost, deleteImage, deleteVideo, editPost, getGoiY, getTinDangId } from '../../services/tinDang';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import ReactPlayer from 'react-player';
+import MarkdownIt from 'markdown-it';
+import MdEditor from 'react-markdown-editor-lite';
+import 'react-markdown-editor-lite/lib/index.css';
+const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 function EditPost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -101,10 +104,19 @@ function EditPost() {
         tinhTPCode: {},
     }
 
+    const sampleMoTa = {
+        text: '',
+        html: '',
+    }
+
     const ValidationSchema = () => {
         const PostSchema = Yup.object().shape({
             tieuDe: Yup.string().min(4).max(50).required('Vui lòng nhập tiêu đề tin đăng!'),
-            moTa: Yup.string().min(4).max(1500).required('Vui lòng nhập mô tả chi tiết sản phẩm!'),
+            // moTa: Yup.string().min(4).max(1500).required('Vui lòng nhập mô tả chi tiết sản phẩm!'),
+            moTa:
+                Yup.object().shape({
+                    text: Yup.string().min(4, 'Mô tả ít nhất 4 ký tự').max(1000, 'Mô tả không được nhiều hơn 1000 ký tự').required('Vui lòng nhập mô tả chi tiết sản phẩm!')
+                }),
             gia: Yup.number().min(10000).required('Vui lòng nhập giá bán'),
             diaChiTinDang:
                 Yup.object().shape({
@@ -1009,17 +1021,37 @@ function EditPost() {
                                                 <FastField
                                                     name="moTa"
                                                     id="moTa"
-                                                    component={TextArea}
-                                                    value={values.moTa}
-                                                    status={errors?.moTa && touched?.moTa ? 'error' : ''}
-                                                    onChange={handleChange}
+                                                    style={{ height: '300px' }}
+                                                    component={MdEditor}
+                                                    // status={errors?.moTa && touched?.moTa ? 'error' : ''}
+                                                    status={errors?.moTa?.text && touched?.moTa?.text ? 'error' : ''}
+                                                    renderHTML={text => mdParser.render(text)}
+                                                    onChange={(value) => {
+                                                        setFieldValue(
+                                                            `moTa`,
+                                                            value
+                                                        )
+                                                    }}
+                                                    value={values.moTa.text}
                                                     onBlur={handleBlur}
                                                 ></FastField>
-                                                <ErrorMessage
-                                                    className="field-error"
+                                                {/* <MdEditor
+                                            style={{ height: '300px' }}
+                                            renderHTML={text => mdParser.render(text)}
+                                            status={errors?.moTa?.text && touched?.moTa?.text ? 'error' : ''}
+                                            onChange={(value) => {
+                                                setFieldValue(
+                                                    `moTa`,
+                                                    value
+                                                )
+                                            }}
+                                            value={values.moTa.text} /> */}
+                                                <div className='text-red-500'>{errors?.moTa?.text ? errors.moTa.text : null}</div>
+                                                {/* <ErrorMessage
+                                                    // className="field-error"
                                                     component="div"
-                                                    name="moTa"
-                                                ></ErrorMessage>
+                                                    name="moTa.text"
+                                                ></ErrorMessage> */}
                                             </div>
                                             <div>
                                                 <label htmlFor="gia">

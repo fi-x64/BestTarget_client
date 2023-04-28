@@ -308,7 +308,7 @@ function Chat() {
                         <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0 text-sm sticky z-50">
                             <div className="relative flex">
                                 <span className="absolute inset-y-0 flex items-center">
-                                    <i className="fa-solid fa-location-dot ml-4 text-lg"></i>
+                                    <i className="fa-solid fa-circle-plus ml-3 text-2xl"></i>
                                 </span>
                                 <input type="text" placeholder="Nhập tin nhắn!" className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
                                     onChange={(e) => handleChangeInput(e)}
