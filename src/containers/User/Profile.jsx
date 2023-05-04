@@ -118,6 +118,7 @@ function Profile() {
     <>
       {currentUser ?
         <div className="container bg-[#f4f4f4]">
+          {console.log("Check user: ", user)}
           <div className="grid grid-cols-2 p-[15px] bg-white mb-[15px]">
             <div className='flex'>
               <img src={currentUser?.anhDaiDien?.url ? currentUser.anhDaiDien.url : avatar} alt="" className='avatar w-[80px] h-[80px]' />

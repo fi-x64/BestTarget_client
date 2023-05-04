@@ -37,6 +37,15 @@ export const updateUser = async (id, values) => {
     return [];
 };
 
+export const updateUserRoute = async (id, values) => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.patch(`/users/${id}`, values, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};
+
 export const editUser = async (values) => {
     const res = await request.patch(`/users/updateMe`, values, { headers: authHeader() });
     if (res.data.status === 'success') return res.data.data
@@ -77,5 +86,14 @@ export const getStatisticsUserInWeek = async () => {
         return res.data.data;
     }
 
+    return [];
+};
+
+export const countSoLuongTinDang = async () => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/countSoLuongTinDang`, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
     return [];
 };

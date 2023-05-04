@@ -319,7 +319,7 @@ function ManagerStatistics() {
                             defaultValue={[dayjs(moment().subtract(7, 'days').toISOString()), dayjs(moment().toISOString())]}
                             onCalendarChange={(dates) => handleCalendarChangeHoaDon(dates)}
                         />
-                        <div className='w-[500px] h-[500px] mt-7'>
+                        <div className='w-[500px] h-[400px] mt-7'>
                             <Pie options={hoaDonOptions} data={hoaDonStatistics} />
                         </div>
                     </div>

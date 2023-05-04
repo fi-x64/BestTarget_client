@@ -161,7 +161,7 @@ function Statistics() {
                                     Chọn khoảng thời gian:
                                 </label>
                                 <RangePicker
-                                    className='w-[80%]'
+                                    className='w-[80%] ml-2'
                                     defaultValue={[dayjs(moment().subtract(7, 'days').toISOString()), dayjs(moment().toISOString())]}
                                     onCalendarChange={(dates) => handleCalendarChangeHoaDon(dates)}
                                 />

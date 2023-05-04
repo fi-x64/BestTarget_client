@@ -21,7 +21,6 @@ function Interest() {
                 setData(res);
             }
             if (hotPostData) {
-                console.log("Check hotPostData: ", hotPostData);
                 setHotPost(hotPostData);
             }
         }
@@ -97,9 +96,10 @@ function Interest() {
                             {data.map((item, index) => {
                                 return (
                                     <Link key={item._id} to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className="categories-item">
-                                        <div className='interest-items block cursor-pointer hover:shadow-inner-lg hover:shadow-lg'>
+                                        <div className='interest-items block cursor-pointer hover:shadow-inner-lg hover:shadow-lg h-[300px]'>
                                             <img className="item-image w-[166px] p-[4px] h-[166px] object-cover" src={item.hinhAnh[0].url} alt="" />
-                                            <div className="item-title my-2 text-[14px]">{item.tieuDe}</div>
+                                            <div className="item-title my-2 text-[14px] h-[60px]">{item.tieuDe}</div>
+
                                             <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                                             <div className="item-info flex">
                                                 <img className='item-avatar w-[19px] h-[16px] mt-[7px]' src="https://static.chotot.com/storage/chotot-icons/svg/user.svg" alt="" />

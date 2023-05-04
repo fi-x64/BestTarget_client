@@ -7,6 +7,7 @@ import { getAllDanhMuc, getAllDanhMucPhu } from '../../services/danhMuc';
 import CreateNewPost from './CreateNewPost';
 import './NewPost.scss';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { countSoLuongTinDang } from '../../services/nguoiDung';
 
 function NewPost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -20,13 +21,22 @@ function NewPost() {
     const [danhMucPhuId, setDanhMucPhuId] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
     const [isAbleCreatePost, setIsAbleCreatePost] = useState(true);
+    const [soLuongTinDang, setSoLuongTinDang] = useState();
 
     useEffect(() => {
-        if (user.data.goiTinDang.soLuongTinDang <= 0) {
-            setIsModalOpen(false);
-            setIsAbleCreatePost(false);
-            setIsModalPaymentOpen(true);
+        async function fetchData() {
+            const soLuongTinDangData = await countSoLuongTinDang();
+
+            if (soLuongTinDangData) {
+                setSoLuongTinDang(soLuongTinDangData);
+            }
+            if (!soLuongTinDangData || soLuongTinDangData < 1) {
+                setIsModalOpen(false);
+                setIsAbleCreatePost(false);
+                setIsModalPaymentOpen(true);
+            }
         }
+        fetchData();
     }, [])
 
     useEffect(() => {

@@ -111,13 +111,13 @@ function EditPost() {
 
     const ValidationSchema = () => {
         const PostSchema = Yup.object().shape({
-            tieuDe: Yup.string().min(4).max(50).required('Vui lòng nhập tiêu đề tin đăng!'),
-            // moTa: Yup.string().min(4).max(1500).required('Vui lòng nhập mô tả chi tiết sản phẩm!'),
+            tieuDe: Yup.string().min(4, 'Tiêu đề ít nhất 4 ký tự').max(50, 'Tiêu đề không nhiều hơn 50 ký tự').required('Vui lòng nhập tiêu đề tin đăng!'),
+            // moTa: Yup.string().min(4).max(500).required('Vui lòng nhập mô tả chi tiết sản phẩm!'),
+            gia: Yup.number().min(10000, 'Giá không được thấp hơn 10,000đ').required('Vui lòng nhập giá bán').typeError('Vui lòng nhập số'),
             moTa:
                 Yup.object().shape({
                     text: Yup.string().min(4, 'Mô tả ít nhất 4 ký tự').max(1000, 'Mô tả không được nhiều hơn 1000 ký tự').required('Vui lòng nhập mô tả chi tiết sản phẩm!')
                 }),
-            gia: Yup.number().min(10000).required('Vui lòng nhập giá bán'),
             diaChiTinDang:
                 Yup.object().shape({
                     tinhTPCode: Yup.string().required(
@@ -131,8 +131,8 @@ function EditPost() {
                     )
                 }),
             tinhTrang: Yup.string().required('Vui lòng chọn tình trạng sản phẩm'),
-            hinhAnh: Yup.array().min(1).max(6).required('Vui lòng đăng nhất ít nhất 1 ảnh sản phẩm'),
-            video: Yup.array().max(2)
+            hinhAnh: Yup.array().min(1, 'Vui lòng đăng nhất ít nhất 1 ảnh sản phẩm').max(6, 'Tối đa 6 ảnh sản phẩm').required('Vui lòng đăng nhất ít nhất 1 ảnh sản phẩm'),
+            video: Yup.array().max(3, 'Tối đa 3 video sản phẩm')
         })
 
         var ValidationSchema = PostSchema;
@@ -229,7 +229,7 @@ function EditPost() {
                 key,
                 duration: 1,
             })
-            navigate('/managePost');
+            navigate('/managePost/4');
         }
     }
 

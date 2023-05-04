@@ -169,13 +169,21 @@ function PostDetail() {
         arrows: true
     };
 
+    var settingsMapOpen = {
+        dots: true,
+        infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false
+    };
+
     return (
         <div className="container">
             {currentPostData ?
                 <div>
                     <div className='flex bg-[#fff] mb-5'>
                         <div className="h-auto">
-                            <Slider className="w-[606px] h-[455px]" {...settings}>
+                            <Slider className="w-[606px] h-[455px] z-0"  {...settings}>
                                 {currentPostData.video ? currentPostData.video.map((value, index) => {
                                     return (
                                         <ReactPlayer key={value.public_id} url={value.url} controls width={606} height={455} />
@@ -189,7 +197,7 @@ function PostDetail() {
                                 })
                                 }
                             </Slider>
-                            <div className='p-3'>
+                            <div className='p-3 w-[606px]'>
                                 <h1 className='float-right italic text-sm'>Tin đăng {currentPostData.khoangThoigian}</h1>
                                 <h1 className='font-bold text-lg'>{currentPostData.tieuDe}</h1>
                                 <div className='flex justify-between'>
@@ -249,7 +257,7 @@ function PostDetail() {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className='pl-4'>
                             <Link to={{ pathname: '/users/profile', search: `?userId=${currentPostData.nguoiDungId._id}` }} className='flex gap-3 p-[15px]'>
                                 <img className='w-[46px] h-[46px] rounded-[50%]' src={currentPostData?.nguoiDungId?.anhDaiDien?.url ? currentPostData.nguoiDungId.anhDaiDien.url : avatar} alt="" />
                                 <div className='block text-sm'>
@@ -272,12 +280,14 @@ function PostDetail() {
                                 </div>
                             </div>
                             <div>
-                                <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
-                                    <div className='flex gap-1'>
-                                        <i className="fa-solid fa-phone-volume mt-[4px]"></i>
-                                        <p className='ml-2'>{currentPostData.nguoiDungId.sdt}</p>
-                                    </div>
-                                </Button>
+                                <a href={`tel:+${currentPostData.nguoiDungId.sdt}`}>
+                                    <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>
+                                        <div className='flex gap-1'>
+                                            <i className="fa-solid fa-phone-volume mt-[4px]"></i>
+                                            <p className='ml-2'>{currentPostData.nguoiDungId.sdt}</p>
+                                        </div>
+                                    </Button>
+                                </a>
                                 {isLoggedIn && currentPostData.nguoiDungId._id === user.data._id ?
                                     <Link to={{ pathname: '/postEdit', search: `?id=${currentPostData._id}` }} >
                                         <Button className='flex justify-between w-[95%] h-[45px] text-base ml-[10px] gap-2 mt-[10px] pt-[10px] text-[#3c763d] font-bold'>

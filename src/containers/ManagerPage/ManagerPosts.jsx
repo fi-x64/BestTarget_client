@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Button, Layout, List, Menu, Modal, Table, theme } from 'antd';
-import { editUser, getAllNguoiDung, getCurrentUser, getUser } from '../../services/nguoiDung';
+import { editUser, getAllNguoiDung, getCurrentUser, getUser, updateUserRoute } from '../../services/nguoiDung';
 import { Input, Space } from 'antd';
 import { editPost, getAllPost } from '../../services/tinDang';
 import { SearchOutlined } from '@ant-design/icons';
@@ -24,6 +24,7 @@ function ManagerPosts() {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [postId, setPostId] = useState();
     const [isOpenHuyModal, setIsOpenHuyModal] = useState(false);
+    const [nguoiDangData, setNguoiDangData] = useState();
 
     const inputRef = useRef();
     const dispatch = useDispatch();
@@ -77,9 +78,11 @@ function ManagerPosts() {
         }
     }
 
-    const hanldeTuChoiTin = async (postId) => {
+    const hanldeTuChoiTin = async (postId, nguoiDang) => {
         setIsOpenHuyModal(true);
         setPostId(postId);
+        setNguoiDangData(nguoiDang);
+        console.log("Check nguoiDang: ", nguoiDang);
     }
 
     const handleCancelHuyModal = () => {
@@ -87,21 +90,21 @@ function ManagerPosts() {
         inputRef.current.value = "";
     }
 
-    const handleHuyOk = async (postId) => {
+    const handleHuyOk = async () => {
         const value = inputRef.current.value;
         const res = await editPost(postId, { trangThaiTin: 'Bị từ chối', lyDoTuChoi: value, thoiGianPush: Date.now() });
         console.log("Check res: ", res);
         if (res) {
             setIsOpenHuyModal(false);
-            const soLuongTinDang = user.data.goiTinDang.soLuongTinDang + 1;
+            const soLuongTinDang = nguoiDangData.goiTinDang.soLuongTinDang + 1;
             const values = {
                 "goiTinDang": {
-                    id: user.data.goiTinDang.id._id,
+                    id: nguoiDangData.goiTinDang.id._id,
                     soLuongTinDang: soLuongTinDang
                 }
             }
-            const updateUserData = await editUser(values);
-            if (updateUserData) {
+            const updateUserData = await updateUserRoute(nguoiDangData._id, values);
+            if (updateUserData && user.data._id == nguoiDangData._id) {
                 const newUserData = await getCurrentUser();
                 const userData = { ...user };
                 userData.data = newUserData.data;
@@ -315,7 +318,7 @@ function ManagerPosts() {
                 <Space size="middle">
                     <Button className='bg-yellow-400' onClick={() => showDetailModal(record._id)}>Xem chi tiết</Button>
                     <Button className='bg-green-500' onClick={() => hanldeDuyetTin(record._id)} disabled={record.trangThaiTin === 'Đang đợi duyệt' ? false : true}>Duyệt tin</Button>
-                    <Button className='bg-red-500' onClick={() => hanldeTuChoiTin(record._id)} disabled={record.trangThaiTin === 'Bị từ chối' ? true : false}>Từ chối tin</Button>
+                    <Button className='bg-red-500' onClick={() => hanldeTuChoiTin(record._id, record.nguoiDungId)} disabled={record.trangThaiTin === 'Bị từ chối' ? true : false}>Từ chối tin</Button>
                 </Space>
             ),
         },
@@ -342,7 +345,7 @@ function ManagerPosts() {
                 <Button
                     className='bg-[#ffba00]'
                     key="ok"
-                    onClick={() => handleHuyOk(postId)}
+                    onClick={() => handleHuyOk()}
                 >
                     Lưu
                 </Button>,

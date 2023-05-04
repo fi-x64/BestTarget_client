@@ -80,7 +80,7 @@ function SuggestPostsUser({ postUserId, postId, postHoTen }) {
                                         <div key={item._id} onClick={() => handleClickItem(item._id)} className="categories-item">
                                             <div className='interest-items block cursor-pointer hover:shadow-inner-lg hover:shadow-lg'>
                                                 <img className="item-image w-[166px] p-[4px] h-[166px] object-cover" src={item.hinhAnh[0].url} alt="" />
-                                                <div className="item-title my-2 text-[14px]">{item.tieuDe}</div>
+                                                <div className="item-title my-2 text-[14px] h-[60px]">{item.tieuDe}</div>
                                                 <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                                                 <div className="item-info flex">
                                                     <img className='item-avatar w-[19px] h-[16px] mt-[7px]' src="https://static.chotot.com/storage/chotot-icons/svg/user.svg" alt="" />

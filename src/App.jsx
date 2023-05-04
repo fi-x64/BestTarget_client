@@ -65,7 +65,7 @@ function App() {
                     <>
                       <HomeHeader />
                       <div className='bg-[#f4f4f4]'>
-                        <div className='max-w-[960px] min-h-[75vh] h-auto mx-auto'>
+                        <div className='max-w-[980px] min-h-[75vh] h-auto mx-auto'>
                           <Component></Component>
                         </div>
                         <HomeFooter />

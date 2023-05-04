@@ -48,15 +48,17 @@ function ManagerHomePage() {
     }
 
     useEffect(() => {
-        const pathName = window.location.pathname;
-        const params = pathName.split('/');
-        const keyParam = params[params.length - 1];
+        if (isLoggedIn && user.data.quyen.ten == 'Admin') {
+            const pathName = window.location.pathname;
+            const params = pathName.split('/');
+            const keyParam = params[params.length - 1];
 
-        if (keyParam > 0 && keyParam < 6) {
-            setKey(keyParam)
-        } else {
-            navigate(`/managerPage/1`);
-        }
+            if (keyParam > 0 && keyParam < 6) {
+                setKey(keyParam)
+            } else {
+                navigate(`/managerPage/1`);
+            }
+        } else navigate('/');
     }, [])
 
     const items = [

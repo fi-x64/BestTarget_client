@@ -7,7 +7,7 @@ import { Avatar, Button, List, Modal, Popover, Tabs, Tooltip } from 'antd';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
-import { editUser, getCurrentUser } from '../../services/nguoiDung';
+import { countSoLuongTinDang, editUser, getCurrentUser } from '../../services/nguoiDung';
 import { updateUser } from '../../actions/auth';
 
 function ManagePost() {
@@ -21,6 +21,8 @@ function ManagePost() {
     const [isModalReasonOpen, setIsModalReasonOpen] = useState(false);
     const [currentReason, setCurrentReason] = useState();
     const [key, setKey] = useState(1);
+    const [soLuongTinDang, setSoLuongTinDang] = useState(0);
+
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
@@ -49,6 +51,12 @@ function ManagePost() {
             } else {
                 navigate(`/managePost/1`);
                 setTinDangData(await getTinDang(user.data._id, 1));
+            }
+
+            const soLuongTinDangData = await countSoLuongTinDang();
+
+            if (soLuongTinDangData) {
+                setSoLuongTinDang(soLuongTinDangData);
             }
         }
         fetchData();
@@ -100,7 +108,7 @@ function ManagePost() {
     }
 
     const handleKhoiPhucTin = (postId) => {
-        if (user.data.goiTinDang.soLuongTinDang <= 0) {
+        if (soLuongTinDang <= 0) {
             setIsAbleRestore(false);
             setIsModalPaymentOpen(true);
         } else {
@@ -111,11 +119,11 @@ function ManagePost() {
     }
 
     const handlePaymentOk = async () => {
-        const soLuongTinDang = user.data.goiTinDang.soLuongTinDang - 1;
+        const soLuongTinDangMinus = soLuongTinDang - 1;
         const values = {
             "goiTinDang": {
                 id: user.data.goiTinDang.id._id,
-                soLuongTinDang: soLuongTinDang
+                soLuongTinDang: soLuongTinDangMinus
             }
         }
         const newPostData = await editPost(currentPostId, { trangThaiTin: 'Đang hiển thị', thoiGianPush: Date.now() });
