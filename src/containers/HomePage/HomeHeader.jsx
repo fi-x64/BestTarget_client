@@ -90,13 +90,21 @@ function HomeHeader() {
         {
             key: '7',
             label: (
+                <Link to='/users/statistics'>
+                    <i className="fa-solid fa-chart-area w-[14px] h-[14px] mr-2"></i>Thống kê
+                </Link>
+            ),
+        },
+        {
+            key: '8',
+            label: (
                 <Link to='/users/editProfile'>
                     <i className="fa-solid fa-gear w-[14px] h-[14px] mr-2"></i>Cài đặt tài khoản
                 </Link>
             ),
         },
         {
-            key: '8',
+            key: '9',
             label: (
                 <Link to='/chat/hoTro' onClick={() => handleChat()}>
                     <i className="fa-solid fa-circle-question w-[14px] h-[14px] mr-2"></i>Liên hệ trợ giúp
@@ -104,7 +112,7 @@ function HomeHeader() {
             ),
         },
         {
-            key: '9',
+            key: '10',
             label: (
                 <a rel="noopener noreferrer" onClick={() => handleLogout()}>
                     <i className="fa-solid fa-arrow-right-from-bracket w-[14px] h-[14px] mr-2"></i>Đăng xuất

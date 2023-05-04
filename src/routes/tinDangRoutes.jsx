@@ -16,6 +16,11 @@ const tinDangRoutes = [
         layout: null
     },
     {
+        path: "/managePost/:key",
+        component: ManagePost,
+        layout: null
+    },
+    {
         path: "/postDetail",
         component: PostDetail,
         layout: null

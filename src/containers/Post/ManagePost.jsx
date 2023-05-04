@@ -4,7 +4,7 @@ import HomeHeader from '../HomePage/HomeHeader';
 // import AuthService from "../../services/auth.service";
 import avatar from '../../assets/img/avatar.svg'
 import { Avatar, Button, List, Modal, Popover, Tabs, Tooltip } from 'antd';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../services/tinDang';
 import moment from 'moment';
 import { editUser, getCurrentUser } from '../../services/nguoiDung';
@@ -20,6 +20,8 @@ function ManagePost() {
     const [currentPostId, setCurrentPostId] = useState();
     const [isModalReasonOpen, setIsModalReasonOpen] = useState(false);
     const [currentReason, setCurrentReason] = useState();
+    const [key, setKey] = useState(1);
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
@@ -37,13 +39,25 @@ function ManagePost() {
 
     useEffect(() => {
         async function fetchData() {
-            setTinDangData(await getTinDang(user.data._id, 1));
+            const pathName = window.location.pathname;
+            const params = pathName.split('/');
+            const keyParam = params[params.length - 1];
+
+            if (keyParam > 0 && keyParam < 7) {
+                setKey(keyParam)
+                setTinDangData(await getTinDang(user.data._id, keyParam));
+            } else {
+                navigate(`/managePost/1`);
+                setTinDangData(await getTinDang(user.data._id, 1));
+            }
         }
         fetchData();
     }, [])
 
     const onChange = async (key) => {
         var res = '';
+        setKey(key);
+        navigate(`/managePost/${key}`);
         res = await getTinDang(user.data._id, key);
         if (res) {
             setTinDangData(res);
@@ -137,13 +151,18 @@ function ManagePost() {
     const content = (id) => {
         return (
             <div>
-                <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin</Link>
+                <Link to={{ pathname: '/postEdit', search: `?id=${id}` }} >Sửa tin đăng</Link>
+                <p onClick={() => handleKhoiPhucTin(id)} className='cursor-pointer'>
+                    <Tooltip title="Tin sẽ được phục hồi ngày đăng lại" >
+                        Đẩy tin đăng
+                    </Tooltip>
+                </p>
                 <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã bán')} className='cursor-pointer'>
                     <Tooltip title="Lưu ý: Tin đã bán không thể hiển thị lại" >
                         Đã bán
                     </Tooltip>
                 </p>
-                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã ẩn')} className='cursor-pointer'>Ẩn tin</p>
+                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã ẩn')} className='cursor-pointer'>Ẩn tin đăng</p>
             </div>
         )
     };
@@ -192,7 +211,7 @@ function ManagePost() {
                                                 <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
                                                 : null
                             }
-                            {isAbleRestore ? <Modal title="Xác nhận khôi phục tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} onOk={() => handlePaymentOk(item._id)} footer={[
+                            {isAbleRestore ? <Modal title="Xác nhận khôi phục/đẩy tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} onOk={() => handlePaymentOk(item._id)} footer={[
                                 <Button key="back" onClick={handlePaymentCancel}>
                                     Thoát
                                 </Button>,
@@ -205,7 +224,7 @@ function ManagePost() {
                                 </Button>,
                             ]}>
                                 <div>
-                                    <h1>Bạn sẽ bị trừ đi 1 lượt đăng tin nếu khôi phục tin thành công. Bạn có đồng ý không?</h1>
+                                    <h1>Bạn sẽ bị trừ đi 1 lượt đăng tin nếu khôi phục/đẩy tin thành công. Bạn có đồng ý không?</h1>
                                 </div>
                             </Modal> :
                                 <Modal title="Không đủ lượt đăng tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} footer={null}>
@@ -284,7 +303,7 @@ function ManagePost() {
                 </div>
                 <hr />
                 <div className='pl-[15px]'>
-                    <Tabs defaultActiveKey="1" items={items} tabBarGutter={50} onChange={onChange} />
+                    <Tabs activeKey={key} items={items} tabBarGutter={50} onChange={onChange} />
                 </div>
             </div>
         </div>

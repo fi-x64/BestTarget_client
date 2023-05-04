@@ -93,6 +93,13 @@ export const getStatisticsPostInWeek = async () => {
     return []
 }
 
+export const getStatisticsPostInWeekByUserId = async () => {
+    const res = await request.get(`/tinDang/statisticsPostInWeekByUserId`, { headers: authHeader() });
+
+    if (res.data.status === 'success') return res.data.data
+    return []
+}
+
 export const getStatisticsPostInProvince = async () => {
     const res = await request.get(`/tinDang/statisticsPostInProvince`, { headers: authHeader() });
 

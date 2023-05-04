@@ -18,3 +18,9 @@ export const statisticsHoaDon = async (values) => {
     if (res.data.status === 'success') return res.data.data
     return []
 }
+
+export const statisticsHoaDonByUserId = async (values) => {
+    const res = await request.post(`/hoaDon/statisticsHoaDonByUserId`, values, { headers: authHeader() });
+    if (res.data.status === 'success') return res.data.data
+    return []
+}

@@ -929,8 +929,8 @@ function CreateNewPost({ danhMucPhuId }) {
                                         }
                                         options={[
                                             { label: "Mới", value: "Mới" },
-                                            { label: "Đã sử dụng (chưa sửa chửa)", value: "Đã sử dụng (chưa sửa chửa)" },
-                                            { label: "Đã sử dụng (qua sửa chửa)", value: "Đã sử dụng (qua sửa chửa)" }
+                                            { label: "Đã sử dụng (chưa sửa chữa)", value: "Đã sử dụng (chưa sửa chữa)" },
+                                            { label: "Đã sử dụng (qua sửa chữa)", value: "Đã sử dụng (qua sửa chữa)" }
                                         ]}
                                     ></Select>
                                     <ErrorMessage
