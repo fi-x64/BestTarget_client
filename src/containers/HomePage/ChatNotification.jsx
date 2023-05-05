@@ -71,8 +71,9 @@ function ChatNotification({ type }) {
                             :
                             <>
                                 <Badge count={countMessage ? countMessage : 0} size='small' className='mr-1'>
-                                    <i className="fa-solid fa-comments mt-1"></i> Chat
+                                    <i className="fa-solid fa-comments mt-1"></i>
                                 </Badge>
+                                Chat
                             </>
                         }
                     </Space>

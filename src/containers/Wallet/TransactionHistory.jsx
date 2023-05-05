@@ -201,12 +201,19 @@ function TransactionHistory() {
     return (
         <div>
             {hoaDonUser ?
-                <div className='h-[600px]'>
-                    <Table columns={columns} dataSource={hoaDonUser} className='pt-5' rowKey='_id'
-                        pagination={{ position: 'bottom', pageSize: 5 }}
-                    />
+                <div className="container bg-[#f4f4f4] min-h-[600px]">
+                    <div className="pb-2 bg-[#fff]">
+                        <div>
+                            <h1 className='p-4 font-semibold text-lg'>Lịch sử giao dịch</h1>
+                            <hr />
+                        </div>
+                        <div className='h-[600px]'>
+                            <Table columns={columns} dataSource={hoaDonUser} className='pt-5' rowKey='_id'
+                                pagination={{ position: 'bottom', pageSize: 5 }}
+                            />
+                        </div>
+                    </div>
                 </div>
-
                 : null}
         </div>
     );

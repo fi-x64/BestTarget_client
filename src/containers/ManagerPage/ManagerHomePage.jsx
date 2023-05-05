@@ -12,7 +12,7 @@ import logo from '../../assets/img/logo.png';
 import ManagerUsers from './ManagerUsers';
 import ManagerPosts from './ManagerPosts';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import avatar from '../../assets/img/avatar.svg'
 import { logout } from '../../actions/auth';
 import ManagerStatistics from './ManagerStatistics';
@@ -73,7 +73,7 @@ function ManagerHomePage() {
         {
             key: '2',
             label: (
-                <Link to={{ pathname: '/users/profile', search: `?userId=${user.data._id}` }}>
+                <Link to={{ pathname: '/users/profile', search: `?userId=${user?.data?._id}` }}>
                     Trang cá nhân
                 </Link>
             ),
@@ -144,8 +144,8 @@ function ManagerHomePage() {
                     <Dropdown menu={{ items }} trigger={['click']} className="cursor-pointer float-right mr-[20px]" placement='bottomRight'>
                         <a onClick={(e) => e.preventDefault()}>
                             <Space>
-                                <Avatar src={user.data.anhDaiDien ? user.data.anhDaiDien.url : avatar} />
-                                {user.data.hoTen}<i className="fa-solid fa-chevron-down"></i>
+                                <Avatar src={user?.data?.anhDaiDien ? user.data.anhDaiDien.url : avatar} />
+                                {user?.data?.hoTen}<i className="fa-solid fa-chevron-down"></i>
                             </Space>
                         </a>
                     </Dropdown>

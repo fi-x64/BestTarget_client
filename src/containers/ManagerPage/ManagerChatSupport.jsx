@@ -174,7 +174,7 @@ function ManagerChatSupport() {
                                                         </p>
                                                     </div>
                                                 }
-                                                description={item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1]?.noiDung}
+                                                description={item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung.length > 75 ? item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung.slice(0, 75) + '...' : item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung}
                                             />
                                             :
                                             item.currentNguoiDung === 'nguoiDung2' ?
@@ -185,7 +185,7 @@ function ManagerChatSupport() {
                                                             {countTime(item.chat[0]?.thoiGianChatMoiNhat)}
                                                         </p>
                                                     </div>}
-                                                    description={item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung}
+                                                    description={item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung.length > 75 ? item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung.slice(0, 75) + '...' : item?.chat[0]?.tinNhan[item.chat[0].tinNhan.length - 1].noiDung}
                                                 />
 
                                                 : null}
@@ -244,7 +244,7 @@ function ManagerChatSupport() {
                                 <span className="absolute inset-y-0 flex items-center">
                                     <i className="fa-solid fa-circle-plus ml-3 text-2xl"></i>
                                 </span>
-                                <input type="text" placeholder="Nhập tin nhắn!" className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
+                                <input type="text" placeholder="Nhập tin nhắn!" className="w-[92%] focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"
                                     onChange={(e) => handleChangeInput(e)}
                                     onKeyUp={(e) => handleKeyUp(e)}
                                     ref={inputRef}

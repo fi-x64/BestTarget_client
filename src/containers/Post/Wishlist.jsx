@@ -66,7 +66,7 @@ function WishList() {
             <div className='mt-[15px] bg-[#fff]'>
                 {listTinYeuThich ?
                     <List
-                        className='h-[600px]'
+                        className='h-[700px]'
                         pagination={{ position: 'bottom', align: 'center', pageSize: 4 }}
                         itemLayout="horizontal"
                         dataSource={listTinYeuThich.data}

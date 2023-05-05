@@ -75,7 +75,7 @@ function ManagePost() {
     const handleChuyenTrangThaiTin = async (id, trangThai) => {
         var res;
         if (trangThai === 'Đã bán') {
-            res = await editPost(currentPostId, { trangThaiTin: 'Đã bán', thoiGianPush: Date.now() })
+            res = await editPost(id, { trangThaiTin: 'Đã bán', thoiGianPush: Date.now() })
         } else {
             res = await editPost(id, { trangThaiTin: trangThai });
         }
