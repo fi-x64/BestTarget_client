@@ -13,7 +13,8 @@ import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-d
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_clientId}>
+      {/* <GoogleOAuthProvider clientId={import.meta.env.VITE_clientId}> */}
+      <GoogleOAuthProvider clientId='762119092368-8t2col1rqp85uneukjrbd6d3qhlftaqg.apps.googleusercontent.com'>
         <App />
       </GoogleOAuthProvider>
     </Provider>
