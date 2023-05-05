@@ -1122,6 +1122,10 @@ function EditPost() {
                                                             }
                                                             onChange={
                                                                 (value) => {
+                                                                    if (values?.diaChiTinDang?.quanHuyenCode && values?.diaChiTinDang?.phuongXaCode) {
+                                                                        values.diaChiTinDang.quanHuyenCode = null;
+                                                                        values.diaChiTinDang.phuongXaCode = null;
+                                                                    }
                                                                     setFieldValue(
                                                                         `diaChiTinDang.tinhTPCode`,
                                                                         value
@@ -1164,6 +1168,9 @@ function EditPost() {
                                                                     : ''
                                                             }
                                                             onChange={(value) => {
+                                                                if (values?.diaChiTinDang?.phuongXaCode) {
+                                                                    values.diaChiTinDang.phuongXaCode = null;
+                                                                }
                                                                 setFieldValue(
                                                                     `diaChiTinDang.quanHuyenCode`,
                                                                     value

@@ -289,7 +289,6 @@ function ModalEditUser({ user }) {
                                             }
                                         }
                                         onBlur={handleBlur}
-                                        placeholder="Chọn Tỉnh/Thành phố"
                                         optionFilterProp="children"
                                         filterOption={(input, option) =>
                                             (option?.label ?? '')
@@ -409,6 +408,10 @@ function ModalEditUser({ user }) {
                                                 }
                                                 onChange={
                                                     (value) => {
+                                                        if (values?.diaChi?.quanHuyenCode && values?.diaChi?.phuongXaCode) {
+                                                            values.diaChi.quanHuyenCode = null;
+                                                            values.diaChi.phuongXaCode = null;
+                                                        }
                                                         setFieldValue(
                                                             `diaChi.tinhTPCode`,
                                                             value
@@ -451,6 +454,9 @@ function ModalEditUser({ user }) {
                                                         : ''
                                                 }
                                                 onChange={(value) => {
+                                                    if (values?.diaChi?.phuongXaCode) {
+                                                        values.diaChi.phuongXaCode = null;
+                                                    }
                                                     setFieldValue(
                                                         `diaChi.quanHuyenCode`,
                                                         value

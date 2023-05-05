@@ -996,11 +996,11 @@ function CreateNewPost({ danhMucPhuId }) {
                                             }}
                                             value={values.moTa.text} /> */}
                                         <div className='text-red-500'>{errors?.moTa?.text ? errors.moTa.text : null}</div>
-                                        <ErrorMessage
-                                            // className="field-error"
+                                        {/* <ErrorMessage
+                                            className="field-error"
                                             component="div"
-                                            name="moTa.text"
-                                        ></ErrorMessage>
+                                            name="moTa.html"
+                                        ></ErrorMessage> */}
                                     </div>
                                     <div>
                                         <label htmlFor="gia">
@@ -1070,6 +1070,10 @@ function CreateNewPost({ danhMucPhuId }) {
                                                     }
                                                     onChange={
                                                         (value) => {
+                                                            if (values?.diaChiTinDang?.quanHuyenCode && values?.diaChiTinDang?.phuongXaCode) {
+                                                                values.diaChiTinDang.quanHuyenCode = null;
+                                                                values.diaChiTinDang.phuongXaCode = null;
+                                                            }
                                                             setFieldValue(
                                                                 `diaChiTinDang.tinhTPCode`,
                                                                 value
@@ -1112,6 +1116,9 @@ function CreateNewPost({ danhMucPhuId }) {
                                                             : ''
                                                     }
                                                     onChange={(value) => {
+                                                        if (values?.diaChiTinDang?.phuongXaCode) {
+                                                            values.diaChiTinDang.phuongXaCode = null;
+                                                        }
                                                         setFieldValue(
                                                             `diaChiTinDang.quanHuyenCode`,
                                                             value

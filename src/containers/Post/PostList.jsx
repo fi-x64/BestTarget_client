@@ -23,9 +23,9 @@ function PostList() {
 
     const navigate = useNavigate();
 
-    async function fetchData() {
-        if (allParams) {
-            const res = await getTinDangByValue(allParams);
+    async function fetchData(allParamsData) {
+        if (allParamsData) {
+            const res = await getTinDangByValue(allParamsData);
 
             if (res) {
                 if (isLoggedIn) {
@@ -47,18 +47,18 @@ function PostList() {
         }
     }
 
-    // useEffect(() => {
-    //     const queryParams = new URLSearchParams(location.search);
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
 
-    //     const allParamsData = {};
-    //     for (const [key, value] of queryParams.entries()) {
-    //         allParamsData[key] = value;
-    //     }
-    //     if (allParamsData) {
-    //         setAllParams(allParamsData);
-    //         fetchData();
-    //     }
-    // }, [])
+        const allParamsData = {};
+        for (const [key, value] of queryParams.entries()) {
+            allParamsData[key] = value;
+        }
+        if (allParamsData) {
+            fetchData(allParamsData);
+            setAllParams(allParamsData);
+        }
+    }, [])
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -67,12 +67,13 @@ function PostList() {
         for (const [key, value] of queryParams.entries()) {
             allParamsData[key] = value;
         }
+        fetchData(allParamsData)
         setAllParams(allParamsData);
     }, [location]);
 
-    useEffect(() => {
-        fetchData()
-    }, [allParams])
+    // useEffect(() => {
+    //     fetchData()
+    // }, [allParams])
 
     const handleXoaTinYeuThich = async (e, tinDangId) => {
         e.preventDefault();
