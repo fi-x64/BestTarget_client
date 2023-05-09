@@ -5,7 +5,7 @@ import {
     LineChartOutlined,
     UserOutlined,
     FormOutlined,
-    MessageOutlined
+    HomeOutlined
 } from '@ant-design/icons';
 import { Avatar, Badge, Button, Dropdown, Layout, Menu, Space, theme } from 'antd';
 import logo from '../../assets/img/logo.png';
@@ -19,6 +19,7 @@ import ManagerStatistics from './ManagerStatistics';
 import ManagerPromotions from './ManagerPromotions';
 import ManagerChatSupport from './ManagerChatSupport';
 import ChatNotification from '../HomePage/ChatNotification';
+import ManagerDashboard from './ManagerDashboard';
 
 const { Header, Sider, Content } = Layout;
 
@@ -53,7 +54,7 @@ function ManagerHomePage() {
             const params = pathName.split('/');
             const keyParam = params[params.length - 1];
 
-            if (keyParam > 0 && keyParam < 6) {
+            if (keyParam > 0 && keyParam < 7) {
                 setKey(keyParam)
             } else {
                 navigate(`/managerPage/1`);
@@ -96,6 +97,11 @@ function ManagerHomePage() {
         },
     ];
 
+    const setNewKey = (newKey) => {
+        setKey(newKey);
+        navigate(`/managerPage/${newKey}`);
+    }
+
     return (
         <Layout className='min-h-[100vh]'>
             <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -109,26 +115,31 @@ function ManagerHomePage() {
                     items={[
                         {
                             key: '1',
+                            icon: <HomeOutlined />,
+                            label: 'Trang chủ quản lý',
+                        },
+                        {
+                            key: '2',
                             icon: <UserOutlined />,
                             label: 'Quản lý người dùng',
                         },
                         {
-                            key: '2',
+                            key: '3',
                             icon: <FormOutlined />,
                             label: 'Quản lý tin đăng',
                         },
                         {
-                            key: '3',
+                            key: '4',
                             icon: <LineChartOutlined />,
                             label: 'Thống kê',
                         },
                         {
-                            key: '4',
+                            key: '5',
                             icon: <ChatNotification type={'managerPage'} />,
                             label: 'Tin nhắn hỗ trợ',
                         },
                         {
-                            key: '5',
+                            key: '6',
                             icon: <i className="fa-solid fa-tags"></i>,
                             label: 'Tạo khuyến mãi',
                         },
@@ -158,11 +169,12 @@ function ManagerHomePage() {
                         background: colorBgContainer,
                     }}
                 >
-                    {key == 1 ? <ManagerUsers /> : null}
-                    {key == 2 ? <ManagerPosts /> : null}
-                    {key == 3 ? <ManagerStatistics /> : null}
-                    {key == 4 ? <ManagerChatSupport /> : null}
-                    {key == 5 ? <ManagerPromotions /> : null}
+                    {key == 1 ? <ManagerDashboard setNewKey={setNewKey} /> : null}
+                    {key == 2 ? <ManagerUsers /> : null}
+                    {key == 3 ? <ManagerPosts /> : null}
+                    {key == 4 ? <ManagerStatistics /> : null}
+                    {key == 5 ? <ManagerChatSupport /> : null}
+                    {key == 6 ? <ManagerPromotions /> : null}
                 </Content>
             </Layout>
         </Layout>

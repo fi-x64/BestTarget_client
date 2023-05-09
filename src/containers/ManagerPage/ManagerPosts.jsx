@@ -82,7 +82,6 @@ function ManagerPosts() {
         setIsOpenHuyModal(true);
         setPostId(postId);
         setNguoiDangData(nguoiDang);
-        console.log("Check nguoiDang: ", nguoiDang);
     }
 
     const handleCancelHuyModal = () => {

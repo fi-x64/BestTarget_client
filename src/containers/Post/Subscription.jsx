@@ -38,6 +38,8 @@ function Subscription() {
 
                 if (khuyenMaiData) {
                     handleRefetchData(listGoiDangKyData, khuyenMaiData);
+                } else {
+                    setListAllGoiDangKy(listGoiDangKyData);
                 }
             }
         }

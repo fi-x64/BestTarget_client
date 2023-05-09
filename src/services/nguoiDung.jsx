@@ -97,3 +97,12 @@ export const countSoLuongTinDang = async () => {
     }
     return [];
 };
+
+export const countSoLuongNguoiDung = async () => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/users/countSoLuongNguoiDung`, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};

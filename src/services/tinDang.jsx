@@ -113,3 +113,12 @@ export const updateTinHetHan = async () => {
     if (res.data.status === 'success') return res.data.data
     return []
 }
+
+export const countSoLuongTinDang = async () => {
+    // return JSON.parse(localStorage.getItem("user"));
+    const res = await request.get(`/tinDang/countSoLuongTinDang`, { headers: authHeader() });
+    if (res.data.status === 'success') {
+        return res.data.data;
+    }
+    return [];
+};

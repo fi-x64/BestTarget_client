@@ -282,8 +282,6 @@ function ManagerStatistics() {
         const category = await statisticsLuotXemTinByCategory({ startDate: dates[0]?.$d, endDate: dates[1]?.$d });
 
         if (category) {
-            console.log("Check category: ", category);
-
             const categoryRefetch = handleCategoryRefetch(category);
 
             setDataCategory(categoryRefetch);
