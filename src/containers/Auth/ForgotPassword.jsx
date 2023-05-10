@@ -23,9 +23,8 @@ function ForgotPassword({ email }) {
     const [nextPage, setNextPage] = useState(false);
 
     const handleSubmit = async (values) => {
-        console.log("Check values: ", values);
         const res = await forgotPassword(values.email);
-        console.log("Check res: ", res);
+
         if (res.status === 'success') {
             toast.success('Một email kèm link xác thực vừa được gửi đến email');
             setNextPage(true);

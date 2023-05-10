@@ -33,7 +33,7 @@ function Register() {
 
     const handleSubmit = async (values) => {
         const res = await register(values);
-        console.log("Check values: ", values);
+
         if (res.status === 'success') {
             const createOTPData = await createOTP(values.email);
             if (createOTPData) {

@@ -29,7 +29,7 @@ function ResetPassword() {
     useEffect(() => {
         async function fetchData() {
             const resetTokenData = searchParams.get("resetToken");
-            console.log("Check resetTokenData: ", resetTokenData);
+
             if (resetTokenData) {
                 const res = await validateToken(resetTokenData);
                 setResetToken(resetTokenData);

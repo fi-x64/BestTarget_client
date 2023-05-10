@@ -21,9 +21,58 @@ function ManagerDashboard({ setNewKey }) {
     const [dataUsersAndPosts, setDataUsersAndPosts] = useState();
 
     const handleRefetchData = (userInWeek, postInWeek) => {
+        console.log("Check userInWeek: ", userInWeek);
+        console.log("Check postInWeek: ", postInWeek);
+        // for (let i = 0; i < 7; i++) {
+        //     dates.push(currentDate.format('DD/MM/YYYY'));
+        //     currentDate.subtract(1, 'days');
+        // }
+
+        // Tạo mảng trống để chứa đối tượng
+        let dates = [];
+        let currentDate = moment().startOf('day');
+        let newWeekUsers = [];
+        let newWeekPosts = [];
+        // Tạo một đối tượng Date để lấy ngày hiện tại
+        let date = new Date();
+
+        for (let i = 0; i < 7; i++) {
+            dates.push(currentDate.format('DD/MM/YYYY'));
+
+            let day = currentDate.date();
+            let month = currentDate.month() + 1;
+            let year = currentDate.year();
+
+            var kt = 0;
+            for (let j = 0; j < userInWeek.length; j++) {
+                if (userInWeek[j].day == day && userInWeek[j].month == month && userInWeek[j].year == year) {
+                    newWeekUsers.push({ day: day, month: month, year: year, count: userInWeek[j].count });
+                    kt = 1;
+                }
+            }
+
+            if (kt == 0) {
+                newWeekUsers.push({ day: day, month: month, year: year, count: 0 });
+            }
+
+            var kt1 = 0;
+            for (let j = 0; j < postInWeek.length; j++) {
+                if (postInWeek[j].day == day && postInWeek[j].month == month && postInWeek[j].year == year) {
+                    newWeekPosts.push({ day: day, month: month, year: year, count: postInWeek[j].count });
+                    kt1 = 1;
+                }
+            }
+
+            if (kt1 == 0) {
+                newWeekPosts.push({ day: day, month: month, year: year, count: 0 });
+            }
+
+            currentDate.subtract(1, 'days');
+        }
+
         const dataUserInWeekRefetch = {
             label: 'Người dùng',
-            data: userInWeek.map((data) => data.count),
+            data: newWeekUsers.map((data) => data.count),
             lineTension: 0,
             fill: false,
             borderColor: 'red'
@@ -31,20 +80,14 @@ function ManagerDashboard({ setNewKey }) {
 
         const dataPostInWeekRefetch = {
             label: 'Tin đăng',
-            data: postInWeek.map((data) => data.count),
+            data: newWeekPosts.map((data) => data.count),
             lineTension: 0,
             fill: false,
             borderColor: 'blue'
         }
 
         var dataUsersAndPosts = {
-            labels: (postInWeek.length > userInWeek.length) ? postInWeek.map((data) => {
-                var t = data.day + '/' + data.month + '/' + data.year;
-                return t
-            }) : userInWeek.map((data) => {
-                var t = data.day + '/' + data.month + '/' + data.year;
-                return t
-            }),
+            labels: dates,
             datasets: [dataUserInWeekRefetch, dataPostInWeekRefetch]
         };
 
@@ -106,7 +149,7 @@ function ManagerDashboard({ setNewKey }) {
         <div className="bg-[#fff] mb-5">
             <div>
                 <div className='grid grid-cols-4 gap-4'>
-                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer' onClick={() => { handleChangePage(2) }}>
+                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer hover:bg-gray-200 transition ease-in-out delay-150' onClick={() => { handleChangePage(2) }}>
                         <div className='grid grid-cols-2 p-4 justify-items-center'>
                             <h1 className='text-2xl'>Người dùng</h1>
                             <i className="fa-solid fa-users text-4xl ml-3 text-[#ef4444]"></i>
@@ -126,7 +169,7 @@ function ManagerDashboard({ setNewKey }) {
                             </div>
                         </div>
                     </div>
-                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer' onClick={() => { handleChangePage(3) }}>
+                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer hover:bg-gray-200 transition ease-in-out delay-150' onClick={() => { handleChangePage(3) }}>
                         <div className='grid grid-cols-2 p-4 justify-items-center'>
                             <h1 className='text-2xl'>Tin đăng</h1>
                             <i className="fa-solid fa-newspaper text-4xl ml-3 text-[#f97316]"></i>
@@ -146,7 +189,7 @@ function ManagerDashboard({ setNewKey }) {
                             </div>
                         </div>
                     </div>
-                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer' onClick={() => { handleChangePage(5) }}>
+                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer hover:bg-gray-200 transition ease-in-out delay-150' onClick={() => { handleChangePage(5) }}>
                         <div className='grid grid-cols-2 p-4 justify-items-center'>
                             <h1 className='text-2xl'>Tin nhắn</h1>
                             <i className="fa-solid fa-comments text-4xl ml-3 text-[#4c51bf]"></i>
@@ -155,15 +198,15 @@ function ManagerDashboard({ setNewKey }) {
                             <h1> tin nhắn chưa đọc</h1>
                         </div>
                     </div>
-                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer' onClick={() => { handleChangePage(6) }}>
+                    <div className='w-[100%] h-[150px] border-2 rounded-lg cursor-pointer hover:bg-gray-200 transition ease-in-out delay-150' onClick={() => { handleChangePage(6) }}>
                         <div className='grid grid-cols-2 p-4 justify-items-center'>
                             <h1 className='text-2xl'>Khuyến mãi</h1>
                             <i className="fa-solid fa-percent text-4xl ml-3 text-[#0ea5e9]"></i>
                         </div>
-                        <h1 className='text-base px-4'>{currentKhuyenMai ? 'Đang áp dụng: từ ' + moment(currentKhuyenMai.ngayBatDau).format('DD/MM/YYYY') + ' đến ' + moment(currentKhuyenMai.ngayKetThuc).format('DD/MM/YYYY') : 'Hiện không có khuyến mãi'}</h1>
+                        <h1 className='text-base px-4 font-semibold'>{currentKhuyenMai ? 'Đang áp dụng: từ ' + moment(currentKhuyenMai.ngayBatDau).format('DD/MM/YYYY') + ' đến ' + moment(currentKhuyenMai.ngayKetThuc).format('DD/MM/YYYY') : 'Hiện không có khuyến mãi'}</h1>
                     </div>
                 </div >
-                <div className='w-[100%] border-2 rounded-lg mt-4 cursor-pointer' onClick={() => { handleChangePage(4) }}>
+                <div className='w-[100%] border-2 rounded-lg mt-4 cursor-pointer hover:bg-gray-200 transition ease-in-out delay-150' onClick={() => { handleChangePage(4) }}>
                     <div className='grid grid-cols-2 p-4 justify-items-center'>
                         <h1 className='text-4xl'>Thống kê</h1>
                         <i className="fa-solid fa-chart-line text-6xl ml-3 text-[#0ea5e9]"></i>

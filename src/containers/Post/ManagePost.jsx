@@ -9,6 +9,7 @@ import { countTrangThaiTin, editPost, getTinDang, updateTinHetHan } from '../../
 import moment from 'moment';
 import { countSoLuongTinDang, editUser, getCurrentUser } from '../../services/nguoiDung';
 import { updateUser } from '../../actions/auth';
+import { NumericFormat } from 'react-number-format';
 
 function ManagePost() {
     const { isLoggedIn, user } = useSelector((state) => state.auth);
@@ -90,7 +91,7 @@ function ManagePost() {
     const handleHienThiTin = async (id) => {
         const res = await editPost(id, { trangThaiTin: 'Đang hiển thị' });
         if (res) {
-            await updateTinHetHan();
+            // await updateTinHetHan();
             setCountTTTin(await countTrangThaiTin(user.data._id));
             setTinDangData(await getTinDang(user.data._id, 1));
             window.location.reload();
@@ -165,12 +166,12 @@ function ManagePost() {
                         Đẩy tin đăng
                     </Tooltip>
                 </p>
+                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã ẩn')} className='cursor-pointer'>Ẩn tin đăng</p>
                 <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã bán')} className='cursor-pointer'>
-                    <Tooltip title="Lưu ý: Tin đã bán không thể hiển thị lại" >
+                    <Tooltip title="Lưu ý: Tin đã bán hiển thị lại sẽ tốn 1 lượt đăng tin" >
                         Đã bán
                     </Tooltip>
                 </p>
-                <p onClick={() => handleChuyenTrangThaiTin(id, 'Đã ẩn')} className='cursor-pointer'>Ẩn tin đăng</p>
             </div>
         )
     };
@@ -184,11 +185,11 @@ function ManagePost() {
                     renderItem={(item) => (
                         <List.Item key={item._id}>
                             <List.Item.Meta
-                                avatar={<img className='w-[120px] h-[70px]' src={item.hinhAnh[0].url} alt="" />}
+                                avatar={<img className='w-[100px] h-[80px]' src={item.hinhAnh[0].url} alt="" />}
                                 title={status === 'Đang hiển thị' ? <Link to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</Link> : <p to={{ pathname: '/postDetail', search: `?id=${item._id}` }} className='text-base'>{item.tieuDe}</p>}
                                 description={
                                     <>
-                                        <p className='text-sm text-red-600'>{item.gia} đ</p>
+                                        <NumericFormat className='item-price my-2 text-[15px] text-red-600 font-bold' value={item.gia} displayType={'text'} thousandSeparator={'.'} suffix={' đ'} decimalSeparator={','} />
                                         {
                                             status === 'Đang hiển thị' || status === 'Đã ẩn' || status === 'Đã bán' ?
                                                 <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
@@ -217,7 +218,9 @@ function ManagePost() {
                                             <Button onClick={() => handleKhoiPhucTin(item._id)}>Khôi phục tin</Button>
                                             : status === 'Đã ẩn' ?
                                                 <Button onClick={() => handleHienThiTin(item._id)}>Hiển thị tin</Button>
-                                                : null
+                                                : status === 'Đã bán' ?
+                                                    <Button onClick={() => handleKhoiPhucTin(item._id)}>Khôi phục tin</Button>
+                                                    : null
                             }
                             {isAbleRestore ? <Modal title="Xác nhận khôi phục/đẩy tin" open={isModalPaymentOpen} onCancel={handlePaymentCancel} onOk={() => handlePaymentOk(item._id)} footer={[
                                 <Button key="back" onClick={handlePaymentCancel}>

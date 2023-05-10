@@ -72,7 +72,6 @@ function Login() {
           window.location.reload()
         })
       }
-      console.log("Check userInfo: ", userInfo);
     },
     onError: errorResponse => console.log(errorResponse),
   });
