@@ -45,7 +45,7 @@ function Notification() {
                                     </div>
                                 </div>
                             </Link> :
-                            <Link to={value.chiTiet.loai == 'tinDuocDuyet' ? { pathname: '/postDetail', search: `?id=${value.tinDang[0]._id}` } : value.chiTiet.loai == 'tinBiTuChoi' ? '/managePost' : value.chiTiet.loai == 'khuyenMai' ? '/walletDashboard' : null} >
+                            <Link to={value.chiTiet.loai == 'tinDuocDuyet' ? { pathname: '/postDetail', search: `?id=${value.tinDang[0]._id}` } : value.chiTiet.loai == 'tinBiTuChoi' ? '/managePost/3' : value.chiTiet.loai == 'khuyenMai' ? '/walletDashboard' : null} >
                                 <div className={!value.chiTiet.daDoc ? 'grid grid-cols-7 max-w-[485px] max-h-[400px] bg-[#e5e7eb]' : 'grid grid-cols-7 max-w-[485px] max-h-[400px]'}  >
                                     <Avatar src={value?.tinDang[0]?.hinhAnh[0]?.url ? value?.tinDang[0].hinhAnh[0]?.url : avatar} className='w-[60px] h-[60px]' />
                                     <div className='col-span-6 ml-2'>
