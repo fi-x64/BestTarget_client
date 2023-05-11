@@ -38,6 +38,7 @@ function PostDetail() {
     const [isTinYeuThich, setIsTinYeuThich] = useState(false);
     const [isMapOpen, setIsMapOpen] = useState(false);
     const [isHaveCoord, setIsHaveCoord] = useState(false);
+    const [isOpenMapError, setIsOpenMapError] = useState(false);
     // const [map, setMap] = useState();
 
     useEffect(() => {
@@ -153,12 +154,15 @@ function PostDetail() {
         if (longitude && latitude) {
             setIsHaveCoord(true);
             setIsMapOpen(true);
+        } else {
+            setIsOpenMapError(true);
         }
     }
 
     const handleMapCancel = () => {
         setIsHaveCoord(false);
         setIsMapOpen(false);
+        setIsOpenMapError(false);
     }
 
     var settings = {
@@ -312,11 +316,21 @@ function PostDetail() {
                                     >
                                         <Button className='float-right bg-[#fff] mb-1' onClick={handleMapCancel}><i className="fa-solid fa-x mr-2"></i> Đóng</Button>
                                         <Map staticLongitude={currentPostData?.nguoiDungId?.diaChi?.kinhDo} staticLatitude={currentPostData?.nguoiDungId?.diaChi?.viDo} />
-                                    </Modal> : null
+                                    </Modal> : <Modal ariaHideApp={false}
+                                        className={'map-component w-[550px] h-[400px] p-2'}
+                                        contentLabel="Bản đồ"
+                                        isOpen={isOpenMapError}
+                                        onRequestClose={handleMapCancel}>
+                                        <div>
+                                            <Button className='float-right bg-[#fff] mb-1' onClick={handleMapCancel}><i className="fa-solid fa-x mr-2"></i> Đóng</Button>
+                                            <div></div>
+                                            <h1 className='text-red-600 font-bold text-lg bg-[#fff] p-6 rounded-xl'>Không thể định vị, người đăng tin không lưu vị trí. Vui lòng liên hệ với người đăng tin để được hỗ trợ </h1>
+                                        </div>
+                                    </Modal>
                                 }
-                                {!isHaveCoord && isMapOpen ?
+                                {/* {!isHaveCoord && isMapOpen ?
                                     <h1 className='text-red-700'>{currentPostData.nguoiDungId.hoTen} chưa lưu vị trí. Hãy nhắn tin cho người bán để biết trao đổi và yêu cầu họ cung cấp vị trí</h1>
-                                    : null}
+                                    : null} */}
                             </div>
                             <div className='flex m-4'>
                                 <img className='w-[100px] h-[100px]' src={communitcate} alt="" />

@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Badge, Button, Layout, List, Menu, message, Modal, Table, theme } from 'antd';
-import { getAllNguoiDung, getUser, searchUser } from '../../services/nguoiDung';
+import { getAllNguoiDung, getUser, searchUser, updateUser } from '../../services/nguoiDung';
 import { Input, Space } from 'antd';
 import avatar from '../../assets/img/avatar.svg';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { getOnePhuongXa } from '../../services/diaChi';
 import ModalEditUser from './ModalEditUser';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const { Search } = Input;
 
 function ManagerUsers() {
+    const { isLoggedIn, user } = useSelector((state) => state.auth);
     const [listUser, setListUser] = useState();
     const [data, setData] = useState();
     const [searchTerm, setSearchTerm] = useState("");
@@ -97,6 +100,19 @@ function ManagerUsers() {
         clearFilters();
         setSearchText('');
     };
+
+    const handleSubmit = async (userId, values) => {
+        const res = await updateUser(userId, values);
+
+        if (res) {
+            const res = await getAllNguoiDung();
+
+            if (res) {
+                handleRefetchData(res)
+            }
+            toast.success("Cập nhật thông tin người dùng thành công");
+        }
+    }
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -231,9 +247,16 @@ function ManagerUsers() {
         {
             title: 'Thao tác',
             key: 'action',
+            with: '30%',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button className='bg-yellow-400' onClick={() => showEditModal(record._id)}>Chỉnh sửa</Button>
+                    <Button className='bg-yellow-400' onClick={() => showEditModal(record._id)}>Xem chi tiết</Button>
+                    {console.log("Check record: ", record)}
+                    {record.trangThai == 'Đang hoạt động' ?
+                        <Button className='bg-red-500' onClick={() => handleSubmit(record._id, { trangThai: false })} disabled={record._id != user.data._id ? false : true}>Khoá tài khoản</Button>
+                        :
+                        <Button className='bg-green-500' onClick={() => handleSubmit(record._id, { trangThai: true })}>Mở khoá tài khoản</Button>
+                    }
                 </Space>
             ),
         },

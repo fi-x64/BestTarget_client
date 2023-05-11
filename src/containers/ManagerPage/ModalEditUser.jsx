@@ -167,6 +167,7 @@ function ModalEditUser({ user }) {
                                         Họ tên: <RequiredIcon />
                                     </label>
                                     <FastField
+                                        disabled
                                         name="hoTen"
                                         id="hoTen"
                                         component={Input}
@@ -186,6 +187,7 @@ function ModalEditUser({ user }) {
                                         Số điện thoại: <RequiredIcon />
                                     </label>
                                     <FastField
+                                        disabled
                                         name="sdt"
                                         id="sdt"
                                         component={Input}
@@ -205,6 +207,7 @@ function ModalEditUser({ user }) {
                                         Email: <RequiredIcon />
                                     </label>
                                     <FastField
+                                        disabled
                                         name="email"
                                         id="email"
                                         component={Input}
@@ -226,6 +229,7 @@ function ModalEditUser({ user }) {
                                         Quyền: <RequiredIcon />
                                     </label>
                                     <Select
+                                        disabled
                                         style={{ width: '100%' }}
                                         name={`quyen`}
                                         id={`quyen`}
@@ -270,6 +274,7 @@ function ModalEditUser({ user }) {
                                         Trạng thái: <RequiredIcon />
                                     </label>
                                     <Select
+                                        disabled
                                         style={{ width: '100%' }}
                                         name={`trangThai`}
                                         id={`trangThai`}
@@ -318,6 +323,7 @@ function ModalEditUser({ user }) {
                                                 Kinh độ:
                                             </label>
                                             <Field
+                                                disabled
                                                 name={`diaChi.kinhDo`}
                                                 id={`diaChi.kinhDo`}
                                                 component={Input}
@@ -344,6 +350,7 @@ function ModalEditUser({ user }) {
                                                 Vĩ độ:
                                             </label>
                                             <Field
+                                                disabled
                                                 name={`diaChi.viDo`}
                                                 id={`diaChi.viDo`}
                                                 component={Input}
@@ -370,6 +377,7 @@ function ModalEditUser({ user }) {
                                                 Số nhà, đường:
                                             </label>
                                             <Field
+                                                disabled
                                                 name={`diaChi.soNha`}
                                                 id={`diaChi.soNha`}
                                                 component={Input}
@@ -396,6 +404,7 @@ function ModalEditUser({ user }) {
                                                 Tỉnh/Thành phố:
                                             </label>
                                             <Select
+                                                disabled
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.tinhTPCode`}
                                                 id={`diaChi.tinhTPCode`}
@@ -443,6 +452,7 @@ function ModalEditUser({ user }) {
                                                 Quận/Huyện:
                                             </label>
                                             <Select
+                                                disabled
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.quanHuyenCode`}
                                                 id={`diaChi.quanHuyenCode`}
@@ -488,6 +498,7 @@ function ModalEditUser({ user }) {
                                                 Phường/Xã:
                                             </label>
                                             <Select
+                                                disabled
                                                 style={{ width: '100%' }}
                                                 name={`diaChi.phuongXaCode`}
                                                 id={`diaChi.phuongXaCode`}
@@ -530,6 +541,7 @@ function ModalEditUser({ user }) {
                                         Giới tính:
                                     </label>
                                     <Select
+                                        disabled
                                         style={{ width: '100%' }}
                                         name="gioiTinh"
                                         id="gioiTinh"
@@ -562,7 +574,7 @@ function ModalEditUser({ user }) {
                                         ]}
                                     ></Select>
                                 </div>
-                                <div className='flex justify-center'>
+                                {/* <div className='flex justify-center'>
                                     <Button
                                         onClick={handleSubmit}
                                         htmlType="submit"
@@ -571,7 +583,7 @@ function ModalEditUser({ user }) {
                                     >
                                         Lưu thông tin
                                     </Button>
-                                </div>
+                                </div> */}
                             </Form>
                         )}
                     </Formik>
