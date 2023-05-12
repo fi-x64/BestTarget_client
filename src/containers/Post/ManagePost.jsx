@@ -195,7 +195,7 @@ function ManagePost() {
                                                 <p className='text-xs'>Tin đăng còn {60 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ hết hạn</p>
                                                 : status === 'Bị từ chối' ?
                                                     <>
-                                                        {item?.lyDoTuChoi ? <h1 className='italic underline cursor-pointer text-red-600' onClick={() => handleOpenModalReason(item.lyDoTuChoi)}> Nhấn để xem lý do huỷ</h1> : null}
+                                                        {item?.lyDoTuChoi ? <h1 className='italic underline cursor-pointer text-red-600' onClick={() => handleOpenModalReason(item.lyDoTuChoi)}> Nhấn để xem lý từ chối</h1> : null}
                                                         <p className='text-xs'>Tin đăng còn {5 - moment(Date.now()).diff(item.thoiGianPush, 'days')} ngày nữa sẽ bị xoá vĩnh viễn</p>
                                                     </>
                                                     : status === 'Hết hạn' ?
