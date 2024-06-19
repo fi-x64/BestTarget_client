@@ -13,12 +13,5 @@ export default ({ mode }) => {
   return defineConfig({
     // To access env vars here use process.env.TEST_VAR
     plugins: [react()],
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@import "./src/styles/variables.scss";',
-        },
-      },
-    },
   });
 };
