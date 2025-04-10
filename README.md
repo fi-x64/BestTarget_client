@@ -15,10 +15,10 @@
   
 Visit http://localhost:5173 in your browser (or your custom Vite port).
 
-Available Scripts
+Available Scripts <br />
     dev            Start local dev server <br />
-     build          Build for production <br />
-     preview	       Preview the production build
+    build          Build for production <br />
+    preview	       Preview the production build
 
 ====================================================
 # Project's Description And Screenshots
